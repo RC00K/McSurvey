@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">mcsurvey</string>
+    <string name="title_activity_main">mcsurvey</string>
+    <string name="package_name">ionic.mcsurvey</string>
+    <string name="custom_url_scheme">ionic.mcsurvey</string>
+</resources>
