@@ -42,6 +42,8 @@ const App: React.FC = () => (
         <Route exact path="/camera">
           <CameraComponent 
             isCameraActive={true}
+            handleCloseCamera={() => {}}
+            key={0}
           />
         </Route>
       </IonRouterOutlet>
