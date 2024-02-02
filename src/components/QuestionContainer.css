@@ -1,0 +1,28 @@
+.file__upload {
+    position: relative;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 10px;
+    text-align: center;
+    background: #f8f8f8;
+    cursor: pointer;
+}
+
+.file__upload:hover {
+    background-color: #ececec;
+}
+
+.image__preview {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.add__photo {
+    justify-content: center;
+    align-items: center;
+    color: #2c2686;
+    background-color: transparent;
+}
