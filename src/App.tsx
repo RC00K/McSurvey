@@ -26,7 +26,7 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
+const App: React.FC = () => (  
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>

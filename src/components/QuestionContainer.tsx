@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { useForm, SubmitHandler, set } from 'react-hook-form';
 import { IonHeader, IonToolbar, IonTitle, IonText, IonItem, IonIcon, IonRadioGroup, IonRadio, IonLabel, IonButton, IonModal, IonContent } from '@ionic/react';
@@ -26,6 +26,15 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
 
     const history = useHistory();
 
+    useEffect(() => {
+        // Check local storage for the image
+        const storedImage = localStorage.getItem('capturedImage');
+        if (storedImage) {
+            setSelectedImages(prevImages => ({...prevImages, 'capturedImageKey': storedImage}));
+            localStorage.removeItem('capturedImage');
+        }
+    }, []);
+
     const handleOpenCamera = () => {
         history.push('/camera');
         setIsCameraActive(true);
@@ -36,6 +45,13 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
     const handleCloseCamera = () => {
         setIsCameraActive(false);
         history.goBack();
+    };
+
+    const handleImageSave = (savedImage: string) => {
+        setSelectedImages(prevImages => ({
+            ...prevImages,
+            'imageKey': savedImage
+        }));
     };
 
     const onSubmit: SubmitHandler<FormData> = (data) => {
@@ -50,6 +66,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                     isCameraActive={isCameraActive}
                     key={cameraKey}
                     handleCloseCamera={handleCloseCamera}
+                    onImageSave={handleImageSave}
                 />
             ) : (
                 selectedDriveThru.map((item, index) => {
@@ -74,15 +91,16 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                                         </ol>
                                     )}
                                     <AccordionContainer question={question} />
-                                    <div className="file__upload">
-                                        {selectedImages['image_' + index + '_' + qIndex] ? (
+                                    <div className="file__upload" onClick={!selectedImages['imageKey'] ? handleOpenCamera : undefined}>
+                                        {selectedImages['imageKey'] && (
                                             <img
                                                 src={selectedImages['image_' + index + '_' + qIndex]}
                                                 alt="Uploaded"
                                                 className="image__preview"
                                             />
-                                        ) : (
-                                            <button className="add__photo" onClick={handleOpenCamera}>
+                                        )}
+                                        {!selectedImages['imageKey'] && (
+                                            <button className="add__photo">
                                                 <IonIcon icon={add} size="large" />
                                             </button> 
                                         )}

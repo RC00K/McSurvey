@@ -2,14 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions, CameraPreviewFlashMode } from '@capacitor-community/camera-preview';
 import { IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonButton, isPlatform } from '@ionic/react';
-import { close, closeCircle, checkmarkCircle, images, sync,  } from 'ionicons/icons';
+import { close, checkmark, images, sync,  } from 'ionicons/icons';
 import './CameraComponent.css';
 
-const CameraComponent: React.FC<{ isCameraActive: boolean, handleCloseCamera: () => void }> = ({ isCameraActive, handleCloseCamera }) => {
+interface CameraComponentProps {
+    isCameraActive: boolean;
+    handleCloseCamera: () => void;
+    onImageSave: (savedImage: string) => void;
+}
+
+
+const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handleCloseCamera, onImageSave }) => {
     const [image, setImage] = useState<string | null>(null);
     const [cameraActive, setCameraActive] = useState<boolean>(false);
+    const [reviewMode, setReviewMode] = useState(false);
     const [flashActive, setFlashActive] = useState<boolean>(false);
-    const [reviewMode, setReviewMode] = useState<boolean>(false);
 
     useEffect(() => {
         if (isCameraActive) {
@@ -19,18 +26,28 @@ const CameraComponent: React.FC<{ isCameraActive: boolean, handleCloseCamera: ()
         }
     }, [isCameraActive]);
 
+    useEffect(() => {
+        if (image) {
+            console.log('Image captured: ', image);
+        }
+    }, [image]);
+
     const openCamera = async () => {
-        console.log('Opening the camera');
-        const cameraPreviewOptions: CameraPreviewOptions = {
-            position: 'rear',
-            toBack: true,
-            rotateWhenOrientationChanged: true,
-            enableZoom: true,
-            parent: 'cameraPreview',
-            className: 'camera__container',
-        };
-        await CameraPreview.start(cameraPreviewOptions);
-        setCameraActive(true);
+        try {
+            console.log('Opening the camera');
+            const cameraPreviewOptions: CameraPreviewOptions = {
+                position: 'rear',
+                toBack: true,
+                rotateWhenOrientationChanged: true,
+                enableZoom: true,
+                parent: 'cameraPreview',
+                className: 'camera__container',
+            };
+            await CameraPreview.start(cameraPreviewOptions);
+            setCameraActive(true);   
+        } catch (error) {
+            console.error('Error opening camera: ' + error);
+        }
     };
 
     const stopCamera = async () => {
@@ -46,23 +63,25 @@ const CameraComponent: React.FC<{ isCameraActive: boolean, handleCloseCamera: ()
         const result = await CameraPreview.capture(cameraPreviewPictureOptions);
         setImage(`data:image/jpeg;base64,${result.value}`);
         setReviewMode(true);
-        await stopCamera();
     };
-
-    const retakeImage = async () => {
-        await stopCamera();
-        await openCamera();
-        setImage(null);
-        setReviewMode(false);
-    }
-
-    const keepImage = () => {
-        setReviewMode(false);
-    }
 
     const flipCamera = async () => {
         await CameraPreview.flip();
     };
+
+    const handleSaveImage = async () => {
+        console.log('Save Image button clicked');
+        if (onImageSave && typeof onImageSave === 'function') {
+            onImageSave(image || '');
+        }
+        handleCloseCamera();
+    };
+
+    const handleRetakeImage = () => {
+        // Clear the current image and go back to camera
+        setImage(null);
+        setReviewMode(false);
+    }
     
     return (
         <div id="cameraPreview" className={`camera__container ${cameraActive ? '' : 'camera__container--inactive'}`}>
@@ -80,20 +99,20 @@ const CameraComponent: React.FC<{ isCameraActive: boolean, handleCloseCamera: ()
                         </div>  
                     </>
                 )}
-            </div>
-            {reviewMode && (
-                <div className="image__review">
-                    <img src={image || ''} alt="Captured" />
-                    <div className="review__buttons">
-                        <IonButton className="retake__button" onClick={retakeImage}>
-                            <IonIcon icon={closeCircle} className="retake__button__icon" />
-                        </IonButton>
-                        <IonButton className="save__button" onClick={keepImage}>
-                            <IonIcon icon={checkmarkCircle} className="save__button__icon" />
-                        </IonButton>
+                {reviewMode && image && (
+                    <div className="image__review">
+                        <img src={image} alt="Captured" />
+                        <div className="review__buttons">
+                            <button className="retake__button" onClick={handleRetakeImage}>
+                                <IonIcon icon={close} className="retake__button__icon" />
+                            </button>
+                            <button className="save__button" onClick={handleSaveImage}>
+                                <IonIcon icon={checkmark} className="save__button__icon" />
+                            </button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

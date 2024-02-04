@@ -9,7 +9,7 @@ ion-content {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: 1;
+    z-index: 999;
 }
 
 .camera__container--inactive {
@@ -43,7 +43,7 @@ ion-content {
     justify-content: center;
     align-items: center;
     color: #fff;
-    z-index: 2;
+    z-index: 1000;
 }
 
 .capture__button {
@@ -57,7 +57,7 @@ ion-content {
     border: 5px solid #fff;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    z-index: 1000;
 }
 
 .capture__button__inner {
@@ -86,7 +86,7 @@ ion-content {
     justify-content: center;
     align-items: center;
     color: #fff;
-    z-index: 2;
+    z-index: 1000;
 }
 
 .camera__flip {
@@ -98,7 +98,7 @@ ion-content {
     justify-content: center;
     align-items: center;
     color: #fff;
-    z-index: 2;
+    z-index: 1000;
 }
 
 .image__review {
@@ -112,6 +112,7 @@ ion-content {
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 1000;
 }
 
 .image__review img {
@@ -135,11 +136,16 @@ ion-content {
     align-items: center;
     background-color: #de4956;
     border-radius: 50px;
+    z-index: 1000;
 }
 
 .retake__button__icon {
     color: #fff;
     font-size: 2.5rem !important;
+}
+
+.retake__button__icon:active {
+    font-size: 2.3rem !important;
 }
 
 .save__button {
@@ -152,11 +158,16 @@ ion-content {
     align-items: center;
     background-color: #4caf50;
     border-radius: 50px;
+    z-index: 1000;
 }
 
 .save__button__icon {
     color: #fff;
     font-size: 2.5rem !important;
+}
+
+.save__button__icon:active {
+    font-size: 2.3rem !important;
 }
 
 .icon {
