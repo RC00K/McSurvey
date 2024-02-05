@@ -41,7 +41,6 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
 
     const handleOpenCamera = (questionIndex: number) => {
         setCurrentQuestionIndex(questionIndex);
-        history.push('/camera');
         setIsCameraActive(true);
         // increment the camera key
         setCameraKey(prevKey => prevKey + 1);
@@ -49,7 +48,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
 
     const handleCloseCamera = () => {
         setIsCameraActive(false);
-        history.goBack();
+        
     };
 
     const handleImageSave = (savedImage: string) => {
@@ -59,6 +58,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                 [currentQuestionIndex]: savedImage,
             }));
         }
+        setIsCameraActive(false);
     };
 
     const onSubmit: SubmitHandler<FormData> = (data) => {

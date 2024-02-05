@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions, CameraPreviewFlashMode } from '@capacitor-community/camera-preview';
 import { IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonButton, isPlatform } from '@ionic/react';
 import { close, checkmark, images, sync,  } from 'ionicons/icons';
@@ -12,20 +12,43 @@ interface CameraComponentProps {
     onImageSave: (savedImage: string) => void;
 }
 
-
 const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handleCloseCamera, onImageSave }) => {
     const [image, setImage] = useState<string | null>(null);
     const [cameraActive, setCameraActive] = useState<boolean>(false);
     const [reviewMode, setReviewMode] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
+    const history = useHistory();
+
+    useEffect(() => {
+        const unlisten = history.listen((location, action) => {
+            // If user swipes back to previos page then close the camera
+            if (action === 'PUSH') {
+                stopCamera();
+            }
+        });
+
+        return () => unlisten();
+
+    }, [cameraActive, history]);
+
     useEffect(() => {
         if (isCameraActive) {
             openCamera();
         } else {
-            stopCamera();
+            if (cameraActive) {
+                stopCamera();
+            }
         }
     }, [isCameraActive]);
+
+    useEffect(() => {
+        return () => {
+            if (cameraActive) {
+                stopCamera();
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (image) {
@@ -34,27 +57,35 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handl
     }, [image]);
 
     const openCamera = async () => {
-        try {
-            console.log('Opening the camera');
-            const cameraPreviewOptions: CameraPreviewOptions = {
-                position: 'rear',
-                toBack: true,
-                rotateWhenOrientationChanged: true,
-                enableZoom: true,
-                parent: 'cameraPreview',
-                className: 'camera__container',
-            };
-            await CameraPreview.start(cameraPreviewOptions);
-            setCameraActive(true);   
-        } catch (error) {
-            console.error('Error opening camera: ' + error);
+        if (!cameraActive) {
+            try {
+                console.log('Opening the camera');
+                const cameraPreviewOptions: CameraPreviewOptions = {
+                    position: 'rear',
+                    toBack: true,
+                    rotateWhenOrientationChanged: true,
+                    enableZoom: true,
+                    parent: 'cameraPreview',
+                    className: 'camera__container',
+                };
+                await CameraPreview.start(cameraPreviewOptions);
+                setCameraActive(true);   
+            } catch (error: any) {
+                console.error('Error opening camera: ' + error.message || JSON.stringify(error));
+            }
+        } else {
+            console.log('Camera already open');
         }
     };
 
     const stopCamera = async () => {
-        await CameraPreview.stop();
-        setCameraActive(false);
-        handleCloseCamera();
+        try {
+            await CameraPreview.stop();
+            setCameraActive(false);
+            setTimeout(() => handleCloseCamera(), 300);
+        } catch (error: any) {
+            console.error('Error stopping camera:'+ error.message || JSON.stringify(error));
+        }
     };
 
     const captureImage = async () => {
@@ -82,6 +113,7 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handl
         if (onImageSave && typeof onImageSave === 'function') {
             onImageSave(image || '');
         }
+        await stopCamera();
         handleCloseCamera();
     };
 

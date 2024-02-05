@@ -39,14 +39,6 @@ const App: React.FC = () => (
         <Route exact path="/survey/:selected">
           <Survey />
         </Route>
-        <Route exact path="/camera">
-          <CameraComponent 
-            isCameraActive={true}
-            handleCloseCamera={() => {}}
-            key={0}
-            onImageSave={() => {}}
-          />
-        </Route>
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
