@@ -1,3 +1,5 @@
+@import url('../../theme/variables.css');
+
 ion-content {
     --background: transparent !important;
 }
@@ -31,7 +33,7 @@ ion-content {
 }
 
 .text {
-    color: #fff;
+    color: var(--ion-color-light);
 }
 
 .camera__close {
@@ -42,7 +44,7 @@ ion-content {
     height: 50px !important;
     justify-content: center;
     align-items: center;
-    color: #fff;
+    color: var(--ion-color-light);
     z-index: 1000;
 }
 
@@ -54,7 +56,7 @@ ion-content {
     width: 70px;
     height: 70px;
     border-radius: 50px;
-    border: 5px solid #fff;
+    border: 5px solid var(--ion-color-light);
     align-items: center;
     justify-content: center;
     z-index: 1000;
@@ -67,7 +69,7 @@ ion-content {
     width: 50px;
     height: 50px;
     border-radius: 50px;
-    background-color: #fff;
+    background-color: var(--ion-color-light);
 }
 
 .capture__button__inner:active {
@@ -85,7 +87,7 @@ ion-content {
     height: 50px !important;
     justify-content: center;
     align-items: center;
-    color: #fff;
+    color: var(--ion-color-light);
     z-index: 1000;
 }
 
@@ -97,7 +99,7 @@ ion-content {
     height: 50px !important;
     justify-content: center;
     align-items: center;
-    color: #fff;
+    color: var(--ion-color-light);
     z-index: 1000;
 }
 
@@ -134,13 +136,13 @@ ion-content {
     height: 70px;
     justify-content: center;
     align-items: center;
-    background-color: #de4956;
+    background-color: var(--ion-color-danger);
     border-radius: 50px;
     z-index: 1000;
 }
 
 .retake__button__icon {
-    color: #fff;
+    color: var(--ion-color-light);
     font-size: 2.5rem !important;
 }
 
@@ -156,13 +158,13 @@ ion-content {
     height: 70px;
     justify-content: center;
     align-items: center;
-    background-color: #4caf50;
+    background-color: var(--ion-color-success);
     border-radius: 50px;
     z-index: 1000;
 }
 
 .save__button__icon {
-    color: #fff;
+    color: var(--ion-color-light);
     font-size: 2.5rem !important;
 }
 
@@ -171,7 +173,7 @@ ion-content {
 }
 
 .icon {
-    color: #fff;
+    color: var(--ion-color-light);
     width: 40px;
     height: 40px;
 }

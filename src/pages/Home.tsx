@@ -14,11 +14,6 @@ const Home: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>McSurvey</IonTitle>
-        </IonToolbar>
-      </IonHeader>
       <IonContent fullscreen={true} className="ion-padding">
         <h1>Available Surveys</h1>
         <CardContainer onCardClick={handleCardClick} />

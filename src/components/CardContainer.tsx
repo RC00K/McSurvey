@@ -16,22 +16,22 @@ const CardContainer = ({ onCardClick }: { onCardClick: any }) => {
     return (
         <>
             {surveys.map(({ img, surveyTitle, surveyCategory, surveyCompletionTime, surveyQuestions }, index) => (
-                <IonCard key={index} onClick={onCardClick}>
-                    <IonImg src={img} />
+                <IonCard key={index} onClick={onCardClick} className="card__container">
+                    <IonImg src={img} className="card__image" />
                     <IonCardHeader>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div className="card__header">
                             <IonCardTitle>{surveyTitle}</IonCardTitle>
-                            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <IonText style={{ fontSize: '18px', fontWeight: '600' }}>{surveyCompletionTime}</IonText>
+                            <div className="card__time">
+                                <IonText>{surveyCompletionTime}</IonText>
                             </div>
                         </div>
                     </IonCardHeader>
                     <IonCardContent>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <IonIcon icon={fastFood} aria-hidden="true" style={{ fontSize: '20px', marginRight: '5px' }} />
-                            <IonText style={{ fontSize: '14px', marginRight: '10px' }}>{surveyCategory}</IonText>
-                            <IonIcon icon={listOutline} aria-hidden="true" style={{ fontSize: '20px', marginRight: '5px' }} />
-                            <IonText style={{ fontSize: '14px', marginRight: '10px' }}>{surveyQuestions}</IonText>
+                        <div className="card__content">
+                            <IonIcon icon={fastFood} />
+                            <IonText>{surveyCategory}</IonText>
+                            <IonIcon icon={listOutline} />
+                            <IonText>{surveyQuestions}</IonText>
                         </div>
                     </IonCardContent>
                 </IonCard>
