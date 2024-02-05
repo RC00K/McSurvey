@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router';
 import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions, CameraPreviewFlashMode } from '@capacitor-community/camera-preview';
 import { IonContent, IonHeader, IonToolbar, IonTitle, IonIcon, IonButton, isPlatform } from '@ionic/react';
 import { close, checkmark, images, sync,  } from 'ionicons/icons';
 import './CameraComponent.css';
+import shuttersound from '../../assets/sounds/shuttersound.mp3';
 
 interface CameraComponentProps {
     isCameraActive: boolean;
@@ -16,7 +17,7 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handl
     const [image, setImage] = useState<string | null>(null);
     const [cameraActive, setCameraActive] = useState<boolean>(false);
     const [reviewMode, setReviewMode] = useState(false);
-    const [flashActive, setFlashActive] = useState<boolean>(false);
+    const audioRef = useRef<HTMLAudioElement>(null);
 
     useEffect(() => {
         if (isCameraActive) {
@@ -57,12 +58,19 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handl
     };
 
     const captureImage = async () => {
-        const cameraPreviewPictureOptions: CameraPreviewPictureOptions = {
-            quality: 100
-        };
-        const result = await CameraPreview.capture(cameraPreviewPictureOptions);
-        setImage(`data:image/jpeg;base64,${result.value}`);
-        setReviewMode(true);
+        if (audioRef.current) {
+            audioRef.current.play().then(() => {
+                const cameraPreviewPictureOptions: CameraPreviewPictureOptions = {
+                    quality: 100
+                };
+                return CameraPreview.capture(cameraPreviewPictureOptions);
+            }).then(result => {
+                setImage(`data:image/jpeg;base64,${result.value}`);
+                setReviewMode(true);
+            }).catch(error => {
+                console.error('Error capturing image: ', error);
+            });
+        }
     };
 
     const flipCamera = async () => {
@@ -97,6 +105,7 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handl
                         <div onClick={flipCamera}>
                             <IonIcon icon={sync} className="camera__flip" />
                         </div>  
+                        <audio ref={audioRef} src={shuttersound} />
                     </>
                 )}
                 {reviewMode && image && (

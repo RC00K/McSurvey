@@ -44,6 +44,7 @@ const App: React.FC = () => (
             isCameraActive={true}
             handleCloseCamera={() => {}}
             key={0}
+            onImageSave={() => {}}
           />
         </Route>
       </IonRouterOutlet>
