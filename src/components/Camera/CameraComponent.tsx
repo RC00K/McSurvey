@@ -124,39 +124,37 @@ const CameraComponent: React.FC<CameraComponentProps> = ({ isCameraActive, handl
     }
     
     return (
-        <IonContent className={cameraActive ? '' : 'camera__container--inactive'}>
-            <div id="cameraPreview" className="camera__container">
-                <div className="camera__overlay">
-                    {cameraActive && (
-                        <>
-                            <div onClick={stopCamera}>
-                                <IonIcon icon={close} className="camera__close" />
-                            </div>
-                            <div className="capture__button" onClick={captureImage}>
-                                <div className="capture__button__inner" />
-                            </div>
-                            <div onClick={flipCamera}>
-                                <IonIcon icon={sync} className="camera__flip" />
-                            </div>  
-                            <audio ref={audioRef} src={shuttersound} />
-                        </>
-                    )}
-                    {reviewMode && image && (
-                        <div className="image__review">
-                            <img src={image} alt="Captured" />
-                            <div className="review__buttons">
-                                <button className="retake__button" onClick={handleRetakeImage}>
-                                    <IonIcon icon={close} className="retake__button__icon" />
-                                </button>
-                                <button className="save__button" onClick={handleSaveImage}>
-                                    <IonIcon icon={checkmark} className="save__button__icon" />
-                                </button>
-                            </div>
+        <div id="cameraPreview" className={'camera__container' ? '' : 'camera__container--inactive'}>
+            <div className="camera__overlay">
+                {cameraActive && (
+                    <>
+                        <div onClick={stopCamera}>
+                            <IonIcon icon={close} className="camera__close" />
                         </div>
-                    )}
-                </div>
+                        <div className="capture__button" onClick={captureImage}>
+                            <div className="capture__button__inner" />
+                        </div>
+                        <div onClick={flipCamera}>
+                            <IonIcon icon={sync} className="camera__flip" />
+                        </div>  
+                        <audio ref={audioRef} src={shuttersound} />
+                    </>
+                )}
+                {reviewMode && image && (
+                    <div className="image__review">
+                        <img src={image} alt="Captured" />
+                        <div className="review__buttons">
+                            <button className="retake__button" onClick={handleRetakeImage}>
+                                <IonIcon icon={close} className="retake__button__icon" />
+                            </button>
+                            <button className="save__button" onClick={handleSaveImage}>
+                                <IonIcon icon={checkmark} className="save__button__icon" />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
-        </IonContent>
+        </div>
     );
 };
 
