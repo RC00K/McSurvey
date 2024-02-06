@@ -1,9 +1,5 @@
 @import url('../../theme/variables.css');
 
-ion-content {
-    --background: transparent !important;
-}
-
 .camera__container {
     position: fixed;
     top: 0;
@@ -15,7 +11,7 @@ ion-content {
 }
 
 .camera__container--inactive {
-    display: none;
+    --background: var(--ion-color-light);
 }
 
 .camera__overlay {
