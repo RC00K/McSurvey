@@ -1,31 +1,28 @@
 import React from 'react';
+import { IonPage, IonContent, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle } from '@ionic/react';
+import { pencil, close } from 'ionicons/icons';
+import './ReviewContainer.css';
+import dtep1 from '../assets/images/DTEP1.jpg';
 
-export const ReviewContainer = ({ selectedDriveThru, selectedImages }: { selectedDriveThru: any, selectedImages: any }) => {
+const ReviewContainer: React.FC = () => {
     return (
-        <div>
-            <h1>Review</h1>
-            {selectedDriveThru.map((item: any, index: number) => {
-                return item.questions.map((question: any, qIndex: number) => (
-                    <div key={`review_${index}_${qIndex}`}>
-                        <h2>{question.questionTitle}</h2>
-                        <p>{question.questionDesc}</p>
-                        <p>Question: {question.question}</p>
-                        {question.questionHints && question.questionHints.length > 0 && (
-                            <ul>
-                                {question.questionHints.map((hint: any, hintIndex: number) => (
-                                    <li key={`hint_${hintIndex}`}>{hint.hint}</li>
-                                ))}
-                            </ul>
-                        )}
-                        {selectedImages[qIndex] && (
-                            <img
-                                src={selectedImages[qIndex]}
-                                alt={`Uploaded ${question.questionTitle} Image`}
-                            />
-                        )}
+        <>
+            <h1>Review Page</h1>
+            <div className="review__card">
+                <div className="review__card__content">
+                    <img className="review__card__image" src={dtep1} alt="Review Image" />
+                    <div className="review__card__info">
+                        <div className="review__card__title">Entry Point</div>
+                        <div className="review__card__desc">Type: Drive Thru</div>
+                        <div className="review__card__image__id">Image: DTEP-1894-0053</div>
                     </div>
-                ));
-            })}
-        </div>
+                    <button className="review__card__button">
+                        <IonIcon icon={pencil} />
+                    </button>
+                </div>
+            </div>
+        </>
     );
-}
+};
+
+export default ReviewContainer;

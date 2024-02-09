@@ -3,6 +3,7 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToo
 import './Home.css';
 import CardContainer from '../components/CardContainer';
 import SurveyModal from '../components/modals/SurveyModal';
+import Review from '../pages/Review';
 
 const Home: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -15,9 +16,10 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen={true} className="ion-padding">
-        <h1>Available Surveys</h1>
+        <Review />
+        {/* <h1>Available Surveys</h1>
         <CardContainer onCardClick={handleCardClick} />
-        <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} />
+        <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} /> */}
       </IonContent>
     </IonPage>
   );
