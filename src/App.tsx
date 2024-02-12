@@ -1,4 +1,7 @@
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from './configureStore';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
@@ -27,21 +30,23 @@ import './theme/variables.css';
 setupIonicReact();
 
 const App: React.FC = () => (  
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-        <Route exact path="/survey/:selected">
-          <Survey />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
+  <Provider store={store}>
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+          <Route exact path="/survey/:selected">
+            <Survey />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  </Provider>
 );
 
 export default App;
