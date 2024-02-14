@@ -14,7 +14,7 @@ const Home: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen={true} className="ion-padding">
+      <IonContent className="ion-padding">
         <h1>Available Surveys</h1>
         <CardContainer onCardClick={handleCardClick} />
         <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} />

@@ -1,7 +1,5 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './configureStore';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
@@ -26,13 +24,15 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import Review from './pages/Review';
+import { ReviewProvider } from './components/Review/ReviewContext';
 
 setupIonicReact();
 
 const App: React.FC = () => (  
-  <Provider store={store}>
-    <IonApp>
-      <IonReactRouter>
+  <IonApp>
+    <IonReactRouter>
+      <ReviewProvider>
         <IonRouterOutlet>
           <Route exact path="/home">
             <Home />
@@ -43,10 +43,13 @@ const App: React.FC = () => (
           <Route exact path="/survey/:selected">
             <Survey />
           </Route>
+          <Route exact path="/review">
+            <Review />
+          </Route>
         </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
-  </Provider>
+      </ReviewProvider>
+    </IonReactRouter>
+  </IonApp>
 );
 
 export default App;

@@ -16,23 +16,17 @@ const CardContainer = ({ onCardClick }: { onCardClick: any }) => {
     return (
         <>
             {surveys.map(({ img, surveyTitle, surveyCategory, surveyCompletionTime, surveyQuestions }, index) => (
-                <IonCard key={index} onClick={onCardClick} className="card__container">
-                    <IonImg src={img} className="card__image" />
+                <IonCard key={index} onClick={onCardClick}>
+                    <IonImg src={img} />
                     <IonCardHeader>
-                        <div className="card__header">
-                            <IonCardTitle>{surveyTitle}</IonCardTitle>
-                            <div className="card__time">
-                                <IonText>{surveyCompletionTime}</IonText>
-                            </div>
-                        </div>
+                        <IonCardTitle>{surveyTitle}</IonCardTitle>
+                        <IonCardSubtitle>{surveyCompletionTime}</IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>
-                        <div className="card__content">
-                            <IonIcon icon={fastFood} />
-                            <IonText>{surveyCategory}</IonText>
-                            <IonIcon icon={listOutline} />
-                            <IonText>{surveyQuestions}</IonText>
-                        </div>
+                        <IonIcon icon={fastFood} />
+                        <IonText>{surveyCategory}</IonText>
+                        <IonIcon icon={listOutline} />
+                        <IonText>{surveyQuestions}</IonText>
                     </IonCardContent>
                 </IonCard>
             ))}

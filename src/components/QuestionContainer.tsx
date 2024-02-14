@@ -1,13 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { useForm, SubmitHandler, set } from 'react-hook-form';
-import { IonHeader, IonToolbar, IonTitle, IonText, IonItem, IonIcon, IonRadioGroup, IonRadio, IonLabel, IonButton, IonModal, IonContent } from '@ionic/react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { IonIcon, IonLabel, IonButton } from '@ionic/react';
 import { AccordionContainer } from './AccordionContainer';
 import { oneDrive, twoDrive } from '../assets/data/aotsfees';
-import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions } from '@capacitor-community/camera-preview';
 import CameraComponent from './Camera/CameraComponent';
 import { add } from 'ionicons/icons';
 import './QuestionContainer.css';
+import { useReview } from './Review/ReviewContext';
 
 interface FormData {
     question: string;
@@ -51,21 +51,35 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
         
     };
 
+    const { images, addImage } = useReview();
+
+    useEffect(() => {
+        // Load images from local storage on component mount
+        const storedImages = JSON.parse(localStorage.getItem('reviewImages') || '{}');
+        Object.entries(storedImages).forEach(([questionId, image]) => {
+            addImage(questionId, image as string);
+        });
+    }, [addImage]);
+
     const handleImageSave = (savedImage: string) => {
         if (currentQuestionIndex !== null) {
-            setSelectedImages(prevImages => ({
-                ...prevImages,
-                [currentQuestionIndex]: savedImage,
-            }));
+            const questionId = `question_${currentQuestionIndex}`;
+            addImage(questionId, savedImage);
+            const updateImages = { ...images, [questionId]: savedImage };
+            localStorage.setItem('reviewImages', JSON.stringify(updateImages));
+            setSelectedImages(updateImages);
         }
         setIsCameraActive(false);
     };
 
     const onSubmit: SubmitHandler<FormData> = (data) => {
-        console.log(data);
-        // Handle form submission
+
     };
 
+    const handleGoToReview = () => {
+        history.push('/review');
+    };
+    
     return (
         <>
             {isCameraActive ? (
@@ -77,47 +91,54 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                 />
             ) : (
                 selectedDriveThru.map((item, index) => {
-                    return item.questions.map((question, qIndex) => (
-                        <form onSubmit={handleSubmit(onSubmit)} key={`form_${index}_${qIndex}`}>
-                            <div key={`label_${index}_${qIndex}`}>
-                                <IonLabel>
-                                    <h2>{question.questionTitle}</h2>
-                                    <p>{question.questionDesc}</p>
-                                </IonLabel>
-                                <div>
-                                    <div key={`question_${index}`}>
-                                        <p>{question.question}</p>
-                                    </div>
-                                    {question.questionHints && question.questionHints.length > 0 && (
-                                        <ol>
-                                            {question.questionHints.map((hint, hintIndex) => (
-                                                <li key={`hint_${hintIndex}`}>
-                                                    {hint.hint}
-                                                </li>
-                                            ))}
-                                        </ol>
-                                    )}
-                                    <AccordionContainer question={question} />
-                                    <div className="file__upload" onClick={() => handleOpenCamera(qIndex)}>
-                                        {selectedImages[qIndex] && (
-                                            <img
-                                                src={selectedImages[qIndex]}
-                                                alt="Uploaded"
-                                                className="image__preview"
-                                            />
+                    return item.questions.map((question, qIndex) => {
+                        const questionId = `question_${qIndex}`;
+                        const imageSrc = selectedImages[questionId] || images[questionId];
+                        return (
+                            <form onSubmit={handleSubmit(onSubmit)} key={`form_${index}_${qIndex}`}>
+                                <div key={`label_${index}_${qIndex}`}>
+                                    <IonLabel>
+                                        <h2>{question.questionTitle}</h2>
+                                        <p>{question.questionDesc}</p>
+                                    </IonLabel>
+                                    <div>
+                                        <div key={`question_${index}`}>
+                                            <p>{question.question}</p>
+                                        </div>
+                                        {question.questionHints && question.questionHints.length > 0 && (
+                                            <ol>
+                                                {question.questionHints.map((hint, hintIndex) => (
+                                                    <li key={`hint_${hintIndex}`}>
+                                                        {hint.hint}
+                                                    </li>
+                                                ))}
+                                            </ol>
                                         )}
-                                        {!selectedImages[qIndex] && (
-                                            <button className="add__photo">
-                                                <IonIcon icon={add} size="large" />
-                                            </button> 
-                                        )}
+                                        <AccordionContainer question={question} />
+                                        <div className="file__upload" onClick={() => handleOpenCamera(qIndex)}>
+                                            {imageSrc && (
+                                                <img
+                                                    src={imageSrc}
+                                                    alt="Uploaded"
+                                                    className="image__preview"
+                                                />
+                                            )}
+                                            {!imageSrc && (
+                                                <button className="add__photo">
+                                                    <IonIcon icon={add} size="large" />
+                                                </button> 
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-                    ))
-                })
-            )}
+                            </form>
+                        );
+                    });
+                }
+            ))}
+            <IonButton expand="block" color="dark" onClick={handleGoToReview}>
+                Continue to Review
+            </IonButton>
         </>
     );
 }
