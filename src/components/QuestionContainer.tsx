@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { IonIcon, IonLabel, IonButton } from '@ionic/react';
+import { useForm, SubmitHandler, set } from 'react-hook-form';
+import { IonIcon, IonLabel, IonButton, IonAlert } from '@ionic/react';
 import { AccordionContainer } from './AccordionContainer';
 import { oneDrive, twoDrive } from '../assets/data/aotsfees';
 import CameraComponent from './Camera/CameraComponent';
@@ -24,6 +24,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
     const [isCameraActive, setIsCameraActive] = useState(false);
     const [cameraKey, setCameraKey] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number | null>(null);
+    const [missingImageIndex, setMissingImageIndex] = useState<number | null>(null);
 
     const history = useHistory();
 
@@ -77,7 +78,18 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
     };
 
     const handleGoToReview = () => {
-        history.push('/review');
+        // Check for missing images
+        const missingIndex = selectedDriveThru.findIndex(item => 
+            item.questions.some((question, qIndex) => 
+                !selectedImages[`question_${qIndex}`] && !images[`question_${qIndex}`]
+            )   
+        );
+
+        if (missingIndex !== -1 ) {
+            setMissingImageIndex(missingIndex);
+        } else {
+            history.push('/review');
+        }
     };
     
     return (
@@ -94,6 +106,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                     return item.questions.map((question, qIndex) => {
                         const questionId = `question_${qIndex}`;
                         const imageSrc = selectedImages[questionId] || images[questionId];
+                        const isMissingImage = missingImageIndex === index && !imageSrc;
                         return (
                             <form onSubmit={handleSubmit(onSubmit)} key={`form_${index}_${qIndex}`}>
                                 <div key={`label_${index}_${qIndex}`}>
@@ -115,7 +128,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                                             </ol>
                                         )}
                                         <AccordionContainer question={question} />
-                                        <div className="file__upload" onClick={() => handleOpenCamera(qIndex)}>
+                                        <div className={`file__upload ${isMissingImage ? 'missing__image' : ''}`} onClick={() => handleOpenCamera(qIndex)}>
                                             {imageSrc && (
                                                 <img
                                                     src={imageSrc}
