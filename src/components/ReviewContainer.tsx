@@ -29,7 +29,7 @@ export const ReviewContainer = ({}) => {
 
     const handleDownload = async () => {
         const pdf = new jsPDF();
-        const tableColumn = ["Question", "Description", "Image"];
+        const tableColumn = ["Question", "Image"];
         const tableRows: any[] = [];
 
         const loadImage = async (src: string) => {
@@ -62,45 +62,132 @@ export const ReviewContainer = ({}) => {
             }
         }
 
-        pdf.setFontSize(16);
-        pdf.text("AOTS Fees Survey", 105, 15, { align: 'center' });
+        autoTable(pdf, {
+            body: [
+                [
+                    {
+                        content: 'SDI',
+                        styles: {
+                            halign: 'left',
+                            fontSize: 20,
+                            textColor: '#ffffff',
+                        }
+                    },
+                    {
+                        content: 'AOTS Fees Survey',
+                        styles: {
+                            halign: 'right',
+                            fontSize: 20,
+                            textColor: '#ffffff',
+                        }
+                    }
+                ]
+            ],
+            theme: 'plain',
+            styles: {
+                fillColor: '#2C2686',
+            }
+        });
+
+        autoTable(pdf, {
+            body: [
+                [
+                    {
+                        content: 'Reference: #AFS0001'
+                        +'\nDate: 2020-03-12'
+                        +'\nSurvey number: 123456789',
+                        styles: {
+                            halign: 'right'
+                        }
+                    }
+                ],
+            ],
+            theme: 'plain',
+        });
+
+        autoTable(pdf, {
+            body: [
+                [
+                    {
+                        content: 'Submitted by:'
+                        +'\n<NAME>'
+                        +'\n<EMAIL>'
+                        +'\n07987654321',
+                        styles: {
+                            halign: 'left'
+                        }
+                    },
+                    {
+                        content: 'Store Number:'
+                        +'\n123456789'
+                    },
+                    {
+                        content: 'From:'
+                        +'\nMid-America Point Of Sale'
+                        +'\n15 N Adams St'
+                        +'\nHutchinson, Kansas 67501'
+                        +'\nUnited States',
+                        styles: {
+                            halign: 'right'
+                        }
+                    }
+                ],
+            ],
+            theme: 'plain',
+        });
+
+        autoTable(pdf, {
+            body: [
+                [
+                    {
+                        content: 'Products & Services',
+                        styles: {
+                            halign: 'left',
+                            fontSize: 14
+                        }
+                    }
+                ],
+            ],
+            theme: 'plain',
+        });
 
         autoTable(pdf, {
             head: [tableColumn],
-            body: tableRows.map(row => [row.questionTitle, row.questionDesc]),
-            startY: 25,
+            body: tableRows.map(row => [
+                row.questionTitle 
+                + '\n' + row.questionDesc
+            ]),
+            startY: 100,
             didDrawCell: (data) => {
-                if (data.section === 'body' && data.column.index === 2) {
+                if (data.section === 'body' && data.column.index === 1) {
                     const row = tableRows[data.row.index];
                     if (row.imageData) {
-                        const imageX = data.cell.x + data.cell.width / 2 - 18.5;
-                        const imageY = data.cell.y + 2;
-                        const imageDim = Math.min(data.cell.width, data.cell.height) - 6 + Math.max(data.cell.width, data.cell.height) - 6;
+                        const imageX = data.cell.x + data.cell.width / 2 - 1.5;
+                        const imageY = data.cell.y + data.cell.height / 2 - 10.5;
+                        const imageDim = Math.min(data.cell.width, data.cell.height) - 90 + Math.max(data.cell.width, data.cell.height) - 20;
                         pdf.addImage(row.imageData, 'JPEG', imageX, imageY, imageDim, imageDim);
                     }
                 }
             },
             headStyles: {
-                fontStyle: 'bold',
-                textColor: [0, 0, 0],
-                halign: 'center',
-                valign:'middle',
-                minCellHeight: 4,
-                lineColor: [0, 0, 0],
-                lineWidth: 0.1,
-                fillColor: [255, 255, 255]
+                fillColor: '#343a40',
+                minCellHeight: 0,
             },
             columnStyles: {
                 0: { 
-                    cellWidth: 70
+                    cellWidth: 80,
+                    cellPadding: 10,
+                    minCellHeight: 20,
                 },
                 1: { 
-                    cellWidth: 70
-                },
-                2: { 
-                    cellWidth: 'auto'
+                    cellWidth: 'auto',
+                    cellPadding: 10,
+                    minCellHeight: 20,
                 },
             },
+            styles: {
+                minCellHeight: 20,
+            }
         });
 
         pdf.save('aotsfees.pdf');
