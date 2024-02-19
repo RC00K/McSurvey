@@ -1,4 +1,4 @@
-@import url('../../theme/variables.css');
+@import url('../theme/variables.css');
 
 .card__container {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -62,4 +62,57 @@
     .card__container {
         width: calc(25% - 20px);
     }
+}
+
+.survey__card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: var(--ion-color-light);
+}
+
+.survey__card:not(:first-child) {
+    margin-top: 2rem;
+}
+
+.survey__card__title {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+}
+
+.survey__card__title ion-icon {
+    border-radius: 500px;
+    padding: 0.2rem;
+    margin-right: 0.75rem;
+    margin-top: -0.2rem;
+}
+
+.survey__title h3 {
+    font-size: 1.3rem !important;
+    font-weight: 600;
+}
+
+.survey__completion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    margin-top: 0.5rem;
+}
+
+.survey__details {
+    display: flex;
+    align-items: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.survey__details ion-icon {
+    font-size: 1.2rem;
+    margin-right: 0.3rem;
 }

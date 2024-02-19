@@ -14,6 +14,8 @@ export const ReviewContainer = ({}) => {
 
     const storedImages = images || JSON.parse(localStorage.getItem('reviewImages') || '{}');
 
+    const { storeNumber } = useReview();
+
     const handleSubmit = () => {
         const pdf = new jsPDF();
         Object.entries(storedImages).forEach(([questionId, imageSrc], index) => {
@@ -119,7 +121,7 @@ export const ReviewContainer = ({}) => {
                     },
                     {
                         content: 'Store Number:'
-                        +'\n123456789'
+                        +'\n' + storeNumber,
                     },
                     {
                         content: 'From:'

@@ -5,9 +5,11 @@ interface ReviewContextType {
     userInput: Record<string, string>;
     images: Record<string, string>;
     driveThruSelection: string;
+    storeNumber: string;
     setDriveThruSelection: (selection: string) => void;
     addUserInput: (questionId: string, answer: string) => void;
     addImage: (questionId: string, image: string) => void;
+    setStoreNumber: (storeNumber: string) => void;
 }
 
 const ReviewContext = createContext<ReviewContextType | undefined>(undefined);
@@ -24,10 +26,15 @@ export const useReview = () => {
     return context;
 };
 
+export const setStoreNumber = (storeNumber: string) => {
+    return storeNumber;
+}
+
 export const ReviewProvider: React.FC<ReviewProviderProps> = ({ children }) => {
     const [userInput, setUserInput] = useState<Record<string, string>>({});
     const [images, setImages] = useState<Record<string, string>>({});
     const [driveThruSelection, setDriveThruSelection] = useState('');
+    const [storeNumber, setStoreNumber] = useState('');
 
     const addUserInput = (questionId: string, answer: string) => {
         setUserInput((prevInput) => ({
@@ -44,7 +51,7 @@ export const ReviewProvider: React.FC<ReviewProviderProps> = ({ children }) => {
     }, [setImages]);
 
     return (
-        <ReviewContext.Provider value={{ userInput, images, driveThruSelection, setDriveThruSelection, addUserInput, addImage }}>
+        <ReviewContext.Provider value={{ userInput, images, driveThruSelection, setDriveThruSelection, addUserInput, addImage, storeNumber, setStoreNumber }}>
             {children}
         </ReviewContext.Provider>
     );

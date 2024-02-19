@@ -1,12 +1,11 @@
-import { IonContent, IonPage, IonAlert, IonButtons, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonBackButton } from '@ionic/react';
+import { IonContent, IonPage, IonAlert, IonButtons, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonBackButton, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
 import { QuestionContainer } from '../components/QuestionContainer';
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { ReviewProvider } from '../components/Review/ReviewContext';
 import { useReview } from '../components/Review/ReviewContext';
-
-import styles from './Survey.module.css';
+import './Survey.css';
 
 const Survey: React.FC = () => {
     const { selected } = useParams<{ selected: string }>();
@@ -32,9 +31,9 @@ const Survey: React.FC = () => {
     };
 
     return (
-        <IonPage className={styles.surveyPage}>
+        <IonPage>
             <IonHeader>
-            <IonToolbar>
+                <IonToolbar>
                     <IonButtons slot="start">
                         <IonButton color="dark" onClick={handleExitSurvey}>
                             <IonIcon color="dark" icon={arrowBack} />
@@ -60,7 +59,15 @@ const Survey: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <QuestionContainer driveThruSelection={driveThruSelection} />
+                <IonGrid className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
+                    <IonRow>
+                        <IonCol size="12">
+                            <QuestionContainer 
+                                driveThruSelection={driveThruSelection}
+                            />
+                        </IonCol>
+                    </IonRow>
+                </IonGrid>
             </IonContent>
         </IonPage>
     );

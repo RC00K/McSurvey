@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { useForm, SubmitHandler, set } from 'react-hook-form';
-import { IonIcon, IonLabel, IonButton, IonAlert } from '@ionic/react';
+import { IonIcon, IonLabel, IonButton, IonAlert, IonInput } from '@ionic/react';
 import { AccordionContainer } from './AccordionContainer';
 import { oneDrive, twoDrive } from '../assets/data/aotsfees';
 import CameraComponent from './Camera/CameraComponent';
 import { add } from 'ionicons/icons';
 import './QuestionContainer.css';
-import { useReview } from './Review/ReviewContext';
+import { useReview, setStoreNumber } from './Review/ReviewContext';
 
 interface FormData {
     question: string;
@@ -25,6 +25,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
     const [cameraKey, setCameraKey] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number | null>(null);
     const [missingImageIndex, setMissingImageIndex] = useState<number | null>(null);
+    const [storeNumber, setStoreNumber] = useState('');    
 
     const history = useHistory();
 
@@ -102,53 +103,63 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                     onImageSave={handleImageSave}
                 />
             ) : (
-                selectedDriveThru.map((item, index) => {
-                    return item.questions.map((question, qIndex) => {
-                        const questionId = `question_${qIndex}`;
-                        const imageSrc = selectedImages[questionId] || images[questionId];
-                        const isMissingImage = missingImageIndex === index && !imageSrc;
-                        return (
-                            <form onSubmit={handleSubmit(onSubmit)} key={`form_${index}_${qIndex}`}>
-                                <div key={`label_${index}_${qIndex}`}>
-                                    <IonLabel>
-                                        <h2>{question.questionTitle}</h2>
-                                        <p>{question.questionDesc}</p>
-                                    </IonLabel>
-                                    <div>
-                                        <div key={`question_${index}`}>
-                                            <p>{question.question}</p>
-                                        </div>
-                                        {question.questionHints && question.questionHints.length > 0 && (
-                                            <ol>
-                                                {question.questionHints.map((hint, hintIndex) => (
-                                                    <li key={`hint_${hintIndex}`}>
-                                                        {hint.hint}
-                                                    </li>
-                                                ))}
-                                            </ol>
-                                        )}
-                                        <AccordionContainer question={question} />
-                                        <div className={`file__upload ${isMissingImage ? 'missing__image' : ''}`} onClick={() => handleOpenCamera(qIndex)}>
-                                            {imageSrc && (
-                                                <img
-                                                    src={imageSrc}
-                                                    alt="Uploaded"
-                                                    className="image__preview"
-                                                />
+                <>
+                    <IonInput
+                        value={storeNumber}
+                        placeholder="Enter Store Number"
+                        onIonChange={(e) => {
+                            setStoreNumber(e.detail.value!)
+                            setStoreNumber(e.detail.value!)
+                        }}
+                    />
+                    {selectedDriveThru.map((item, index) => {
+                        return item.questions.map((question, qIndex) => {
+                            const questionId = `question_${qIndex}`;
+                            const imageSrc = selectedImages[questionId] || images[questionId];
+                            const isMissingImage = missingImageIndex === index && !imageSrc;
+                            return (
+                                <form onSubmit={handleSubmit(onSubmit)} key={`form_${index}_${qIndex}`}>
+                                    <div key={`label_${index}_${qIndex}`}>
+                                        <IonLabel>
+                                            <h2>{question.questionTitle}</h2>
+                                            <p>{question.questionDesc}</p>
+                                        </IonLabel>
+                                        <div>
+                                            <div key={`question_${index}`}>
+                                                <p>{question.question}</p>
+                                            </div>
+                                            {question.questionHints && question.questionHints.length > 0 && (
+                                                <ol>
+                                                    {question.questionHints.map((hint, hintIndex) => (
+                                                        <li key={`hint_${hintIndex}`}>
+                                                            {hint.hint}
+                                                        </li>
+                                                    ))}
+                                                </ol>
                                             )}
-                                            {!imageSrc && (
-                                                <button className="add__photo">
-                                                    <IonIcon icon={add} size="large" />
-                                                </button> 
-                                            )}
+                                            <AccordionContainer question={question} />
+                                            <div className={`file__upload ${isMissingImage ? 'missing__image' : ''}`} onClick={() => handleOpenCamera(qIndex)}>
+                                                {imageSrc && (
+                                                    <img
+                                                        src={imageSrc}
+                                                        alt="Uploaded"
+                                                        className="image__preview"
+                                                    />
+                                                )}
+                                                {!imageSrc && (
+                                                    <button className="add__photo">
+                                                        <IonIcon icon={add} size="large" />
+                                                    </button> 
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
-                        );
-                    });
-                }
-            ))}
+                                </form>
+                            );
+                        })}
+                    )}
+                </>  
+            )}
             <IonButton expand="block" color="dark" onClick={handleGoToReview}>
                 Continue to Review
             </IonButton>
