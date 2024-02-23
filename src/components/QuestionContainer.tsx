@@ -4,10 +4,10 @@ import { useForm, SubmitHandler, set } from 'react-hook-form';
 import { IonIcon, IonLabel, IonButton, IonAlert, IonInput } from '@ionic/react';
 import { AccordionContainer } from './AccordionContainer';
 import { oneDrive, twoDrive } from '../assets/data/aotsfees';
-import CameraComponent from './Camera/CameraComponent';
+import CameraContainer from './Camera/CameraContainer';
 import { add } from 'ionicons/icons';
 import './QuestionContainer.css';
-import { useReview, setStoreNumber } from './Review/ReviewContext';
+import { useReview } from './Review/ReviewContext';
 
 interface FormData {
     question: string;
@@ -25,7 +25,7 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
     const [cameraKey, setCameraKey] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number | null>(null);
     const [missingImageIndex, setMissingImageIndex] = useState<number | null>(null);
-    const [storeNumber, setStoreNumber] = useState('');    
+    const { storeNumber, setStoreNumber } = useReview();
 
     const history = useHistory();
 
@@ -58,10 +58,12 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
     useEffect(() => {
         // Load images from local storage on component mount
         const storedImages = JSON.parse(localStorage.getItem('reviewImages') || '{}');
+        const storedStoreNumber = sessionStorage.getItem('storeNumber') || '';
         Object.entries(storedImages).forEach(([questionId, image]) => {
             addImage(questionId, image as string);
         });
-    }, [addImage]);
+        setStoreNumber(storedStoreNumber);
+    }, [addImage, setStoreNumber]);
 
     const handleImageSave = (savedImage: string) => {
         if (currentQuestionIndex !== null) {
@@ -92,14 +94,28 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
             history.push('/review');
         }
     };
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            localStorage.setItem('reviewImages', JSON.stringify(selectedImages));
+            sessionStorage.setItem('storeNumber', storeNumber);
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [images, storeNumber]);
     
     return (
         <>
             {isCameraActive ? (
-                <CameraComponent 
+                <CameraContainer 
                     isCameraActive={isCameraActive}
                     key={cameraKey}
                     handleCloseCamera={handleCloseCamera}
+                    onImageCaptured={handleImageSave}
                     onImageSave={handleImageSave}
                 />
             ) : (
@@ -108,7 +124,6 @@ export const QuestionContainer = ({ driveThruSelection }: { driveThruSelection: 
                         value={storeNumber}
                         placeholder="Enter Store Number"
                         onIonChange={(e) => {
-                            setStoreNumber(e.detail.value!)
                             setStoreNumber(e.detail.value!)
                         }}
                     />

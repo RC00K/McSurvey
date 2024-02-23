@@ -1,6 +1,6 @@
 @import url('../../theme/variables.css');
 
-ion-content {
+.camera__content {
     --background: transparent !important;
 }
 

@@ -4,7 +4,7 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Survey from './pages/Survey';
-import CameraComponent from './components/Camera/CameraComponent';
+import CameraComponent from './components/Camera/CameraContainer';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -26,6 +26,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import Review from './pages/Review';
 import { ReviewProvider } from './components/Review/ReviewContext';
+import { CameraProvider } from './components/Camera/CameraContext';
 
 setupIonicReact();
 
@@ -40,9 +41,11 @@ const App: React.FC = () => (
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
-          <Route exact path="/survey/:selected">
-            <Survey />
-          </Route>
+          <CameraProvider>
+            <Route exact path="/survey/:selected">
+              <Survey />
+            </Route>
+          </CameraProvider>
           <Route exact path="/review">
             <Review />
           </Route>

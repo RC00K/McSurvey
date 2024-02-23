@@ -12,6 +12,7 @@ const Survey: React.FC = () => {
     const driveThruSelection = selected === '0' ? '1' : '2';
     const [showExitAlert, setShowExitAlert] = useState(false);
     const history = useHistory();
+    const { reset } = useReview();
 
     const { setDriveThruSelection } = useReview();
 
@@ -23,9 +24,20 @@ const Survey: React.FC = () => {
         setShowExitAlert(true);
     };
 
+    useEffect(() => {
+        // Set flag when the survey is started
+        sessionStorage.setItem('inSurvey', 'true');
+    }, []);
+
+    useEffect(() => {
+        reset();
+    }, [reset]);
+
     const confirmExit = () => {
-        // Clear local storage
-        localStorage.clear();
+        // Set flag when the survey is ended
+        sessionStorage.setItem('inSurvey', 'false');
+        // Reset the review context
+        reset();
         // Navigate back to home
         history.push('/');
     };
@@ -58,16 +70,10 @@ const Survey: React.FC = () => {
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
-            <IonContent fullscreen>
-                <IonGrid className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
-                    <IonRow>
-                        <IonCol size="12">
-                            <QuestionContainer 
-                                driveThruSelection={driveThruSelection}
-                            />
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
+            <IonContent fullscreen className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
+                <QuestionContainer 
+                    driveThruSelection={driveThruSelection}
+                />
             </IonContent>
         </IonPage>
     );

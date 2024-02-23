@@ -3,7 +3,7 @@ import { useReview } from '../components/Review/ReviewContext';
 import { ReviewProvider } from '../components/Review/ReviewContext';
 import { useParams, useHistory } from'react-router';
 import { oneDrive, twoDrive } from '../assets/data/aotsfees';
-import { IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonThumbnail, IonItem, IonLabel } from '@ionic/react';
+import { IonList, IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonThumbnail, IonItem, IonLabel, IonNote, IonGrid, IonRow, IonCol } from '@ionic/react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -15,20 +15,7 @@ export const ReviewContainer = ({}) => {
     const storedImages = images || JSON.parse(localStorage.getItem('reviewImages') || '{}');
 
     const { storeNumber } = useReview();
-
-    const handleSubmit = () => {
-        const pdf = new jsPDF();
-        Object.entries(storedImages).forEach(([questionId, imageSrc], index) => {
-            pdf.addImage(imageSrc, 'JPEG', 0, 0, 210, 297);
-            
-            if (index < Object.entries(storedImages).length - 1) {
-                pdf.addPage();
-            }
-        });
-
-        pdf.save('aotsfees.pdf');
-    }
-
+    
     const handleDownload = async () => {
         const pdf = new jsPDF();
         const tableColumn = ["Question", "Image"];
@@ -204,19 +191,25 @@ export const ReviewContainer = ({}) => {
 
                     if (imageSrc) {
                         return (
-                            <IonCard key={questionId}>
-                                <IonCardContent>
+                            <IonList key={questionId}>
+                                <IonItem lines="full">
                                     <IonItem lines="none">
-                                        <IonThumbnail slot="start">
-                                            <img src={imageSrc} alt={`Captured image for ${question.questionTitle}`} />
-                                        </IonThumbnail>
-                                        <IonLabel>
-                                            <h2>{question.questionTitle}</h2>
-                                            <p>{question.questionDesc}</p>
-                                        </IonLabel>
+                                        <IonGrid>
+                                            <IonRow>
+                                                <IonCol>
+                                                    <IonThumbnail>
+                                                        <img src={imageSrc} alt={`Captured image for ${question.questionTitle}`} />
+                                                    </IonThumbnail>
+                                                </IonCol>
+                                            </IonRow>
+                                        </IonGrid>
                                     </IonItem>
-                                </IonCardContent>
-                            </IonCard>
+                                    <IonLabel>
+                                        <h2>{question.questionTitle}</h2>
+                                        <p>{question.questionDesc}</p>
+                                    </IonLabel>
+                                </IonItem>
+                            </IonList>
                         );
                     }
                     return null;

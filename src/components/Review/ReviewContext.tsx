@@ -1,4 +1,5 @@
-import React, { useCallback, createContext, useContext, useState, ReactNode } from 'react';
+import { add } from 'ionicons/icons';
+import React, { useCallback, createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { set } from 'react-hook-form';
 
 interface ReviewContextType {
@@ -10,6 +11,7 @@ interface ReviewContextType {
     addUserInput: (questionId: string, answer: string) => void;
     addImage: (questionId: string, image: string) => void;
     setStoreNumber: (storeNumber: string) => void;
+    reset: () => void;
 }
 
 const ReviewContext = createContext<ReviewContextType | undefined>(undefined);
@@ -25,10 +27,6 @@ export const useReview = () => {
     }
     return context;
 };
-
-export const setStoreNumber = (storeNumber: string) => {
-    return storeNumber;
-}
 
 export const ReviewProvider: React.FC<ReviewProviderProps> = ({ children }) => {
     const [userInput, setUserInput] = useState<Record<string, string>>({});
@@ -50,8 +48,25 @@ export const ReviewProvider: React.FC<ReviewProviderProps> = ({ children }) => {
         }));
     }, [setImages]);
 
+    useEffect(() => {
+        const storedImages = JSON.parse(localStorage.getItem('capturedImage') || '{}');
+        const storedStoreNumber = sessionStorage.getItem('storeNumber') || '';
+
+        Object.entries(storedImages).forEach(([questionId, image]) => {
+            addImage(questionId, image as string);
+        });
+
+        setStoreNumber(storedStoreNumber);
+    }, [addImage]);
+
+    const reset = useCallback(() => {
+        setUserInput({});
+        setImages({});
+        setStoreNumber('');
+    }, []);
+
     return (
-        <ReviewContext.Provider value={{ userInput, images, driveThruSelection, setDriveThruSelection, addUserInput, addImage, storeNumber, setStoreNumber }}>
+        <ReviewContext.Provider value={{ userInput, images, driveThruSelection, setDriveThruSelection, addUserInput, addImage, storeNumber, setStoreNumber, reset }}>
             {children}
         </ReviewContext.Provider>
     );
