@@ -1,0 +1,118 @@
+@import url('../theme/variables.css');
+
+.card__container {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 10px;
+    border: 1px solid var(--ion-color-light-tint);
+}
+
+.card__container:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3);
+}
+
+.card__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card__header, .card__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.card__time, .card__content {
+    font-size: 14px;
+    color: var(--ion-color-medium-shade);
+}
+
+.card__content ion-icon {
+    margin-right: 5px;
+}
+
+@media (min-width: 768px) {
+    .card__container {
+        width: calc(33.333% - 20px);
+        margin: 10px;
+    }
+
+    .card__header, .card__content {
+        padding: 15px;
+    }
+
+    .card__time, .card__content {
+        font-size: 16px;
+    }
+
+    .card__content ion-icon {
+        margin-right: 10px;
+    }
+
+    .card__image {
+        height: 200px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .card__container {
+        width: calc(25% - 20px);
+    }
+}
+
+.survey__card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: var(--ion-color-light);
+}
+
+.survey__card:not(:first-child) {
+    margin-top: 2rem;
+}
+
+.survey__card__title {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+}
+
+.survey__card__title ion-icon {
+    border-radius: 500px;
+    padding: 0.2rem;
+    margin-right: 0.75rem;
+    margin-top: -0.2rem;
+}
+
+.survey__title h3 {
+    font-size: 1.3rem !important;
+    font-weight: 600;
+}
+
+.survey__completion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    margin-top: 0.5rem;
+}
+
+.survey__details {
+    display: flex;
+    align-items: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.survey__details ion-icon {
+    font-size: 1.2rem;
+    margin-right: 0.3rem;
+}

@@ -15,18 +15,18 @@ interface Question {
 
 export const AccordionContainer = ({ question }: { question: Question}) => {
     return (
-        <IonAccordionGroup>
+        <IonAccordionGroup className="accordion__container">
             <IonAccordion value={question.question}>
                 <IonItem slot="header">
                     <IonLabel>Examples</IonLabel>
                 </IonItem>
-                <IonList slot="content">
+                <div className="accordion__image__grid" slot="content">
                     {question.questionImages.map((image, imgIndex) => (
                         <IonItem key={`image_${imgIndex}`}>
                             <IonImg src={image.image} alt={image.imageAlt} />
                         </IonItem>
                     ))}
-                </IonList>
+                </div>
             </IonAccordion>
         </IonAccordionGroup>
     );
