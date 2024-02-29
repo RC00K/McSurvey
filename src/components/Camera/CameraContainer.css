@@ -1,7 +1,7 @@
 @import url('../../theme/variables.css');
 
 .camera__content {
-    --background: transparent !important;
+    background: transparent !important;
 }
 
 .camera__container {

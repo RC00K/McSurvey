@@ -11,6 +11,7 @@
     "test.unit": "vitest",
     "lint": "eslint"
   },
+  "proxy": "http://localhost:3001",
   "dependencies": {
     "@capacitor-community/camera-preview": "^5.0.0",
     "@capacitor/android": "next",
@@ -31,12 +32,15 @@
     "ionicons": "^7.0.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
+    "jszip": "^3.10.1",
     "nodemailer": "^6.9.10",
     "nodemailer-react": "^1.0.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.0",
+    "react-progressbar": "^15.4.1",
+    "react-progressbar.js": "^0.2.0",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4"
   },
