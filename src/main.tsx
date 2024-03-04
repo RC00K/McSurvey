@@ -1,6 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import { IonIcon } from '@ionic/react';
+import { gridOutline, pieChartOutline, personOutline, logOutOutline } from 'ionicons/icons';
+import Icon from './assets/images/icon.png';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
