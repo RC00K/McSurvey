@@ -13,30 +13,54 @@ const Home: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>McSurvey</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonGrid className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
-          <IonRow>
-            <IonCol size="12">
-              <IonText color="dark">
-                <p className="title">Available Surveys</p>
-              </IonText>
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol size="12">
-              <CardContainer onCardClick={handleCardClick} />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
+    <>
+      <section>
+        <div className="home__header">
+          <h1>McSurvey</h1>
+        </div>
+        <div className="home__body">
+          <div className="home__content">
+            <div className="container">
+              <div className="container__title">
+                <h3>Available Surveys</h3>
+              </div>
+              <div className="grid">
+                <div className="row">
+                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <CardContainer onCardClick={handleCardClick} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} />
-      </IonContent>
-    </IonPage>
+      </section>
+    </>
+    // <IonPage>
+    //   <IonHeader>
+    //     <IonToolbar>
+    //       <IonTitle>McSurvey</IonTitle>
+    //     </IonToolbar>
+    //   </IonHeader>
+    //   <IonContent fullscreen>
+    //     <IonGrid className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
+    //       <IonRow>
+    //         <IonCol size="12">
+    //           <IonText color="dark">
+    //             <p className="title">Available Surveys</p>
+    //           </IonText>
+    //         </IonCol>
+    //       </IonRow>
+    //       <IonRow>
+    //         <IonCol size="12">
+    //           <CardContainer onCardClick={handleCardClick} />
+    //         </IonCol>
+    //       </IonRow>
+    //     </IonGrid>
+    //     <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} />
+    //   </IonContent>
+    // </IonPage>
   );
 };
 

@@ -1,5 +1,14 @@
 @import url('../theme/variables.css');
 
+.question__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+    background-color: var(--ion-color-light);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .file__upload {
     position: relative;
     border: 2px dashed var(--ion-color-medium);

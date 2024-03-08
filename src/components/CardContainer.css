@@ -1,6 +1,6 @@
 @import url('../theme/variables.css');
 
-.card__container {
+/* .card__container {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     border-radius: 10px;
@@ -115,4 +115,50 @@
 .survey__details ion-icon {
     font-size: 1.2rem;
     margin-right: 0.3rem;
+} */
+
+.survey__card {
+    background-color: var(--ion-color-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px var(--ion-color-light);
+    padding: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.survey__card:hover {
+    box-shadow: 0 5px 15px var(--ion-color-light);
+}
+
+.survey__card__title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.survey__card__title ion-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: var(--ion-color-dark);
+}
+
+.survey__title h3 {
+    margin-bottom: 10px;
+    color: var(--ion-color-dark);
+}
+
+.survey__completion {
+    display: flex;
+    justify-content: space-between;
+}
+
+.survey__details {
+    display: flex;
+    align-items: center;
+}
+
+.survey__details ion-icon {
+    font-size: 1.2rem;
+    margin-right: 5px;
 }
