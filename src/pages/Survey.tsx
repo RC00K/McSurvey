@@ -13,8 +13,9 @@ const Survey: React.FC = () => {
     const [showExitAlert, setShowExitAlert] = useState(false);
     const history = useHistory();
     const { reset } = useReview();
-
     const { setDriveThruSelection } = useReview();
+
+    const [isSurveyComplete, setIsSurveyComplete] = useState(false);
 
     useEffect(() => {
         setDriveThruSelection(driveThruSelection);
@@ -42,39 +43,63 @@ const Survey: React.FC = () => {
         history.push('/');
     };
 
+    // Popstate
+    const handlePopstate = (event: PopStateEvent) => {
+        console.log('Popstate event', event);
+        // If the survey is in progress, show the alert
+        if (sessionStorage.getItem('inSurvey') === 'true') {
+            event.preventDefault();
+            setShowExitAlert(true);
+        };
+    };
+
+    useEffect(() => {
+        window.addEventListener('popstate', handlePopstate);
+        return () => {
+            window.removeEventListener('popstate', handlePopstate);
+        };
+    }, [handlePopstate]);
+
+    const handleGoToReview = () => {
+        history.push('/review');
+    };
+
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonButton color="dark" onClick={handleExitSurvey}>
-                            <IonIcon color="dark" icon={arrowBack} />
-                        </IonButton>
-                        <IonAlert
-                            isOpen={showExitAlert}
-                            onDidDismiss={() => setShowExitAlert(false)}
-                            header={'Confirm Exit'}
-                            message={'Are you sure you want to exit the survey? All progress will be lost.'}
-                            buttons={[
-                                {
-                                    text: 'Cancel',
-                                    role: 'cancel',
-                                    handler: () => setShowExitAlert(false)
-                                },
-                                {
-                                    text: 'Exit',
-                                    handler: confirmExit
-                                }
-                            ]}
-                        />
-                    </IonButtons>
-                </IonToolbar>
-            </IonHeader>
+            {showExitAlert && (
+                <IonAlert
+                    isOpen={showExitAlert}
+                    onDidDismiss={() => setShowExitAlert(false)}
+                    header={'Confirm Exit'}
+                    message={'Are you sure you want to exit the survey? All progress will be lost.'}
+                    buttons={[
+                        {
+                            text: 'Cancel',
+                            role: 'cancel',
+                            handler: () => {
+                                setShowExitAlert(false);
+                            }
+                        },
+                        {
+                            text: 'Exit',
+                            cssClass: 'secondary',
+                            handler: () => {
+                                confirmExit();
+                            }
+                        }
+                    ]}
+                />
+            )}
             <IonContent fullscreen className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
                 <QuestionContainer 
                     driveThruSelection={driveThruSelection}
+                    isSurveyComplete={isSurveyComplete}
+                    setIsSurveyComplete={setIsSurveyComplete}
                 />
             </IonContent>
+            <button className="floating__button" onClick={handleGoToReview} disabled={isSurveyComplete}>
+                Continue to Review
+            </button>
         </IonPage>
     );
 }

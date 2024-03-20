@@ -1,0 +1,45 @@
+:root {
+    --ion-background-color: #ffffff;
+    --ion-tab-bar-color: white;
+    --ion-tab-bar-color-selected: var(--ion-color-primary);
+    --ion-tab-bar-color: rgb(59, 59, 59);
+}
+
+.floating__button {
+    background: var(--ion-color-dark);
+    color: var(--ion-color-light);
+    box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.2);
+    border-radius: 50px !important;
+    height: 50px;
+    width: 90%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    bottom: 20px;
+    position: relative;
+    margin: 0 auto !important;
+    border-top: none;
+}
+
+/* Desktop */
+
+@media (min-width: 768px) {
+    .floating__button {
+        width: 45%;
+    }
+}
+
+/* Tablet */
+
+@media (min-width: 425px) and (max-width: 767px) {
+    .floating__button {
+        width: 90%;
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 424px) {
+    .floating__button {
+        width: 80%;
+    }
+}

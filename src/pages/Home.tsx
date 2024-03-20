@@ -15,9 +15,6 @@ const Home: React.FC = () => {
   return (
     <>
       <section>
-        <div className="home__header">
-          <h1>McSurvey</h1>
-        </div>
         <div className="home__body">
           <div className="home__content">
             <div className="container">

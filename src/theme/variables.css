@@ -147,6 +147,16 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-light-tint: #383a3e;
   }
 
+  body.camera__active {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
+
+  ion-content.camera__active {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
+
   /*
    * iOS Dark Theme
    * -------------------------------------------
@@ -190,7 +200,16 @@ http://ionicframework.com/docs/theming/ */
     --ion-toolbar-border-color: var(--ion-color-step-250);
   }
 
+  .ios body.camera__active {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
 
+  .ios ion-content.camera__active {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
+  
   /*
    * Material Design Dark Theme
    * -------------------------------------------
@@ -232,6 +251,16 @@ http://ionicframework.com/docs/theming/ */
     --ion-tab-bar-background: #1f1f1f;
 
     --ion-card-background: #1e1e1e;
+  }
+
+  .md body.camera__active {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
+
+  .md ion-content.camera__active {
+    --background: transparent;
+    --ion-background-color: transparent;
   }
 }
 

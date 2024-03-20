@@ -9,6 +9,9 @@ const Review: React.FC = () => {
             <IonContent className="ion-padding">
                 <ReviewContainer />
             </IonContent>
+            <button className="floating__button">
+                Submit
+            </button>
         </IonPage>
     );
 }
