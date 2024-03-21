@@ -15,17 +15,13 @@ import CameraContainer from "./Camera/CameraContainer";
 import { add } from "ionicons/icons";
 import "./QuestionContainer.css";
 import { useReview } from "./Review/ReviewContext";
-import { UserPhoto, usePhotoGallery } from "../hooks/usePhotoGallery";
+import { usePhotoGallery } from "../hooks/usePhotoGallery";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import "../theme/floating-button.css";
 
 interface FormData {
   question: string;
-}
-
-interface SelectedImages {
-  [key: string]: string;
 }
 
 interface QuestionContainerProps {
@@ -35,9 +31,10 @@ interface QuestionContainerProps {
 }
 
 export const QuestionContainer = ({ driveThruSelection, isSurveyComplete, setIsSurveyComplete }: QuestionContainerProps) => {
+  const { photos, selectedImages, takePhoto } = usePhotoGallery();
+
     const selectedDriveThru = driveThruSelection === '1' ? oneDrive : twoDrive;
     const { register, handleSubmit, formState: { isValid } } = useForm<FormData>();
-    const [selectedImages, setSelectedImages] = useState<SelectedImages>({});
     const [isCameraActive, setIsCameraActive] = useState(false);
     const [cameraKey, setCameraKey] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number | null>(null);
@@ -46,17 +43,18 @@ export const QuestionContainer = ({ driveThruSelection, isSurveyComplete, setIsS
 
     const history = useHistory();
 
-    useEffect(() => {
-        // Check local storage for the image
-        const storedImage = localStorage.getItem('capturedImage');
-        if (storedImage && currentQuestionIndex !== null) {
-            setSelectedImages(prevImages => ({
-                ...prevImages, 
-                [currentQuestionIndex]: storedImage,
-            }));
-            localStorage.removeItem('capturedImage');
-        }
-    }, [currentQuestionIndex]);
+    // useEffect(() => {
+    //     // Check local storage for the image
+    //     const storedImage = localStorage.getItem('capturedImage');
+    //     if (storedImage && currentQuestionIndex !== null) {
+    //         setSelectedImages(prevImages => ({
+    //             ...prevImages, 
+    //             [currentQuestionIndex]: storedImage,
+    //         }));
+    //         localStorage.removeItem('capturedImage');
+    //     }
+    // }, [currentQuestionIndex]);
+    
     const handleOpenCamera = (questionIndex: number) => {
         setCurrentQuestionIndex(questionIndex);
         setIsCameraActive(true);
@@ -134,7 +132,7 @@ export const QuestionContainer = ({ driveThruSelection, isSurveyComplete, setIsS
           {selectedDriveThru.map((item, index) => {
             return item.questions.map((question, qIndex) => {
               const questionId = `question_${qIndex}`;
-              const imageSrc = selectedImages[questionId] || images[questionId];
+              const imageSrc = selectedImages[questionId];
               const isMissingImage = missingImageIndex === index && !imageSrc;
               return (
                 <form
@@ -159,7 +157,7 @@ export const QuestionContainer = ({ driveThruSelection, isSurveyComplete, setIsS
                           </ol>
                         )}
                       <AccordionContainer question={question} />
-                      <div className={`file__upload ${isMissingImage ? 'missing__image' : ''}`} onClick={() => handleOpenCamera(qIndex)}>
+                      <div className={`file__upload ${isMissingImage ? 'missing__image' : ''}`} onClick={() => takePhoto(qIndex)}>
                           {imageSrc && (
                               <img
                                   src={imageSrc}
@@ -173,6 +171,11 @@ export const QuestionContainer = ({ driveThruSelection, isSurveyComplete, setIsS
                               </button> 
                           )}
                       </div>
+                      {photos.map((photo, index) => (
+                        <div className="photo__container" key={photo.filepath}>
+                            <img src={photo.webviewPath} alt="Uploaded" className="image__preview" />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </form>
