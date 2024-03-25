@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { ReviewProvider } from '../components/Review/ReviewContext';
 import { useReview } from '../components/Review/ReviewContext';
-import { usePhotoGallery } from '../hooks/usePhotoGallery';
 import './Survey.css';
 
 const Survey: React.FC = () => {
@@ -16,7 +15,7 @@ const Survey: React.FC = () => {
     const { reset } = useReview();
     const { setDriveThruSelection } = useReview();
     const [isSurveyComplete, setIsSurveyComplete] = useState(false);
-    const { photos, selectedImages, takePhoto } = usePhotoGallery();
+    const [readyForReview, setReadyForReview] = useState(false);
 
     useEffect(() => {
         setDriveThruSelection(driveThruSelection);
@@ -61,6 +60,10 @@ const Survey: React.FC = () => {
         };
     }, [handlePopstate]);
 
+    const handleReadyForReviewChange = (isReady: boolean) => {
+        setReadyForReview(isReady);
+    };
+
     const handleGoToReview = () => {
         history.push('/review');
     };
@@ -94,13 +97,10 @@ const Survey: React.FC = () => {
             <IonContent fullscreen className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
                 <QuestionContainer 
                     driveThruSelection={driveThruSelection}
-                    selectedImages={selectedImages}
-                    takePhoto={takePhoto}
-                    isSurveyComplete={isSurveyComplete}
-                    setIsSurveyComplete={setIsSurveyComplete}
+                    onReadyForReviewChange={handleReadyForReviewChange}
                 />
             </IonContent>
-            <button className="floating__button" onClick={handleGoToReview} disabled={isSurveyComplete}>
+            <button className="floating__button" onClick={handleGoToReview} disabled={!readyForReview}>
                 Continue to Review
             </button>
         </IonPage>

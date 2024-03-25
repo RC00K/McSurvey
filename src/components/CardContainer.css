@@ -120,6 +120,7 @@
 .survey__card {
     background-color: var(--ion-color-light);
     border-radius: 10px;
+    border: 1px solid var(--ion-color-super-medium);
     box-shadow: 0 2px 5px var(--ion-color-light);
     padding: 20px;
     margin-bottom: 20px;

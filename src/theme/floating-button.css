@@ -20,10 +20,25 @@
     border-top: none;
 }
 
+.floating__button:disabled {
+    background: var(--ion-color-dark-tint);
+    color: var(--ion-color-medium-shade);
+    box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.2);
+    border-radius: 50px !important;
+    height: 50px;
+    width: 90%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    bottom: 20px;
+    position: relative;
+    margin: 0 auto !important;
+}
+
 /* Desktop */
 
 @media (min-width: 768px) {
-    .floating__button {
+    .floating__button,
+    .floating__button:disabled {
         width: 45%;
     }
 }
@@ -31,7 +46,8 @@
 /* Tablet */
 
 @media (min-width: 425px) and (max-width: 767px) {
-    .floating__button {
+    .floating__button,
+    .floating__button:disabled {
         width: 90%;
     }
 }
@@ -39,7 +55,8 @@
 /* Mobile */
 
 @media (max-width: 424px) {
-    .floating__button {
+    .floating__button,
+    .floating__button:disabled {
         width: 80%;
     }
 }

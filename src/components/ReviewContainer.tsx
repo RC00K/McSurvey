@@ -501,6 +501,7 @@ export const ReviewContainer = ({}) => {
 
   return (
     <>
+      <div className="review__container">
       {selectedDriveThru.map((item, index) =>
         item.questions.map((question, qIndex) => {
           const questionId = `question_${qIndex}`;
@@ -578,6 +579,7 @@ export const ReviewContainer = ({}) => {
             </IonToast>
         )}
       </IonButton>
+      </div>
     </>
   );
 };
