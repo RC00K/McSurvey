@@ -41,6 +41,8 @@ const CameraContainer: React.FC<CameraContainerProps> = ({ isCameraActive, handl
   }, [image]);
 
   const openCamera = async () => {
+    // Change body background color
+    document.querySelector('body')?.classList.add('camera__active');
     if (!cameraActive && !isCameraOpening) {
         setIsCameraOpening(true);
         const cameraPreviewOptions: CameraPreviewOptions = {
@@ -69,6 +71,8 @@ const CameraContainer: React.FC<CameraContainerProps> = ({ isCameraActive, handl
   };
 
   const stopCamera = async () => {
+    // Change body background color
+    document.querySelector('body')?.classList.remove('camera__active');
     try {
       await CameraPreview.stop();
       setCameraActive(false);
@@ -123,7 +127,7 @@ const CameraContainer: React.FC<CameraContainerProps> = ({ isCameraActive, handl
    
   return (
     <div className="camera__content">
-      <div id="cameraPreview" className={'camera__container' ? '' : 'camera__container--inactive'}>
+      <div id="cameraPreview" className="camera__container">
         <div className="camera__overlay">
           {cameraActive && (
             <>

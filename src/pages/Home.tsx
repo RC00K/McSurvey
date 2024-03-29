@@ -5,6 +5,19 @@ import CardContainer from '../components/CardContainer';
 import SurveyModal from '../components/modals/SurveyModal';
 
 const Home: React.FC = () => {
+  const modal = document.querySelector(".modal");
+  const overlay = document.querySelector(".overlay");
+  const openModalBtn = document.querySelector(".btn-open");
+  const closeModalBtn = document.querySelector(".btn-close");
+
+  const openModal = () => {
+    modal?.classList.remove("hidden");
+    overlay?.classList.remove("hidden");
+  }
+
+  openModalBtn?.addEventListener("click", openModal);
+
+
   const [showModal, setShowModal] = useState(false);
   const [driveThruSelection, setDriveThruSelection] = useState('1');
 
@@ -14,33 +27,35 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <div className="header">
-        <h1>Dashboard</h1>
-        <ul className="breadcrumb">
-          <li>
-            <a href="/analytics" className="active">
-              Analytics
-            </a>
-          </li>
-          /
-          <li>
-            <a href="/surveys">Surveys</a>
-          </li>
-        </ul>
-      </div>
-      <ul className="cards">
-        <li>
-          <CardContainer onCardClick={handleCardClick} />
-        </li>
-        <li>
-          <CardContainer onCardClick={handleCardClick} />
-        </li>
-        <li>
-          <CardContainer onCardClick={handleCardClick} />
-        </li>
-      </ul>
+      <section>
+        <div className="home__body">
+          <div className="home__content">
+            <div className="container">
+              <div className="container__title">
+                <h3>Available Surveys</h3>
+              </div>
+              <div className="grid">
+                <div className="row">
+                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <CardContainer onCardClick={handleCardClick} />
+                  </div>
+                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <CardContainer onCardClick={handleCardClick} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} />
+      </section>
     </>
     // <IonPage>
+    //   <IonHeader>
+    //     <IonToolbar>
+    //       <IonTitle>McSurvey</IonTitle>
+    //     </IonToolbar>
+    //   </IonHeader>
     //   <IonContent fullscreen>
     //     <IonGrid className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
     //       <IonRow>

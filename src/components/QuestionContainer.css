@@ -1,5 +1,10 @@
 @import url('../theme/variables.css');
 
+.question__container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 .file__upload {
     position: relative;
     border: 2px dashed var(--ion-color-medium);
@@ -7,7 +12,6 @@
     margin-bottom: 20px;
     padding: 10px;
     text-align: center;
-    background: var(--ion-color-light);
     cursor: pointer;
 }
 

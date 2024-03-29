@@ -1,3 +1,8 @@
+.review__container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 ion-thumbnail {
   --size: 120px;
   --border-radius: 5px;
