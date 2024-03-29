@@ -2,13 +2,57 @@
 
 .block {
     width: 100%;
-    height: 280px;
     align-items: center;
     justify-content: center;
 }
 
-ion-modal {
-    --height: auto;
+.modal__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 90%;
+    max-width: 450px;
+    padding: 1.3rem;
+    min-height: 250px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--ion-color-light);
+    box-shadow: 0 0 10px var(--ion-color-medium-shade);
+    border-radius: 15px;
+}
+
+.modal {
+    z-index: 2;
+}
+
+.modal .flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+}
+
+.modal input {
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.modal p {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium-shade);
+    margin: 0.4rem 0 0.2rem;
 }
 
 .modal__title {
@@ -26,7 +70,6 @@ ion-modal {
 .modal__body__options {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
 }
 
 .modal__body__option {
@@ -55,10 +98,48 @@ ion-modal {
     color: var(--ion-color-dark);
 }
 
-ion-toolbar {
-    --background: transparent;
+button {
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
 }
 
-ion-button {
-    --border-color: var(--ion-color-dark);
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.4rem;
+    font-weight: 700;
+    background-color: var(--ion-color-dark);
+    color: var(--ion-color-light);
+    border-radius: 50px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.btn-open {
+    position: absolute;
+    bottom: 150px;
+}
+
+.btn-close {
+    padding: 0.5rem 0.65rem;
+    background: var(--ion-color-dark);
+    color: var(--ion-color-light);
+    border-radius: 50%;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+
+.hidden {
+    display: none;
 }

@@ -5,6 +5,19 @@ import CardContainer from '../components/CardContainer';
 import SurveyModal from '../components/modals/SurveyModal';
 
 const Home: React.FC = () => {
+  const modal = document.querySelector(".modal");
+  const overlay = document.querySelector(".overlay");
+  const openModalBtn = document.querySelector(".btn-open");
+  const closeModalBtn = document.querySelector(".btn-close");
+
+  const openModal = () => {
+    modal?.classList.remove("hidden");
+    overlay?.classList.remove("hidden");
+  }
+
+  openModalBtn?.addEventListener("click", openModal);
+
+
   const [showModal, setShowModal] = useState(false);
   const [driveThruSelection, setDriveThruSelection] = useState('1');
 
@@ -23,6 +36,9 @@ const Home: React.FC = () => {
               </div>
               <div className="grid">
                 <div className="row">
+                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <CardContainer onCardClick={handleCardClick} />
+                  </div>
                   <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <CardContainer onCardClick={handleCardClick} />
                   </div>
