@@ -1,12 +1,13 @@
 import { IonHeader, IonItem, IonChip, IonCard, IonImg, IonIcon, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonText, IonTitle, IonToolbar, IonBadge, IonLabel } from '@ionic/react';
 import { timeOutline, listOutline, fastFood } from 'ionicons/icons';
 import mcdrive from '../assets/images/mcdrive.jpg'
+import './CardContainer.css';
 
 const surveys = [
     {
         img: mcdrive,
-        surveyTitle: 'Drive Thru Survey',
         surveyCategory: 'Drive Thru',
+        surveyTitle: 'Drive Thru Survey',
         surveyCompletionTime: '5 minutes',
         surveyQuestions: '5 questions'
     }
@@ -15,26 +16,28 @@ const surveys = [
 const CardContainer = ({ onCardClick }: { onCardClick: any }) => {
     return (
         <>
-            {surveys.map(({ img, surveyTitle, surveyCategory, surveyCompletionTime, surveyQuestions }, index) => (
-                <IonCard key={index} onClick={onCardClick} className="card__container">
-                    <IonImg src={img} className="card__image" />
-                    <IonCardHeader>
-                        <div className="card__header">
-                            <IonCardTitle>{surveyTitle}</IonCardTitle>
-                            <div className="card__time">
-                                <IonText>{surveyCompletionTime}</IonText>
-                            </div>
+            {surveys.map(({ img, surveyCategory, surveyTitle, surveyCompletionTime, surveyQuestions }, index) => (
+                <div className="survey__card" key={index} onClick={onCardClick}>
+                    <div className="survey__card__title">
+                        <IonIcon icon={fastFood} />
+                        <IonCardSubtitle>{surveyCategory}</IonCardSubtitle>
+                    </div>
+                    <div className="survey__title">
+                        <h3>{surveyTitle}</h3>
+                    </div>
+
+                    <div className="survey__completion">
+                        <div className="survey__details">
+                            <IonIcon icon={timeOutline} />
+                            <span>{surveyCompletionTime}</span>
                         </div>
-                    </IonCardHeader>
-                    <IonCardContent>
-                        <div className="card__content">
-                            <IonIcon icon={fastFood} />
-                            <IonText>{surveyCategory}</IonText>
+
+                        <div className="survey__details">
                             <IonIcon icon={listOutline} />
-                            <IonText>{surveyQuestions}</IonText>
+                            <span>{surveyQuestions}</span>
                         </div>
-                    </IonCardContent>
-                </IonCard>
+                    </div>
+                </div>
             ))}
         </>
     );

@@ -1,6 +1,6 @@
-@import url('../../theme/variables.css');
+@import url('../theme/variables.css');
 
-.card__container {
+/* .card__container {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     border-radius: 10px;
@@ -62,4 +62,104 @@
     .card__container {
         width: calc(25% - 20px);
     }
+}
+
+.survey__card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: var(--ion-color-light);
+}
+
+.survey__card:not(:first-child) {
+    margin-top: 2rem;
+}
+
+.survey__card__title {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+}
+
+.survey__card__title ion-icon {
+    border-radius: 500px;
+    padding: 0.2rem;
+    margin-right: 0.75rem;
+    margin-top: -0.2rem;
+}
+
+.survey__title h3 {
+    font-size: 1.3rem !important;
+    font-weight: 600;
+}
+
+.survey__completion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    margin-top: 0.5rem;
+}
+
+.survey__details {
+    display: flex;
+    align-items: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.survey__details ion-icon {
+    font-size: 1.2rem;
+    margin-right: 0.3rem;
+} */
+
+.survey__card {
+    background-color: var(--ion-color-light);
+    border-radius: 10px;
+    border: 1px solid var(--ion-color-super-medium);
+    box-shadow: 0 2px 5px var(--ion-color-light);
+    padding: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.survey__card:hover {
+    box-shadow: 0 5px 15px var(--ion-color-light);
+}
+
+.survey__card__title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.survey__card__title ion-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: var(--ion-color-dark);
+}
+
+.survey__title h3 {
+    margin-bottom: 10px;
+    color: var(--ion-color-dark);
+}
+
+.survey__completion {
+    display: flex;
+    justify-content: space-between;
+}
+
+.survey__details {
+    display: flex;
+    align-items: center;
+}
+
+.survey__details ion-icon {
+    font-size: 1.2rem;
+    margin-right: 5px;
 }

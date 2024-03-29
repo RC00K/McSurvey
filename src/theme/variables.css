@@ -66,6 +66,7 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-medium-contrast-rgb: 255, 255, 255;
   --ion-color-medium-shade: #808289;
   --ion-color-medium-tint: #9d9fa6;
+  --ion-color-super-medium: #d3d5df;
 
   /** light **/
   --ion-color-light: #f4f5f8;
@@ -189,8 +190,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-toolbar-background: var(--ion-color-step-150);
     --ion-toolbar-border-color: var(--ion-color-step-250);
   }
-
-
+  
   /*
    * Material Design Dark Theme
    * -------------------------------------------

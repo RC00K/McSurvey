@@ -19,30 +19,43 @@ const SurveyModal = ({ showModal, setShowModal, setDriveThruSelection }: { showM
     };
     
     return (
-        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} initialBreakpoint={1} breakpoints={[0, 1]}>
-            <IonToolbar>
-                <IonTitle className="modal__title">Drive Thur Options</IonTitle>
-            </IonToolbar>
-            <div className="block">
-                <div className="modal__body">
-                <div className="modal__body__options">
-                    <button className={`modal__body__option ${selected === 0 ? 'selected' : ''}`} onClick={() => handleSelection(0)}>
-                        <div className={`modal__body__option__text ${selected === 0 ? 'selected' : ''}`} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                            <IonIcon icon={car} size="large" />
-                            <span>1 Drive Thru</span>
+        <>
+            <div className={`modal__container ${showModal ? '' : 'hidden'}`}>
+                <div className="modal">
+                    <div className="flex">
+                        <button className="btn-close" onClick={() => setShowModal(false)}>X</button>
+                    </div>
+                    <div>
+                        <h3>
+                            Drive Thur Options
+                        </h3>
+                        <p>
+                            Select the number of drive thrus you would like to use in your survey.
+                        </p>
+                    </div>
+                    <div className="block">
+                        <div className="modal__body">
+                            <div className="modal__body__options">
+                                <button className={`modal__body__option ${selected === 0 ? 'selected' : ''}`} onClick={() => handleSelection(0)}>
+                                    <div className={`modal__body__option__text ${selected === 0 ? 'selected' : ''}`} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                        <IonIcon icon={car} size="large" />
+                                        <span>1 Drive Thru</span>
+                                    </div>
+                                </button>
+                                <button className={`modal__body__option ${selected === 1 ? 'selected' : ''}`} onClick={() => handleSelection(1)}>
+                                    <div className={`modal__body__option__text ${selected === 1 ? 'selected' : ''}`} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                        <IonIcon icon={car} size="large" />
+                                        <span>2 Drive Thrus</span>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
-                    </button>
-                    <button className={`modal__body__option ${selected === 1 ? 'selected' : ''}`} onClick={() => handleSelection(1)}>
-                        <div className={`modal__body__option__text ${selected === 1 ? 'selected' : ''}`} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                            <IonIcon icon={car} size="large" />
-                            <span>2 Drive Thrus</span>
-                        </div>
-                    </button>
+                    </div>
+                    <button className="btn" onClick={handleStartSurvey}>Start Survey</button>
                 </div>
-                <IonButton color="dark" expand="block" onClick={handleStartSurvey}>Start Survey</IonButton>
-                </div>
+                <div className={`overlay ${showModal ? '' : 'hidden'}`} onClick={() => setShowModal(false)} />
             </div>
-        </IonModal>
+        </>
     );
 }
 
