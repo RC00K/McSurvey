@@ -8,3 +8,16 @@
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
 }
+
+/* Slope Wave SVG */
+.slopewave__spacer {
+  aspect-ratio: 1160/171;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.slope__wave {
+  background-image: url('../assets/images/SlopeWave.svg');
+}
