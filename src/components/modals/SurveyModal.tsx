@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { IonModal, IonToolbar, IonTitle, IonButton, IonIcon } from '@ionic/react';
 import { car } from 'ionicons/icons';
@@ -6,6 +6,7 @@ import './SurveyModal.css';
 
 const SurveyModal = ({ showModal, setShowModal, setDriveThruSelection }: { showModal: boolean, setShowModal: (value: boolean) => void, setDriveThruSelection: (value: string) => void }) => {
     const [selected, setSelected] = useState(0);
+    const [isClosing, setIsClosing] = useState(false);
     const history = useHistory();
 
     const handleSelection = (value: number) => {
@@ -14,16 +15,31 @@ const SurveyModal = ({ showModal, setShowModal, setDriveThruSelection }: { showM
     };
 
     const handleStartSurvey = () => {
-        setShowModal(false);
+        closeModal();
         history.push('/survey/' + selected);
     };
-    
+
+    const closeModal = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setShowModal(false);
+            setIsClosing(false); // Reset state for next opening
+        }, 500); // Match this timeout to your CSS animation duration
+    };
+
+    // Effect to listen for showModal changes and reset isClosing state if needed
+    useEffect(() => {
+        if (showModal && isClosing) {
+            setIsClosing(false);
+        }
+    }, [showModal]);
+
     return (
         <>
-            <div className={`modal__container ${showModal ? '' : 'hidden'}`}>
+            <div className={`modal__container ${showModal ? (isClosing ? 'modal-closing' : '') : 'hidden'}`}>
                 <div className="modal">
                     <div className="flex">
-                        <button className="btn-close" onClick={() => setShowModal(false)}>X</button>
+                        <button className="btn-close" onClick={closeModal}>X</button>
                     </div>
                     <div>
                         <h3>
@@ -53,10 +69,11 @@ const SurveyModal = ({ showModal, setShowModal, setDriveThruSelection }: { showM
                     </div>
                     <button className="btn" onClick={handleStartSurvey}>Start Survey</button>
                 </div>
-                <div className={`overlay ${showModal ? '' : 'hidden'}`} onClick={() => setShowModal(false)} />
+                <div className={`overlay ${showModal ? '' : 'hidden'}`} onClick={closeModal} />
             </div>
         </>
     );
 }
 
 export default SurveyModal;
+

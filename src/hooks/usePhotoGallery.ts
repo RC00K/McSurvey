@@ -1,31 +1,12 @@
-import { useState, useEffect } from 'react';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
-import { Capacitor } from '@capacitor/core';
-
 import { useReview } from '../components/Review/ReviewContext';
-import { add } from 'ionicons/icons';
-
-// Interface
-export interface UserPhoto {
-    filepath: string;
-    webviewPath?: string;
-}
+import { base64FromPath } from '../utils/base64FromPath';
+import { UserPhoto } from '../interfaces';
 
 export function usePhotoGallery() {
-    const { images, addImage } = useReview();
-
-    const saveImageReference = async (questionIndex: number, imagePath: string) => {
-        const imageReferences = await Preferences.get({ key: 'imageReferences' });
-        const references = imageReferences.value ? JSON.parse(imageReferences.value) : {};
-        references[`question_${questionIndex}`] = imagePath;
-
-        await Preferences.set({
-            key: 'imageReferences',
-            value: JSON.stringify(references),
-        });
-    };
+    const { addImage } = useReview();
 
     const takePhoto = async (questionIndex: number) => {
         const photo = await Camera.getPhoto({
@@ -37,7 +18,6 @@ export function usePhotoGallery() {
         const savedFileImage = await savePicture(photo, fileName);
         if (savedFileImage.webviewPath) {
             addImage(`question_${questionIndex}`, savedFileImage.webviewPath);
-            saveImageReference(questionIndex, savedFileImage.webviewPath);
         }
     };
 
@@ -58,17 +38,4 @@ export function usePhotoGallery() {
     return {
         takePhoto,
     };
-}
-
-export async function base64FromPath(path: string): Promise<string> {
-    const response = await fetch(path);
-    const blob = await response.blob();
-    return new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            resolve(reader.result as string);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
 }

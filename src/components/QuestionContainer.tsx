@@ -17,7 +17,6 @@ import { useReview } from "./Review/ReviewContext";
 import { usePhotoGallery } from "../hooks/usePhotoGallery";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import "../theme/floating-button.css";
-
 interface FormData {
   question: string;
 }
@@ -51,13 +50,14 @@ export const QuestionContainer = ({ driveThruSelection, onReadyForReviewChange }
         <IonLabel>
           <h2>Store Number</h2>
         </IonLabel>
-        <IonInput
+        <input className="text__input" value={storeNumber} placeholder="Store Number" onChange={(e) => setStoreNumber(e.target.value!)} />
+        {/* <IonInput
             value={storeNumber}
             placeholder="Enter Store Number"
             onIonChange={(e) => {
                 setStoreNumber(e.detail.value!)
             }}
-        />
+        /> */}
         {selectedDriveThru.map((item, index) => {
           return item.questions.map((question, qIndex) => {
             const questionId = `question_${qIndex}`;
@@ -84,7 +84,11 @@ export const QuestionContainer = ({ driveThruSelection, onReadyForReviewChange }
                         </ol>
                       )}
                     <AccordionContainer question={question} />
-                    <div className="file__upload" onClick={() => takePhoto(qIndex)}>
+                    <div key={`question_${index}_${qIndex}`} className="file__upload" onClick={
+                      (e) => {
+                        e.preventDefault();
+                        takePhoto(qIndex);
+                    }}>
                         {imageSrc ? (
                             <img
                                 src={imageSrc}
@@ -92,7 +96,7 @@ export const QuestionContainer = ({ driveThruSelection, onReadyForReviewChange }
                                 className="image__preview"
                             />
                         ) : (
-                          <button className="add__photo">
+                          <button type="button" className="add__photo">
                             <IonIcon icon={add} size="large" />
                           </button>
                         )}

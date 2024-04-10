@@ -1,24 +1,8 @@
-import { add } from 'ionicons/icons';
-import React, { useCallback, createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { set } from 'react-hook-form';
-
-interface ReviewContextType {
-    userInput: Record<string, string>;
-    images: Record<string, string>;
-    driveThruSelection: string;
-    storeNumber: string;
-    setDriveThruSelection: (selection: string) => void;
-    addUserInput: (questionId: string, answer: string) => void;
-    addImage: (questionId: string, image: string) => void;
-    setStoreNumber: (storeNumber: string) => void;
-    reset: () => void;
-}
+import { Preferences } from '@capacitor/preferences';
+import React, { useCallback, createContext, useContext, useState, useEffect } from 'react';
+import { ReviewContextType } from '../../interfaces';
 
 const ReviewContext = createContext<ReviewContextType | undefined>(undefined);
-
-interface ReviewProviderProps {
-    children: ReactNode;
-}
 
 export const useReview = () => {
     const context = useContext(ReviewContext);
@@ -28,11 +12,18 @@ export const useReview = () => {
     return context;
 };
 
-export const ReviewProvider: React.FC<ReviewProviderProps> = ({ children }) => {
+export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [userInput, setUserInput] = useState<Record<string, string>>({});
     const [images, setImages] = useState<Record<string, string>>({});
     const [driveThruSelection, setDriveThruSelection] = useState('');
     const [storeNumber, setStoreNumber] = useState('');
+
+    const saveImages = async (newImages: Record<string, string>) => {
+        await Preferences.set({
+            key: 'capturedImage',
+            value: JSON.stringify(newImages),
+        });
+    };
 
     const addUserInput = (questionId: string, answer: string) => {
         setUserInput((prevInput) => ({
@@ -42,22 +33,25 @@ export const ReviewProvider: React.FC<ReviewProviderProps> = ({ children }) => {
     };
 
     const addImage = useCallback((questionId: string, image: string) => {
-        setImages((prevImages) => ({
-            ...prevImages,
-            [questionId]: image,
-        }));
-    }, [setImages]);
+        setImages((prevImages) => {
+            const updatedImages = {
+                ...prevImages,
+                [questionId]: image,
+            };
+            saveImages(updatedImages);
+            return updatedImages;
+        });
+    }, []);
 
     useEffect(() => {
-        const storedImages = JSON.parse(localStorage.getItem('capturedImage') || '{}');
-        const storedStoreNumber = sessionStorage.getItem('storeNumber') || '';
-
-        Object.entries(storedImages).forEach(([questionId, image]) => {
-            addImage(questionId, image as string);
-        });
-
-        setStoreNumber(storedStoreNumber);
-    }, [addImage]);
+        const loadImageReferences = async () => {
+            // await saveImages
+            const { value } = await Preferences.get({ key: 'capturedImage' });
+            const imageReferences = value ? JSON.parse(value) : {};
+            setImages(imageReferences);
+        };
+        loadImageReferences();
+    }, []);
 
     const reset = useCallback(() => {
         setUserInput({});
