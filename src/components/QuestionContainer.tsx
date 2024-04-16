@@ -57,12 +57,12 @@ export const QuestionContainer = ({
             return (
               <form key={`form_${index}_${qIndex}`}>
                 <div key={`label_${index}_${qIndex}`}>
-                  <IonLabel>
+                  <div className="question__header">
                     <h2>{question.questionTitle}</h2>
                     <p>{question.questionDesc}</p>
-                  </IonLabel>
+                  </div>
                   <div>
-                    <div key={`question_${index}`}>
+                    <div key={`question_${index}`} className="question__body">
                       <p>{question.question}</p>
                     </div>
                     {question.questionHints &&
