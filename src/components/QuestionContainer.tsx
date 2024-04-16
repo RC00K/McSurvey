@@ -82,7 +82,7 @@ export const QuestionContainer = ({
                         takePhoto(qIndex);
                       }}
                     >
-                      {imageSrc ? (
+                      {imageSrc && imageSrc.startsWith("data:image") ? (
                         <img
                           src={imageSrc}
                           alt="Uploaded"

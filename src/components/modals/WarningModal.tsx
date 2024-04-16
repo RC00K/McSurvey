@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import { warning } from "ionicons/icons";
 import "./custom-modals.css";
 import { IonIcon } from "@ionic/react";
+import { useReview } from "../../components/Review/ReviewContext";
 
 const WarningModal = ({
   showModal,
@@ -11,19 +12,27 @@ const WarningModal = ({
   showModal: boolean;
   setShowModal: (value: boolean) => void;
 }) => {
+  const { reset } = useReview();
   const [isClosing, setIsClosing] = useState(false);
   const history = useHistory();
 
-  const handleEndSurvey = () => {
-    setShowModal(false);
-    history.push("/");
+  const handleContinueSurvey = () => {
+    closeModal();
   };
 
-  const closeModal = () => {
+  const handleEndSurvey = () => {
+    reset();
+    closeModal(true);
+  };
+
+  const closeModal = (navigateHome = false) => {
     setIsClosing(true);
     setTimeout(() => {
       setShowModal(false);
       setIsClosing(false);
+      if (navigateHome) {
+        history.push("/home");
+      }
     }, 300);
   };
 
@@ -53,7 +62,7 @@ const WarningModal = ({
           </div>
         </div>
         <div className="modal__footer">
-          <button className="btn" id="modal__btn" onClick={closeModal}>
+          <button className="btn" id="modal__btn" onClick={handleContinueSurvey}>
             Continue
           </button>
           <button className="warning__btn" id="modal__btn" onClick={handleEndSurvey}>
@@ -63,7 +72,7 @@ const WarningModal = ({
       </div>
       <div
         className={`overlay ${showModal ? "" : "hidden"}`}
-        onClick={closeModal}
+        onClick={handleContinueSurvey}
       />
     </>
   );
