@@ -39,11 +39,9 @@ const App: React.FC = () => (
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
-          <CameraProvider>
-            <Route exact path="/survey/:selected">
-              <Survey />
-            </Route>
-          </CameraProvider>
+          <Route exact path="/survey/:selected">
+            <Survey />
+          </Route>
           <Route exact path="/review">
             <Review />
           </Route>
