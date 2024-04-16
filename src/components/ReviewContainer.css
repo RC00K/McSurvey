@@ -1,152 +1,152 @@
 .review__card {
-    display: flex;
-    border: 1px solid #ccc;
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.review__card__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.review__card__image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 20px;
+}
+
+.review__card__info {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.review__card__title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.review__card__desc {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.review__card__image__id {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.review__card__button {
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    color: #666;
+    border: 1px solid #666;
     border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
+    margin-left: auto;
+}
+
+.review__card__button:hover {
+    background: #666;
+    color: #fff;
+}
+
+@media (min-width: 1281px) {
+  .review__card {
+    width: 400px;
   }
-  
-  .review__card__content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-grow: 1;
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .review__card__image {
+    width: 90px;
+    height: 90px;
   }
-  
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  /* Stack the flex-direction: column */
+  .review__card {
+    flex-direction: column;
+  }
+
+  /* Make the image the same height as the content */
   .review__card__image {
     width: 100px;
     height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-right: 20px;
   }
-  
-  .review__card__info {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    justify-content: center;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .review__card__content {
+    flex-direction: row;
   }
-  
+
+  .review__card__image {
+    width: 100px;
+    height: 100px;
+    object-fit: fill;
+  }
+}
+
+@media (min-width: 281px) and (max-width: 319px) {
+  .review__card__content {
+    flex-direction: row;
+  }
+
+  .review__card__image {
+    width: 100px;
+    height: 100px;
+    object-fit: fill;
+  }
+
   .review__card__title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-  
-  .review__card__desc {
     font-size: 1rem;
-    font-weight: 500;
-    color: #666;
-    margin-bottom: 15px;
   }
-  
-  .review__card__image__id {
+
+  .review__card__desc {
     font-size: 0.8rem;
-    font-weight: 500;
-    color: #666;
   }
-  
-  .review__card__button {
-      width: 20px;
-      height: 20px;
-      background: transparent;
-      color: #666;
-      border: 1px solid #666;
-      border-radius: 5px;
-      margin-left: auto;
+
+  .review__card__image__id {
+    font-size: 0.6rem;
   }
-  
-  .review__card__button:hover {
-      background: #666;
-      color: #fff;
+}
+
+@media (min-width: 280px) {
+  .review__card__content {
+    flex-direction: row;
   }
-  
-  @media (min-width: 1281px) {
-    .review__card {
-      width: 400px;
-    }
+
+  .review__card__image {
+    width: 80px;
+    height: 80px;
+    object-fit: fill;
   }
-  
-  @media (min-width: 1025px) and (max-width: 1280px) {
+
+  .review__card__title {
+    font-size: 1rem;
   }
-  
-  @media (min-width: 768px) and (max-width: 1024px) {
-    .review__card__image {
-      width: 90px;
-      height: 90px;
-    }
+
+  .review__card__desc {
+    font-size: 0.8rem;
   }
-  
-  @media (min-width: 481px) and (max-width: 767px) {
-    /* Stack the flex-direction: column */
-    .review__card {
-      flex-direction: column;
-    }
-  
-    /* Make the image the same height as the content */
-    .review__card__image {
-      width: 100px;
-      height: 100px;
-    }
+
+  .review__card__image__id {
+    font-size: 0.6rem;
   }
-  
-  @media (min-width: 320px) and (max-width: 480px) {
-    .review__card__content {
-      flex-direction: row;
-    }
-  
-    .review__card__image {
-      width: 100px;
-      height: 100px;
-      object-fit: fill;
-    }
-  }
-  
-  @media (min-width: 281px) and (max-width: 319px) {
-    .review__card__content {
-      flex-direction: row;
-    }
-  
-    .review__card__image {
-      width: 100px;
-      height: 100px;
-      object-fit: fill;
-    }
-  
-    .review__card__title {
-      font-size: 1rem;
-    }
-  
-    .review__card__desc {
-      font-size: 0.8rem;
-    }
-  
-    .review__card__image__id {
-      font-size: 0.6rem;
-    }
-  }
-  
-  @media (min-width: 280px) {
-    .review__card__content {
-      flex-direction: row;
-    }
-  
-    .review__card__image {
-      width: 80px;
-      height: 80px;
-      object-fit: fill;
-    }
-  
-    .review__card__title {
-      font-size: 1rem;
-    }
-  
-    .review__card__desc {
-      font-size: 0.8rem;
-    }
-  
-    .review__card__image__id {
-      font-size: 0.6rem;
-    }
-  }
+}

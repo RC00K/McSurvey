@@ -1,22 +1,13 @@
-import { useState, useEffect, useRef } from "react";
-import { useHistory } from "react-router";
-import { useForm, SubmitHandler, set } from "react-hook-form";
-import {
-  IonIcon,
-  IonLabel,
-  IonButton,
-  IonAlert,
-  IonInput,
-  IonContent,
-} from "@ionic/react";
+import { useEffect, useState } from "react";
+import { IonIcon, IonLabel } from "@ionic/react";
 import { AccordionContainer } from "./AccordionContainer";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
 import { add } from "ionicons/icons";
 import "./QuestionContainer.css";
 import { useReview } from "./Review/ReviewContext";
 import { usePhotoGallery } from "../hooks/usePhotoGallery";
-import { Filesystem, Directory } from "@capacitor/filesystem";
 import "../theme/floating-button.css";
+
 interface FormData {
   question: string;
 }
@@ -26,15 +17,18 @@ interface QuestionContainerProps {
   onReadyForReviewChange: (isReady: boolean) => void;
 }
 
-export const QuestionContainer = ({ driveThruSelection, onReadyForReviewChange }: QuestionContainerProps) => {
+export const QuestionContainer = ({
+  driveThruSelection,
+  onReadyForReviewChange,
+}: QuestionContainerProps) => {
   const { takePhoto } = usePhotoGallery();
   const { images, storeNumber, setStoreNumber } = useReview();
-  const selectedDriveThru = driveThruSelection === '1' ? oneDrive : twoDrive;
+  const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
 
   // Check if the survey is complete
   const isReadyForReview = () => {
-    const isStoreNumberFilled = storeNumber.trim() !== '';
-    const areAllImagesUploaded = selectedDriveThru.every((item) => 
+    const isStoreNumberFilled = storeNumber.trim() !== "";
+    const areAllImagesUploaded = selectedDriveThru.every((item) =>
       item.questions.every((question, qIndex) => images[`question_${qIndex}`])
     );
     return isStoreNumberFilled && areAllImagesUploaded;
@@ -50,22 +44,18 @@ export const QuestionContainer = ({ driveThruSelection, onReadyForReviewChange }
         <IonLabel>
           <h2>Store Number</h2>
         </IonLabel>
-        <input className="text__input" value={storeNumber} placeholder="Store Number" onChange={(e) => setStoreNumber(e.target.value!)} />
-        {/* <IonInput
-            value={storeNumber}
-            placeholder="Enter Store Number"
-            onIonChange={(e) => {
-                setStoreNumber(e.detail.value!)
-            }}
-        /> */}
+        <input
+          className="text__input"
+          value={storeNumber}
+          placeholder="Store Number"
+          onChange={(e) => setStoreNumber(e.target.value!)}
+        />
         {selectedDriveThru.map((item, index) => {
           return item.questions.map((question, qIndex) => {
             const questionId = `question_${qIndex}`;
             const imageSrc = images[questionId];
             return (
-              <form
-                key={`form_${index}_${qIndex}`}
-              >
+              <form key={`form_${index}_${qIndex}`}>
                 <div key={`label_${index}_${qIndex}`}>
                   <IonLabel>
                     <h2>{question.questionTitle}</h2>
@@ -84,22 +74,25 @@ export const QuestionContainer = ({ driveThruSelection, onReadyForReviewChange }
                         </ol>
                       )}
                     <AccordionContainer question={question} />
-                    <div key={`question_${index}_${qIndex}`} className="file__upload" onClick={
-                      (e) => {
+                    <div
+                      key={`question_${index}_${qIndex}`}
+                      className="file__upload"
+                      onClick={(e) => {
                         e.preventDefault();
                         takePhoto(qIndex);
-                    }}>
-                        {imageSrc ? (
-                            <img
-                                src={imageSrc}
-                                alt="Uploaded"
-                                className="image__preview"
-                            />
-                        ) : (
-                          <button type="button" className="add__photo">
-                            <IonIcon icon={add} size="large" />
-                          </button>
-                        )}
+                      }}
+                    >
+                      {imageSrc ? (
+                        <img
+                          src={imageSrc}
+                          alt="Uploaded"
+                          className="image__preview"
+                        />
+                      ) : (
+                        <button type="button" className="add__photo">
+                          <IonIcon icon={add} size="large" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -68,6 +68,25 @@
     margin: 0.4rem 0 0.2rem;
 }
 
+.modal__header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    color: var(--ion-color-dark);
+    text-transform: capitalize;
+}
+
+.modal__warning__icon {
+    font-size: 24px;
+    color: var(--ion-color-danger);
+    margin-right: 10px;
+}
+
+.modal__header h3 {
+    margin: 0;
+}
+
 .modal__title {
     font-size: 1rem; /* Responsive font size */
     font-weight: 700;
@@ -79,6 +98,8 @@
 .modal__body {
     padding: 24px;
 }
+
+
 
 .modal__body__options {
     display: flex;
@@ -111,21 +132,42 @@
     color: var(--ion-color-dark);
 }
 
+.modal__footer {
+    display: inline-flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+#modal__btn {
+    width: 100%;
+    height: auto;
+}
+
 button {
+    display: inline-block;
     cursor: pointer;
     border: none;
     font-weight: 600;
 }
 
 .btn {
-    display: inline-block;
-    padding: 0.8rem 1.4rem;
-    font-weight: 700;
     background-color: var(--ion-color-dark);
     color: var(--ion-color-light);
     border-radius: 50px;
     text-align: center;
     font-size: 1rem;
+    font-weight: 700;
+    padding: 0.8rem 1.4rem;
+}
+
+.warning__btn {
+    background-color: var(--ion-color-danger);
+    color: var(--ion-color-light);
+    border-radius: 50px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.8rem 1.4rem;
 }
 
 .btn-open, .btn-close {

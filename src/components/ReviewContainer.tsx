@@ -1,31 +1,18 @@
 import { useEffect, useState } from "react";
 import { useReview } from "../components/Review/ReviewContext";
-import { ReviewProvider } from "../components/Review/ReviewContext";
-import { useParams, useHistory } from "react-router";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
 import {
   IonList,
-  IonCard,
   IonButton,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
   IonThumbnail,
   IonItem,
   IonLabel,
-  IonNote,
   IonGrid,
   IonRow,
   IonCol,
-  IonProgressBar,
-  IonText,
-  IonToast
 } from "@ionic/react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import JSZip from "jszip";
-import { at, attach, body } from "ionicons/icons";
 
 export const ReviewContainer = ({}) => {
   const { driveThruSelection } = useReview();
@@ -46,8 +33,8 @@ export const ReviewContainer = ({}) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-        setBuffer((prevBuffer) => prevBuffer + 0.06);
-        setProgress((prevProgress) => prevProgress + 0.06);
+      setBuffer((prevBuffer) => prevBuffer + 0.06);
+      setProgress((prevProgress) => prevProgress + 0.06);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -72,7 +59,7 @@ export const ReviewContainer = ({}) => {
               reader.onloadend = () => resolve(reader.result);
               reader.readAsDataURL(blob);
             });
-        });
+          });
       };
 
       for (const item of selectedDriveThru) {
@@ -241,17 +228,16 @@ export const ReviewContainer = ({}) => {
 
   const handleSendEmail = async () => {
     const pdfBase64 = await generatePDF();
-    const zip = new JSZip();
-    zip.file("aotsfees.pdf", pdfBase64);
-    const zipBase64 = await zip.generateAsync({ type: "base64" });
+    const content = pdfBase64.split("base64,")[1];
     const emails = ["ryder.cook@gomaps.com"];
     const emailSubject = `AOTS Fees Survey for ${storeNumber}`;
     const emailMessage = `${storeNumber}`;
     const emailAttachments = [
       {
-        filename: "aotsfees.zip",
-        content: zipBase64,
-        contentType: "application/zip",
+        filename: "aotsfees.pdf",
+        content: content,
+        contentType: "application/pdf",
+        encoding: "base64",
       },
     ];
 
@@ -266,51 +252,26 @@ export const ReviewContainer = ({}) => {
 
     const xhr = new XMLHttpRequest();
     xhr.upload.addEventListener("progress", (event) => {
-        if (event.lengthComputable) {
-            const emailProgress = Math.round((event.loaded / event.total) * 100);
-            setProgress(50 + emailProgress/2);
-        }
+      if (event.lengthComputable) {
+        const emailProgress = Math.round((event.loaded / event.total) * 100);
+        setProgress(50 + emailProgress / 2);
+      }
     });
 
     xhr.addEventListener("load", () => {
-        if (xhr.status === 200) {
-            setEmailSent(true);
-        } else {
-            console.error("Email sending failed: ", xhr.statusText);
-            // Handle error
-            setEmailSent(false);
-            alert("Email Failed to Send");
-        }
+      if (xhr.status === 200) {
+        setEmailSent(true);
+      } else {
+        console.error("Email sending failed: ", xhr.statusText);
+        // Handle error
+        setEmailSent(false);
+        alert("Email Failed to Send");
+      }
     });
     xhr.open("POST", "http://localhost:3001/send");
     xhr.setRequestHeader("Accept", "application/json");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(emailData));
-
-    // try {
-    //   const response = await fetch("http://localhost:3001/send", {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(emailData),
-    //   });
-
-    //   if (response.ok) {
-    //     setEmailSent(true);
-    //   } else {
-    //     console.error("Email sending failed: ", response.statusText);
-    //     // Handle error
-    //     setEmailSent(false);
-    //     alert("Email Failed to Send");
-    //   }
-    // } catch (error) {
-    //   console.error("Email sending failed: ", error);
-    //   // Handle error
-    //   setEmailSent(false);
-    //   alert("Email Failed to Send");
-    // }
     return emailSent;
   };
 
@@ -320,7 +281,7 @@ export const ReviewContainer = ({}) => {
     handleSendEmail();
     setProgress(100);
     setTimeout(() => {
-        setProgress(0);
+      setProgress(0);
     }, 2000);
   };
 
@@ -502,83 +463,44 @@ export const ReviewContainer = ({}) => {
   return (
     <>
       <div className="review__container">
-      {selectedDriveThru.map((item, index) =>
-        item.questions.map((question, qIndex) => {
-          const questionId = `question_${qIndex}`;
-          const imageSrc = storedImages[questionId] || images[questionId];
+        {selectedDriveThru.map((item, index) =>
+          item.questions.map((question, qIndex) => {
+            const questionId = `question_${qIndex}`;
+            const imageSrc = storedImages[questionId] || images[questionId];
 
-          if (imageSrc) {
-            return (
-              <IonList key={questionId}>
-                <IonItem lines="full">
-                  <IonItem lines="none">
-                    <IonGrid>
-                      <IonRow>
-                        <IonCol>
-                          <IonThumbnail>
-                            <img
-                              src={imageSrc}
-                              alt={`Captured image for ${question.questionTitle}`}
-                            />
-                          </IonThumbnail>
-                        </IonCol>
-                      </IonRow>
-                    </IonGrid>
+            if (imageSrc) {
+              return (
+                <IonList key={questionId}>
+                  <IonItem lines="full">
+                    <IonItem lines="none">
+                      <IonGrid>
+                        <IonRow>
+                          <IonCol>
+                            <IonThumbnail>
+                              <img
+                                src={imageSrc}
+                                alt={`Captured image for ${question.questionTitle}`}
+                              />
+                            </IonThumbnail>
+                          </IonCol>
+                        </IonRow>
+                      </IonGrid>
+                    </IonItem>
+                    <IonLabel>
+                      <h2>{question.questionTitle}</h2>
+                      <p>{question.questionDesc}</p>
+                    </IonLabel>
                   </IonItem>
-                  <IonLabel>
-                    <h2>{question.questionTitle}</h2>
-                    <p>{question.questionDesc}</p>
-                  </IonLabel>
-                </IonItem>
-              </IonList>
-            );
-          }
-          return null;
-        })
-      )}
-      {/* {isGeneratingPDF && (
-        <>
-            <IonProgressBar value={progress} />
-            <IonText color="primary">Generating PDF... {progress}%</IonText>
-        </>
-      )} */}
-      
-      {/* {emailSent && 
-        <IonToast 
-            isOpen={emailSent}
-            onDidDismiss={() => setEmailSent(false)}
-            message="Email sent"
-            color="success"
-            duration={1000}
-            buttons={[
-                {
-                    text: "Close",
-                    role: "cancel",
-                },
-            ]}
-        ></IonToast>
-      } */}
-      {/* On Button Click generate pdf then send to email */}
-      <IonButton expand="block" color="dark" onClick={handleGeneratePDF}>
-        Submit
-        {isGeneratingPDF && (
-            <IonToast
-                isOpen={isGeneratingPDF}
-                message="Generating PDF..."
-                color="primary"
-                duration={5000}
-                buttons={[
-                    {
-                        text: "Close",
-                        role: "cancel",
-                        handler: () => setIsGeneratingPDF(false)
-                    },
-                ]}
-            >
-                <IonProgressBar value={progress} />
-            </IonToast>
+                </IonList>
+              );
+            }
+            return null;
+          })
         )}
-      </IonButton>
+        {/* On Button Click generate pdf then send to email */}
+        <IonButton expand="block" color="dark" onClick={handleGeneratePDF}>
+          Submit
+        </IonButton>
       </div>
     </>
   );
