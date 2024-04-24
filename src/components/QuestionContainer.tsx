@@ -8,10 +8,6 @@ import { useReview } from "./Review/ReviewContext";
 import { usePhotoGallery } from "../hooks/usePhotoGallery";
 import "../theme/floating-button.css";
 
-interface FormData {
-  question: string;
-}
-
 interface QuestionContainerProps {
   driveThruSelection: string;
   onReadyForReviewChange: (isReady: boolean) => void;

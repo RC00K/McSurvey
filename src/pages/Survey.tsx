@@ -15,29 +15,36 @@ const Survey: React.FC = () => {
   const [readyForReview, setReadyForReview] = useState(false);
   const [showExitAlert, setShowExitAlert] = useState(false);
 
+  // Load data from the API or local storage
   useEffect(() => {
-    // Set flag when the survey is started
-    sessionStorage.setItem("inSurvey", "true");
-    // Set the drive thru selection
+    const surveyData = localStorage.getItem("surveyData");
+    if (surveyData) {
+      const data = JSON.parse(surveyData);
+      setIsSurveyComplete(data.isSurveyComplete);
+      setReadyForReview(data.readyForReview);
+    }
+
+    // Set the drive-thru selection and reset the review state
     setDriveThruSelection(driveThruSelection);
-    // Reset the review state
-    reset();
+  }, [selected, setDriveThruSelection, reset]);
 
-    const unblock = history.block((location, action) => {
-      if (action === "POP") {
-        setShowExitAlert(true);
-        return false;
-      }
-    });
-
-    return () => {
-      unblock();
-    };
-  }, [selected, setDriveThruSelection, reset, history]);
+  // Save to local storage whenever answers or state changes
+  useEffect(() => {
+    localStorage.setItem("surveyData", JSON.stringify({ 
+      isComplete: isSurveyComplete, 
+      isReadForReview: readyForReview }));
+  }, [isSurveyComplete, readyForReview]);
 
   const handleExitSurvey = () => {
     setShowExitAlert(true);
   };
+
+  const handleEndSurvey = () => {
+    reset();
+    localStorage.removeItem("surveyData");
+    setShowExitAlert(false);
+    history.push("/");
+  }
 
   const handleReadyForReviewChange = (isReady: boolean) => {
     setReadyForReview(isReady);
@@ -53,6 +60,7 @@ const Survey: React.FC = () => {
         <WarningModal
           showModal={showExitAlert}
           setShowModal={setShowExitAlert}
+          onConfirmEnd={handleEndSurvey}
         />
       )}
       <IonContent>

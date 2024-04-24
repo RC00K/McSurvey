@@ -8,9 +8,10 @@ export interface ReviewContextType {
   images: Record<string, string>;
   driveThruSelection: string;
   storeNumber: string;
+  setStoreNumber: (value: string) => void;
   setDriveThruSelection: (selection: string) => void;
   addUserInput: (questionId: string, answer: string) => void;
+  setImages: (images: Record<string, string>) => void
   addImage: (questionId: string, image: string) => void;
-  setStoreNumber: (storeNumber: string) => void;
   reset: () => void;
 }

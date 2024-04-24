@@ -10,7 +10,7 @@ import { base64FromPath } from "../utils/base64FromPath";
 import { UserPhoto } from "../interfaces";
 
 export function usePhotoGallery() {
-  const { addImage } = useReview();
+  const { addImage, images, setImages } = useReview();
 
   const takePhoto = async (questionIndex: number) => {
     const photo = await Camera.getPhoto({
@@ -22,7 +22,9 @@ export function usePhotoGallery() {
     const savedFileImage = await savePicture(photo, fileName);
     if (savedFileImage.filepath) {
       const imageSrc = await loadSavedImage(savedFileImage.filepath);
-      addImage(`question_${questionIndex}`, imageSrc);
+      const updatedImages = { ...images, [`question_${questionIndex}`]: imageSrc };
+      setImages(updatedImages);
+      localStorage.setItem("surveyData", JSON.stringify({ images: updatedImages}))
     }
   };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
@@ -29,26 +29,35 @@ import { ReviewProvider } from './components/Review/ReviewContext';
 setupIonicReact();
 
 const App: React.FC = () => (  
-  <IonApp>
-    <IonReactRouter>
+  // <IonApp>
+  //   <IonReactRouter>
+  //     <ReviewProvider>
+  //       <IonRouterOutlet>
+  //         <Route exact path="/home">
+  //           <Home />
+  //         </Route>
+  //         <Route exact path="/">
+  //           <Redirect to="/home" />
+  //         </Route>
+  //         <Route exact path="/survey/:selected">
+  //           <Survey />
+  //         </Route>
+  //         <Route exact path="/review">
+  //           <Review />
+  //         </Route>
+  //       </IonRouterOutlet>
+  //     </ReviewProvider>
+  //   </IonReactRouter>
+  // </IonApp>
+  <Router>
+    <Switch>
+      <Route path="/" exact component={Home} />
       <ReviewProvider>
-        <IonRouterOutlet>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-          <Route exact path="/survey/:selected">
-            <Survey />
-          </Route>
-          <Route exact path="/review">
-            <Review />
-          </Route>
-        </IonRouterOutlet>
+        <Route path="/survey/:surveyId" component={Survey} />
+        <Route path="/review" component={Review} />
       </ReviewProvider>
-    </IonReactRouter>
-  </IonApp>
+    </Switch>
+  </Router>
 );
 
 export default App;

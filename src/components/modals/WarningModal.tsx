@@ -8,11 +8,12 @@ import { useReview } from "../../components/Review/ReviewContext";
 const WarningModal = ({
   showModal,
   setShowModal,
+  onConfirmEnd
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
+  onConfirmEnd: () => void;
 }) => {
-  const { reset } = useReview();
   const [isClosing, setIsClosing] = useState(false);
   const history = useHistory();
 
@@ -20,8 +21,9 @@ const WarningModal = ({
     closeModal();
   };
 
+  // Clear the stored survey data
   const handleEndSurvey = () => {
-    reset();
+    onConfirmEnd();
     closeModal(true);
   };
 
@@ -31,7 +33,7 @@ const WarningModal = ({
       setShowModal(false);
       setIsClosing(false);
       if (navigateHome) {
-        history.push("/home");
+        history.push("/");
       }
     }, 300);
   };

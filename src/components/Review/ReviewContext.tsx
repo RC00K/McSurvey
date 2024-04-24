@@ -46,11 +46,7 @@ export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addImage = useCallback((questionId: string, image: string) => {
     setImages((prevImages) => {
-      const updatedImages = {
-        ...prevImages,
-        [questionId]: image,
-      };
-      saveImages(updatedImages);
+      const updatedImages = { ...prevImages, [questionId]: image };
       return updatedImages;
     });
   }, []);
@@ -85,11 +81,12 @@ export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({
         userInput,
         images,
         driveThruSelection,
-        setDriveThruSelection,
-        addUserInput,
-        addImage,
         storeNumber,
         setStoreNumber,
+        setDriveThruSelection,
+        addUserInput,
+        setImages,
+        addImage,
         reset,
       }}
     >
