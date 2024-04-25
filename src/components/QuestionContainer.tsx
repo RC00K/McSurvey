@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { IonIcon, IonLabel } from "@ionic/react";
 import { AccordionContainer } from "./AccordionContainer";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
@@ -7,6 +7,7 @@ import "./QuestionContainer.css";
 import { useReview } from "./Review/ReviewContext";
 import { usePhotoGallery } from "../hooks/usePhotoGallery";
 import "../theme/floating-button.css";
+import CameraContainer from "./CameraContainer";
 
 interface QuestionContainerProps {
   driveThruSelection: string;
@@ -17,9 +18,13 @@ export const QuestionContainer = ({
   driveThruSelection,
   onReadyForReviewChange,
 }: QuestionContainerProps) => {
-  const { takePhoto } = usePhotoGallery();
   const { images, storeNumber, setStoreNumber } = useReview();
   const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+  const takePhoto = async () => {
+    const photo = CameraContainer
+  }
 
   // Check if the survey is complete
   const isReadyForReview = () => {
@@ -75,7 +80,7 @@ export const QuestionContainer = ({
                       className="file__upload"
                       onClick={(e) => {
                         e.preventDefault();
-                        takePhoto(qIndex);
+                        setIsCameraOpen(true);
                       }}
                     >
                       {imageSrc && imageSrc.startsWith("data:image") ? (
@@ -97,6 +102,7 @@ export const QuestionContainer = ({
           });
         })}
       </div>
+      {isCameraOpen && <CameraContainer />}
     </>
   );
 };

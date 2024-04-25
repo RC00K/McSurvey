@@ -51,7 +51,7 @@ const Review: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                <ReviewContainer  reviewData={reviewData} />
+                <ReviewContainer />
                 <IonButton onClick={handleBackToSurvey} fill="outline" slot="start">
                     <IonIcon icon={arrowBack} />
                     Edit Responses
