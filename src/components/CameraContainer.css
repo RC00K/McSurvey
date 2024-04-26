@@ -1,4 +1,4 @@
-@import url('../../theme/variables.css');
+@import url('../theme/variables.css');
 
 .camera__container {
   display: flex;
