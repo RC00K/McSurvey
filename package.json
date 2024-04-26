@@ -15,7 +15,6 @@
   "dependencies": {
     "@capacitor/android": "next",
     "@capacitor/app": "next",
-    "@capacitor/camera": "^5.0.9",
     "@capacitor/core": "next",
     "@capacitor/filesystem": "^5.2.1",
     "@capacitor/haptics": "next",
