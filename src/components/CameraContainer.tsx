@@ -7,6 +7,9 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 import { useReview } from "../components/Review/ReviewContext";
 import { base64FromPath } from "../utils/base64FromPath";
 import { UserPhoto } from "../interfaces";
+import "./CameraContainer.css";
+import { IonIcon } from "@ionic/react";
+import { close, sync } from "ionicons/icons";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -150,8 +153,38 @@ const CameraContainer = () => {
   };
 
   return (
-    <ModalWrapper>
-      <Wrapper>
+    // <ModalWrapper>
+    //   <Wrapper>
+    //     <Camera
+    //         ref={camera}
+    //         aspectRatio="cover"
+    //         videoSourceDeviceId={activeDeviceId}
+    //         errorMessages={{
+    //             noCameraAccessible:
+    //             "No camera device accessible. Please connect your camera or try a different browser.",
+    //             permissionDenied:
+    //             "Permission denied. Please refresh and give camera permission.",
+    //             switchCamera:
+    //             "It is not possible to switch camera to different one because there is only one video device accessible.",
+    //             canvas: "Canvas is not supported.",
+    //         }}
+    //         videoReadyCallback={() => {
+    //             console.log("Video feed ready.");
+    //         }}
+    //     />
+    //     <Control>
+    //       <TakePhotoButton
+    //         onClick={() => takePhotoAndSave(1)}
+    //         disabled={devices.length === 0}
+    //       />
+    //     </Control>
+    //   </Wrapper>
+    // </ModalWrapper>
+    <div className="camera__container">
+      <div className="camera__overlay">
+        <div>
+          <IonIcon icon={close} className="camera__close" />
+        </div>
         <Camera
             ref={camera}
             aspectRatio="cover"
@@ -169,14 +202,14 @@ const CameraContainer = () => {
                 console.log("Video feed ready.");
             }}
         />
-        <Control>
-          <TakePhotoButton
-            onClick={() => takePhotoAndSave(1)}
-            disabled={devices.length === 0}
-          />
-        </Control>
-      </Wrapper>
-    </ModalWrapper>
+        <div className="capture__button" onClick={() => takePhotoAndSave(1)}>
+          <div className="capture__button__inner" />
+        </div>
+        <div>
+          <IonIcon icon={sync} className="camera__flip" />
+        </div>
+      </div>
+    </div>
   );
 };
 
