@@ -9,88 +9,7 @@ import { base64FromPath } from "../utils/base64FromPath";
 import { UserPhoto } from "../interfaces";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
-import { close, sync } from "ionicons/icons";
-
-const Wrapper = styled.div`
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-`;
-
-const ModalWrapper = styled.div`
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-`;
-
-const Control = styled.div`
-  position: fixed;
-  display: flex;
-  right: 0;
-  min-width: 130px;
-  min-height: 130px;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 50px;
-  box-sizing: border-box;
-
-  @media (max-aspect-ratio: 1/1) {
-    flex-direction: column;
-    bottom: 0;
-    width: 100%;
-    height: 20%;
-  }
-`;
-
-const Button = styled.button`
-  outline: none;
-  color: white;
-  opacity: 1;
-  background: transparent;
-  background-color: transparent;
-  background-position-x: 0%;
-  background-position-y: 0%;
-  background-repeat: repeat;
-  background-image: none;
-  padding: 0;
-  text-shadow: 0px 0px 4px black;
-  background-position: center center;
-  background-repeat: no-repeat;
-  pointer-events: auto;
-  cursor: pointer;
-  z-index: 2;
-  filter: invert(100%);
-  border: none;
-
-  &:hover {
-    opacity: 0.7;
-  }
-`;
-
-const TakePhotoButton = styled(Button)`
-  background: url("https://img.icons8.com/ios/50/000000/compact-camera.png");
-  background-position: center;
-  background-size: 50px;
-  background-repeat: no-repeat;
-  width: 80px;
-  height: 80px;
-  border: solid 4px black;
-  border-radius: 50%;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-`;
+import { checkmark, close, sync } from "ionicons/icons";
 
 const CameraContainer = () => {
   const camera = useRef<CameraType>(null);
@@ -153,62 +72,49 @@ const CameraContainer = () => {
   };
 
   return (
-    // <ModalWrapper>
-    //   <Wrapper>
-    //     <Camera
-    //         ref={camera}
-    //         aspectRatio="cover"
-    //         videoSourceDeviceId={activeDeviceId}
-    //         errorMessages={{
-    //             noCameraAccessible:
-    //             "No camera device accessible. Please connect your camera or try a different browser.",
-    //             permissionDenied:
-    //             "Permission denied. Please refresh and give camera permission.",
-    //             switchCamera:
-    //             "It is not possible to switch camera to different one because there is only one video device accessible.",
-    //             canvas: "Canvas is not supported.",
-    //         }}
-    //         videoReadyCallback={() => {
-    //             console.log("Video feed ready.");
-    //         }}
-    //     />
-    //     <Control>
-    //       <TakePhotoButton
-    //         onClick={() => takePhotoAndSave(1)}
-    //         disabled={devices.length === 0}
-    //       />
-    //     </Control>
-    //   </Wrapper>
-    // </ModalWrapper>
     <div className="camera__container">
-      <div className="camera__overlay">
-        <div>
-          <IonIcon icon={close} className="camera__close" />
+      {photo ? (
+        <div className="image__review">
+          <img src={image} alt="Captured" />
+          <div className="review__buttons">
+            <button className="retake__button" onClick={handleRetakeImage}>
+              <IonIcon icon={close} className="retake__button__icon" />
+            </button>
+            <button className="save__button" onClick={handleSaveImage}>
+              <IonIcon icon={checkmark} className="save__button__icon" />
+            </button>
+          </div>
         </div>
-        <Camera
-            ref={camera}
-            aspectRatio="cover"
-            videoSourceDeviceId={activeDeviceId}
-            errorMessages={{
-                noCameraAccessible:
-                "No camera device accessible. Please connect your camera or try a different browser.",
-                permissionDenied:
-                "Permission denied. Please refresh and give camera permission.",
-                switchCamera:
-                "It is not possible to switch camera to different one because there is only one video device accessible.",
-                canvas: "Canvas is not supported.",
-            }}
-            videoReadyCallback={() => {
-                console.log("Video feed ready.");
-            }}
-        />
-        <div className="capture__button" onClick={() => takePhotoAndSave(1)}>
-          <div className="capture__button__inner" />
+      ) : (
+        <div className="camera__overlay">
+          <div>
+            <IonIcon icon={close} className="camera__close" />
+          </div>
+          <Camera
+              ref={camera}
+              aspectRatio="cover"
+              videoSourceDeviceId={activeDeviceId}
+              errorMessages={{
+                  noCameraAccessible:
+                  "No camera device accessible. Please connect your camera or try a different browser.",
+                  permissionDenied:
+                  "Permission denied. Please refresh and give camera permission.",
+                  switchCamera:
+                  "It is not possible to switch camera to different one because there is only one video device accessible.",
+                  canvas: "Canvas is not supported.",
+              }}
+              videoReadyCallback={() => {
+                  console.log("Video feed ready.");
+              }}
+          />
+          <div className="capture__button" onClick={() => takePhotoAndSave(1)}>
+            <div className="capture__button__inner" />
+          </div>
+          <div>
+            <IonIcon icon={sync} className="camera__flip" />
+          </div>
         </div>
-        <div>
-          <IonIcon icon={sync} className="camera__flip" />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

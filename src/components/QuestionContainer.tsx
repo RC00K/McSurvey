@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import { IonIcon, IonLabel } from "@ionic/react";
 import { AccordionContainer } from "./AccordionContainer";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
@@ -21,10 +22,11 @@ export const QuestionContainer = ({
   const { images, storeNumber, setStoreNumber } = useReview();
   const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const history = useHistory();
 
-  const takePhoto = async () => {
-    const photo = CameraContainer
-  }
+  const openCameraPage = () => {
+    history.push("/camera");
+  };
 
   // Check if the survey is complete
   const isReadyForReview = () => {
@@ -80,7 +82,7 @@ export const QuestionContainer = ({
                       className="file__upload"
                       onClick={(e) => {
                         e.preventDefault();
-                        setIsCameraOpen(true);
+                        openCameraPage();
                       }}
                     >
                       {imageSrc && imageSrc.startsWith("data:image") ? (
@@ -102,7 +104,6 @@ export const QuestionContainer = ({
           });
         })}
       </div>
-      {isCameraOpen && <CameraContainer />}
     </>
   );
 };
