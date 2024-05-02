@@ -25,28 +25,42 @@ const CameraContainer = () => {
   const [reviewMode, setReviewMode] = useState(false);
 
   useEffect(() => {
-    (async () => {
+    const initCamera = async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter((i) => i.kind == "videoinput");
       if (videoDevices.length > 0) {
         setActiveDeviceId(videoDevices[0].deviceId);
       }
       setDevices(videoDevices);
-    })();
+    };
+    
+    initCamera();
   });
+
+  useEffect(() => {
+    // Check if an image already exists for question index
+    const existingImage = images[`question_${questionIndexNumber}`];
+    if (existingImage) {
+      setImage(existingImage);
+    }
+  }, [questionIndexNumber, images]);
 
   const updateImageInState = (questionIndex: number, imageSrc: string) => {
     const updatedImages = { ...images, [`question_${questionIndex}`]: imageSrc };
     setImages(updatedImages);
+    // Store images persistently using localStorage
     localStorage.setItem("surveyData", JSON.stringify({ images: updatedImages }));
-  }
+  };
 
   const handleCaptureClick = async () => {
     if (camera.current) {
-      const imageData = camera.current.takePhoto();
-      console.log("Captured imageData:", imageData);
-      setImage(imageData);
-      setReviewMode(true);
+      try {
+        const imageData = await camera.current.takePhoto();
+        setImage(imageData);
+        setReviewMode(true);
+      } catch (error) {
+        console.error("Failed to take photo: ", error);
+      }
     }
   };
 
@@ -59,14 +73,14 @@ const CameraContainer = () => {
           data: image,
           directory: Directory.Data,
         });
+
         const imageUrl = `capacitor://${savedFileImage.uri}`;
-        addImage(`question_${questionIndex}`, imageUrl);
+        addImage(`question_${questionIndexNumber}`, imageUrl);
         updateImageInState(questionIndexNumber, imageUrl);
-        history.back();
         setReviewMode(false);
         setImage(null);
       } catch (error) {
-        console.error("Failed to save image: ", error);
+        console.error("Failed to save photo: ", error);
       }
     }
   };

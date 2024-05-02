@@ -21,8 +21,9 @@ export const QuestionContainer = ({
 }: QuestionContainerProps) => {
   const { images, storeNumber, setStoreNumber } = useReview();
   const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const history = useHistory();
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const openCameraPage = (questionIndex: number) => {
     history.push(`/camera/${questionIndex}`);
@@ -85,7 +86,8 @@ export const QuestionContainer = ({
                         openCameraPage(qIndex);
                       }}
                     >
-                      {imageSrc && imageSrc.startsWith("data:image") ? (
+                      {/* imageSrc from imageUrl = capacitor://${savedFileImage.uri} */}
+                      {imageSrc ? (
                         <img
                           src={imageSrc}
                           alt="Uploaded"
