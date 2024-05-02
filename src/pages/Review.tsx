@@ -56,13 +56,7 @@ const Review: React.FC = () => {
                     <IonIcon icon={arrowBack} />
                     Edit Responses
                 </IonButton>
-                <IonButton onClick={handleSubmit} expand="block">
-                    Submit
-                </IonButton>
             </IonContent>
-            {/* <button className="floating__button">
-                Submit
-            </button> */}
         </IonPage>
     );
 }

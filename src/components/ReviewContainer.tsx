@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useReview } from "../components/Review/ReviewContext";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
 import {
@@ -10,6 +11,9 @@ import {
   IonLabel,
   IonList,
   IonThumbnail,
+  IonModal,
+  IonToast,
+  IonLoading
 } from "@ionic/react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -18,9 +22,12 @@ export const ReviewContainer = () => {
   const { driveThruSelection, images, storeNumber } = useReview();
   const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
   const storedImages = images || JSON.parse(localStorage.getItem("reviewImages") || "{}");
+  const history = useHistory();
 
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   // Generate PDF and return as base64 string
   const generatePDF = async () => {
@@ -187,6 +194,7 @@ export const ReviewContainer = () => {
 
   const handleSendEmail = async (event: any) => {
     event.preventDefault();
+    setShowLoading(true);
     try {
       const pdfBlob = await generatePDF();
       const formData = new FormData();
@@ -204,15 +212,20 @@ export const ReviewContainer = () => {
 
       if (response.ok) {
         setEmailSent(true);
-        alert("Email sent successfully");
+        setShowToast(true);
+        setShowLoading(false);
+        setTimeout(() => {
+          history.push("/");
+        }, 3000);
         console.log("Email sent successfully");
       } else {
         throw new Error(responseData.error || "Failed to send email");
       }
     } catch (error) {
       console.error("Email sending failed", error);
-      alert("Email sending failed");
       setEmailSent(false);
+      setShowToast(true);
+      setShowLoading(false);
     }
   };
 
@@ -249,6 +262,15 @@ export const ReviewContainer = () => {
         ) : null;
       }))}
       <IonButton expand="block" color="dark" onClick={handleGeneratePDF}>Submit</IonButton>
+      <IonLoading isOpen={showLoading} message={'Sending email...'} onDidDismiss={() => setShowLoading(false)} />
+      <IonToast
+        isOpen={showToast}
+        onDidDismiss={() => setShowToast(false)}
+        message={emailSent ? "Email sent successfully!" : "Failed to send email"}
+        duration={2000}
+        position="top"
+        color={emailSent ? "success" : "danger"}
+      />
     </div>
   );
 

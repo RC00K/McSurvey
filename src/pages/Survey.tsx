@@ -1,4 +1,4 @@
-import { IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonPage, IonButton } from "@ionic/react";
 import { QuestionContainer } from "../components/QuestionContainer";
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
@@ -70,14 +70,7 @@ const Survey: React.FC = () => {
             onReadyForReviewChange={handleReadyForReviewChange}
           />
         </div>
-        <button
-          type="button"
-          className="floating__button"
-          onClick={handleGoToReview}
-          disabled={!readyForReview}
-        >
-          Continue to Review
-        </button>
+        <IonButton expand="block" color="dark" onClick={handleGoToReview} disabled={!readyForReview}>Continue to Review</IonButton>
       </IonContent>
     </IonPage>
   );

@@ -26,6 +26,7 @@ import './theme/variables.css';
 import Review from './pages/Review';
 import { ReviewProvider } from './components/Review/ReviewContext';
 import Camera from './pages/Camera';
+import CameraContainer from './components/CameraContainer';
 
 setupIonicReact();
 
@@ -35,7 +36,7 @@ const App: React.FC = () => (
       <Route path="/" exact component={Home} />
       <ReviewProvider>
         <Route path="/survey/:surveyId" component={Survey} />
-        <Route path="/camera" component={Camera} />
+        <Route path="/camera/:questionIndex" component={CameraContainer} />
         <Route path="/review" component={Review} />
       </ReviewProvider>
     </Switch>

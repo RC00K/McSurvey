@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { Camera, CameraType } from "./Camera";
@@ -9,7 +10,7 @@ import { base64FromPath } from "../utils/base64FromPath";
 import { UserPhoto } from "../interfaces";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
-import { checkmark, close, sync } from "ionicons/icons";
+import { add, checkmark, close, sync } from "ionicons/icons";
 
 const CameraContainer = () => {
   const camera = useRef<CameraType>(null);
@@ -18,11 +19,18 @@ const CameraContainer = () => {
     undefined
   );
   const { addImage, images, setImages } = useReview();
+  const { questionIndex } = useParams<{ questionIndex: string }>();
+  const questionIndexNumber = parseInt(questionIndex, 10);
+  const [image, setImage] = useState<string | null>(null);
+  const [reviewMode, setReviewMode] = useState(false);
 
   useEffect(() => {
     (async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter((i) => i.kind == "videoinput");
+      if (videoDevices.length > 0) {
+        setActiveDeviceId(videoDevices[0].deviceId);
+      }
       setDevices(videoDevices);
     })();
   });
@@ -33,59 +41,43 @@ const CameraContainer = () => {
     localStorage.setItem("surveyData", JSON.stringify({ images: updatedImages }));
   }
 
-  const takePhotoAndSave = async (questionIndex: number) => {
+  const handleCaptureClick = async () => {
     if (camera.current) {
-        const photo = camera.current.takePhoto();
-        const fileName = `photo_${new Date().getTime()}.jpeg`;
-        const savedFileImage = await savePicture(photo, fileName);
-        if (savedFileImage.filepath) {
-            const imageSrc = await loadSavedImage(savedFileImage.filepath);
-            updateImageInState(questionIndex, imageSrc);
-        }
+      const imageData = camera.current.takePhoto();
+      console.log("Captured imageData:", imageData);
+      setImage(imageData);
+      setReviewMode(true);
     }
   };
 
-  const savePicture = async (base64Data: string, fileName: string): Promise<UserPhoto> => {
-    await Filesystem.writeFile({
-        path: fileName,
-        data: base64Data,
-        directory: Directory.Data,
-    });
-
-    return {
-        filepath: fileName,
-        webviewPath: `data:image/jpeg;base64,${base64Data}`,
-    };
-  };
-
-  const loadSavedImage = async (filePath: string): Promise<string> => {
-    try {
-        const fileContents = await Filesystem.readFile({
-            path: filePath,
-            directory: Directory.Data,
+  const handleSaveClick = async () => {
+    if (image) {
+      const fileName = `photo_${new Date().getTime()}.jpeg`;
+      try {
+        const savedFileImage = await Filesystem.writeFile({
+          path: fileName,
+          data: image,
+          directory: Directory.Data,
         });
-        return `data:image/jpeg;base64,${fileContents.data}`;
-    } catch (error) {
-        console.error("Failed to load image: ", error);
-        return "";
+        const imageUrl = `capacitor://${savedFileImage.uri}`;
+        addImage(`question_${questionIndex}`, imageUrl);
+        updateImageInState(questionIndexNumber, imageUrl);
+        history.back();
+        setReviewMode(false);
+        setImage(null);
+      } catch (error) {
+        console.error("Failed to save image: ", error);
+      }
     }
+  };
+
+  const handleRetakeClick = () => {
+    setImage(null);
+    setReviewMode(false);
   };
 
   return (
     <div className="camera__container">
-      {photo ? (
-        <div className="image__review">
-          <img src={image} alt="Captured" />
-          <div className="review__buttons">
-            <button className="retake__button" onClick={handleRetakeImage}>
-              <IonIcon icon={close} className="retake__button__icon" />
-            </button>
-            <button className="save__button" onClick={handleSaveImage}>
-              <IonIcon icon={checkmark} className="save__button__icon" />
-            </button>
-          </div>
-        </div>
-      ) : (
         <div className="camera__overlay">
           <div>
             <IonIcon icon={close} className="camera__close" />
@@ -107,14 +99,26 @@ const CameraContainer = () => {
                   console.log("Video feed ready.");
               }}
           />
-          <div className="capture__button" onClick={() => takePhotoAndSave(1)}>
+          <div className="capture__button" onClick={handleCaptureClick}>
             <div className="capture__button__inner" />
           </div>
           <div>
             <IonIcon icon={sync} className="camera__flip" />
           </div>
         </div>
-      )}
+        {reviewMode && image && (
+          <div className="image__review">
+            <img src={image} alt="Captured image" />
+            <div className="review__buttons">
+              <button className="retake__button" onClick={handleRetakeClick}>
+                <IonIcon icon={close} className="retake__button__icon" />
+              </button>
+              <button className="save__button" onClick={handleSaveClick}>
+                <IonIcon icon={checkmark} className="save__button__icon" />
+              </button>
+            </div>
+          </div>
+        )}
     </div>
   );
 };

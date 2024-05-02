@@ -44,9 +44,9 @@ export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   };
 
-  const addImage = useCallback((questionId: string, image: string) => {
+  const addImage = useCallback((questionId: string, imageSrc: string) => {
     setImages((prevImages) => {
-      const updatedImages = { ...prevImages, [questionId]: image };
+      const updatedImages = { ...prevImages, [questionId]: imageSrc };
       return updatedImages;
     });
   }, []);

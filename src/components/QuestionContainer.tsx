@@ -24,8 +24,8 @@ export const QuestionContainer = ({
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const history = useHistory();
 
-  const openCameraPage = () => {
-    history.push("/camera");
+  const openCameraPage = (questionIndex: number) => {
+    history.push(`/camera/${questionIndex}`);
   };
 
   // Check if the survey is complete
@@ -82,7 +82,7 @@ export const QuestionContainer = ({
                       className="file__upload"
                       onClick={(e) => {
                         e.preventDefault();
-                        openCameraPage();
+                        openCameraPage(qIndex);
                       }}
                     >
                       {imageSrc && imageSrc.startsWith("data:image") ? (
