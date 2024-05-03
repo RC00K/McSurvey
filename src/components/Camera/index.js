@@ -173,11 +173,37 @@ var Camera = React.forwardRef(function (_a, ref) {
         setFacingMode(newFacingMode);
         return newFacingMode;
       },
+      stopCamera: function () {
+        if (stream) {
+          stream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+          setStream(null);
+        }
+      },
+      restartCamera: function () {
+        initCameraStream(stream, setStream, currentFacingMode, setNumberOfCameras);
+      },
       getNumberOfCameras: function () {
         return numberOfCameras;
       },
     };
   });
+
+  useEffect(() => {
+    if (stream) { 
+      player.current.srcObject = stream;
+    }
+  }, [stream]);
+
+  useEffect(() => {
+    return function cleanup() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    }
+  }, [stream]);
+
   useEffect(
     function () {
       return initCameraStream(

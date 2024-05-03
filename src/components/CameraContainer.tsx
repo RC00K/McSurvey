@@ -1,17 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import styled from "styled-components";
 
 import { Camera, CameraType } from "./Camera";
-import { Photo } from "@capacitor/camera";
-import { Filesystem, Directory } from "@capacitor/filesystem";
 import { useReview } from "../components/Review/ReviewContext";
-import { base64FromPath } from "../utils/base64FromPath";
-import { UserPhoto } from "../interfaces";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
 import { add, checkmark, close, sync } from "ionicons/icons";
-import { Capacitor } from "@capacitor/core";
 
 const CameraContainer = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
@@ -62,16 +56,11 @@ const CameraContainer = () => {
         const imageData = camera.current.takePhoto();
         setImage(imageData);
         setReviewMode(true);
+        camera.current.stopCamera();
       } catch (error) {
         console.error("Failed to takes photo: ", error);
       }
     }
-  };
-  
-  const handleCameraFlip = () => {
-    const currentIndex = devices.findIndex(device => device.deviceId === activeDeviceId);
-    const nextIndex = (currentIndex + 1) % devices.length;
-    setActiveDeviceId(devices[nextIndex].deviceId);
   };
 
   const handleSaveClick = async () => {
@@ -91,6 +80,9 @@ const CameraContainer = () => {
   const handleRetakeClick = () => {
     setImage(null);
     setReviewMode(false);
+    if (camera.current) {
+      camera.current.restartCamera();
+    }
   };
 
   return (

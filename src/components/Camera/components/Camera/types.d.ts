@@ -13,5 +13,7 @@ export interface CameraProps {
 export declare type CameraType = React.ForwardRefExoticComponent<CameraProps & React.RefAttributes<unknown>> & {
   takePhoto(): string;
   switchCamera(): FacingMode;
+  stopCamera(): void;
+  restartCamera(): void;
   getNumberOfCameras(): number;
 };
