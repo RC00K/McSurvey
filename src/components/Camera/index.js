@@ -96,7 +96,7 @@ var templateObject_1,
 
 var Camera = React.forwardRef(function (_a, ref) {
   var _b = _a.facingMode,
-    facingMode = _b === void 0 ? "user" : _b,
+    facingMode = _b === void 0 ? "environment" : _b,
     _c = _a.aspectRatio,
     aspectRatio = _c === void 0 ? "cover" : _c,
     _d = _a.numberOfCamerasCallback,
@@ -126,68 +126,38 @@ var Camera = React.forwardRef(function (_a, ref) {
   );
   useImperativeHandle(ref, function () {
     return {
-      takePhoto: function () {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+      takePhoto: function () {      
         if (numberOfCameras < 1) {
           throw new Error("There isn't any video device accessible.");
         }
-        if ((_a = canvas) === null || _a === void 0 ? void 0 : _a.current) {
-          var playerWidth =
-            ((_c =
-              (_b = player) === null || _b === void 0 ? void 0 : _b.current) ===
-              null || _c === void 0
-              ? void 0
-              : _c.videoWidth) || 1280;
-          var playerHeight =
-            ((_e =
-              (_d = player) === null || _d === void 0 ? void 0 : _d.current) ===
-              null || _e === void 0
-              ? void 0
-              : _e.videoHeight) || 720;
-          var playerAR = playerWidth / playerHeight;
-          var canvasWidth =
-            ((_g =
-              (_f = container) === null || _f === void 0
-                ? void 0
-                : _f.current) === null || _g === void 0
-              ? void 0
-              : _g.offsetWidth) || 1280;
-          var canvasHeight =
-            ((_j =
-              (_h = container) === null || _h === void 0
-                ? void 0
-                : _h.current) === null || _j === void 0
-              ? void 0
-              : _j.offsetHeight) || 1280;
-          var canvasAR = canvasWidth / canvasHeight;
-          var sX = void 0,
-            sY = void 0,
-            sW = void 0,
-            sH = void 0;
-          if (playerAR > canvasAR) {
-            sH = playerHeight;
-            sW = playerHeight * canvasAR;
-            sX = (playerWidth - sW) / 2;
-            sY = 0;
+      
+        if (canvas && canvas.current && player && player.current) {
+          const videoElement = player.current;
+
+          // The intrinsic video resolution for the canvas
+          const canvasWidth = videoElement.videoWidth;
+          const canvasHeight = videoElement.videoHeight;
+
+          canvas.current.width = canvasWidth;
+          canvas.current.height = canvasHeight;
+
+          const context = canvas.current.getContext("2d");
+
+          if (context) {
+            // Flip the image if the camera mode is user (front-facing camera)
+            if (currentFacingMode === "user") {
+              context.translate(canvasWidth, 0);
+              context.scale(-1, 1);
+            }
+
+            context.drawImage(videoElement, 0, 0, canvasWidth, canvasHeight);
+            const imgData = canvas.current.toDataURL("image/jpeg");
+            return imgData;
           } else {
-            sW = playerWidth;
-            sH = playerWidth / canvasAR;
-            sX = 0;
-            sY = (playerHeight - sH) / 2;
+            throw new Error(errorMessages.canvas);
           }
-          canvas.current.width = sW;
-          canvas.current.height = sH;
-          var context = canvas.current.getContext("2d");
-          if (
-            context &&
-            ((_k = player) === null || _k === void 0 ? void 0 : _k.current)
-          ) {
-            context.drawImage(player.current, sX, sY, sW, sH, 0, 0, sW, sH);
-          }
-          var imgData = canvas.current.toDataURL("image/jpeg");
-          return imgData;
         } else {
-          throw new Error("Canvas is not supported");
+          throw new Error(errorMessages.canvas);
         }
       },
       switchCamera: function () {
@@ -199,7 +169,7 @@ var Camera = React.forwardRef(function (_a, ref) {
           );
         }
         var newFacingMode =
-          currentFacingMode === "user" ? "environment" : "user";
+          currentFacingMode === "environment" ? "user" : "environment";
         setFacingMode(newFacingMode);
         return newFacingMode;
       },
