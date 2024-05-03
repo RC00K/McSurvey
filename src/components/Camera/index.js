@@ -108,7 +108,6 @@ var Camera = React.forwardRef(function (_a, ref) {
         : _d;
   var player = useRef(null);
   var canvas = useRef(null);
-  var streams = useRef(new Map());
   var container = useRef(null);
   var _e = useState(0),
     numberOfCameras = _e[0],
@@ -119,40 +118,6 @@ var Camera = React.forwardRef(function (_a, ref) {
   var _g = useState(facingMode),
     currentFacingMode = _g[0],
     setFacingMode = _g[1];
-  var _h = useState(null),
-    activeStream = _h[0],
-    setActiveStream = _h[1];
-  var _j = useState(true),
-    loading = _j[0],
-    setLoading = _j[1];
-
-  useEffect(() => {
-    async function initStreams() {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === "videoinput");
-        const initialDevice = videoDevices[0];
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { deviceId: initialDevice.deviceId },
-        });
-        streams.current.set(initialDevice.deviceId, stream);
-        setActiveStream(stream);
-      } catch (error) {
-        console.error("Failed to initialize camera", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    initStreams();
-
-    return () => {
-      streams.current.forEach(stream => {
-        stream.getTracks().forEach(track => track.stop());
-      });
-    };
-  }, []);
-    
   useEffect(
     function () {
       numberOfCamerasCallback(numberOfCameras);
@@ -195,49 +160,35 @@ var Camera = React.forwardRef(function (_a, ref) {
           throw new Error(errorMessages.canvas);
         }
       },
-      switchCamera: async () => {
-        if (loading) return;
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === "videoinput");
-        const currentIndex = videoDevices.findIndex(device => streams.current.has(device.deviceId));
-        const nextIndex = (currentIndex + 1) % videoDevices.length;
-        const nextDevice = videoDevices[nextIndex];
-
-        if (!streams.current.has(nextDevice.deviceId)) {
-          const newStream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId: nextDevice.deviceId },
-          });
-          streams.current.set(nextDevice.deviceId, newStream);
-          setActiveStream(newStream);
-        } else {
-          setActiveStream(streams.current.get(nextDevice.deviceId));
+      switchCamera: function () {
+        if (numberOfCameras < 1) {
+          throw new Error("There isn't any video device accessible.");
+        } else if (numberOfCameras < 2) {
+          console.warn(
+            "It is not possible to switch camera to different one, because there is only one video device accessible."
+          );
         }
-        setFacingMode(nextDevice.label.includes("user") ? "environment" : "user");
+        var newFacingMode =
+          currentFacingMode === "environment" ? "user" : "environment";
+        setFacingMode(newFacingMode);
+        return newFacingMode;
       },
-      stopCamera: () => {
-        if (activeStream) {
-          activeStream.getTracks().forEach(track => track.stop());
+      stopCamera: function () {
+        if (stream) {
+          stream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+          setStream(null);
         }
       },
-      restartCamera: async () => {
-        if (loading) return;
-        if (activeStream) {
-          const deviceId = activeStream.getTracks()[0].getSettings().deviceId;
-          const newStream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId },
-          });
-          streams.current.set(deviceId, newStream);
-          setActiveStream(newStream);
-        }
+      restartCamera: function () {
+        initCameraStream(stream, setStream, currentFacingMode, setNumberOfCameras);
+      },
+      getNumberOfCameras: function () {
+        return numberOfCameras;
       },
     };
   });
-
-  useEffect(() => {
-    if (player.current && activeStream) {
-      player.current.srcObject = activeStream;
-    }
-  }, [activeStream]);
 
   useEffect(() => {
     if (stream) { 
