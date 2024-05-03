@@ -96,7 +96,7 @@ var templateObject_1,
 
 var Camera = React.forwardRef(function (_a, ref) {
   var _b = _a.facingMode,
-    facingMode = _b === void 0 ? "user" : _b,
+    facingMode = _b === void 0 ? "environment" : _b,
     _c = _a.aspectRatio,
     aspectRatio = _c === void 0 ? "cover" : _c,
     _d = _a.numberOfCamerasCallback,
