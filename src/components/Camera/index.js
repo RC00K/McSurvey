@@ -122,26 +122,26 @@ var Camera = React.forwardRef(function (_a, ref) {
   var _h = useState(null),
     activeStream = _h[0],
     setActiveStream = _h[1];
+  var _j = useState(true),
+    loading = _j[0],
+    setLoading = _j[1];
 
   useEffect(() => {
     async function initStreams() {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(device => device.kind === "videoinput");
-
-      const streamsPromise = videoDevices.map(device => 
-        navigator.mediaDevices.getUserMedia({
-          video: {
-            deviceId: device.deviceId,
-          }
-        })
-      );
-
-      const allStreams = await Promise.all(streamsPromise);
-
-      videoDevices.forEach((device, index) => {
-        streams.current.set(device.deviceId, allStreams[index]);
-        if (index === 0) setActiveStream(allStreams[index]);
-      });
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === "videoinput");
+        const initialDevice = videoDevices[0];
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: initialDevice.deviceId },
+        });
+        streams.current.set(initialDevice.deviceId, stream);
+        setActiveStream(stream);
+      } catch (error) {
+        console.error("Failed to initialize camera", error);
+      } finally {
+        setLoading(false);
+      }
     }
 
     initStreams();
@@ -195,29 +195,40 @@ var Camera = React.forwardRef(function (_a, ref) {
           throw new Error(errorMessages.canvas);
         }
       },
-      switchCamera: function () {
-        const devices = Array.from(streams.current.keys());
-        const currentIndex = devices.indexOf(activeStream.id);
-        const nextIndex = (currentIndex + 1) % devices.length;
-        const nextDeviceId = devices[nextIndex];
-        setActiveStream(streams.current.get(nextDeviceId));
-        setFacingMode(currentFacingMode === "environment" ? "user" : "environment");
-      },
-      stopCamera: function () {
-        activeStream.getTracks().forEach(track => track.stop());
-      },
-      restartCamera: function () {
-        const devices = Array.from(streams.current.keys());
-        const device = devices.find(deviceId => streams.current.get(deviceId) === activeStream);
-        navigator.mediaDevices.getUserMedia({
-          video: { deviceId: device }
-        }).then(newStream => {
-          streams.current.set(device, newStream);
+      switchCamera: async () => {
+        if (loading) return;
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === "videoinput");
+        const currentIndex = videoDevices.findIndex(device => streams.current.has(device.deviceId));
+        const nextIndex = (currentIndex + 1) % videoDevices.length;
+        const nextDevice = videoDevices[nextIndex];
+
+        if (!streams.current.has(nextDevice.deviceId)) {
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            video: { deviceId: nextDevice.deviceId },
+          });
+          streams.current.set(nextDevice.deviceId, newStream);
           setActiveStream(newStream);
-        });
+        } else {
+          setActiveStream(streams.current.get(nextDevice.deviceId));
+        }
+        setFacingMode(nextDevice.label.includes("user") ? "environment" : "user");
       },
-      getNumberOfCameras: function () {
-        return numberOfCameras;
+      stopCamera: () => {
+        if (activeStream) {
+          activeStream.getTracks().forEach(track => track.stop());
+        }
+      },
+      restartCamera: async () => {
+        if (loading) return;
+        if (activeStream) {
+          const deviceId = activeStream.getTracks()[0].getSettings().deviceId;
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            video: { deviceId },
+          });
+          streams.current.set(deviceId, newStream);
+          setActiveStream(newStream);
+        }
       },
     };
   });
