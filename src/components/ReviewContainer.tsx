@@ -214,9 +214,6 @@ export const ReviewContainer = () => {
         setEmailSent(true);
         setShowToast(true);
         setShowLoading(false);
-        setTimeout(() => {
-          history.push("/");
-        }, 3000);
         console.log("Email sent successfully");
       } else {
         throw new Error(responseData.error || "Failed to send email");
@@ -233,6 +230,18 @@ export const ReviewContainer = () => {
     event.preventDefault();
     handleSendEmail(event);
   }
+
+  const navigateToHome = () => {
+    history.push("/");
+  };
+
+  useEffect(() => {
+    if (emailSent) {
+      setTimeout(() => {
+        navigateToHome();
+      }, 5000);
+    }
+  }, [emailSent]);;
 
   return (
     <div className="review__container">

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { IonIcon, IonLabel } from "@ionic/react";
 import { AccordionContainer } from "./AccordionContainer";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
@@ -9,6 +9,7 @@ import { useReview } from "./Review/ReviewContext";
 import { usePhotoGallery } from "../hooks/usePhotoGallery";
 import "../theme/floating-button.css";
 import CameraContainer from "./CameraContainer";
+import { Filesystem } from "@capacitor/filesystem";
 
 interface QuestionContainerProps {
   driveThruSelection: string;
@@ -22,12 +23,25 @@ export const QuestionContainer = ({
   const { images, storeNumber, setStoreNumber } = useReview();
   const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
   const history = useHistory();
+  const location = useLocation();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const openCameraPage = (questionIndex: number) => {
-    history.push(`/camera/${questionIndex}`);
+    const questionId = `question_${questionIndex}`;
+    history.push(`/camera/${questionIndex}#${questionId}`);
   };
+
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView();
+        }
+      }, 0);
+    }
+  }, [location.hash]);
 
   // Check if the survey is complete
   const isReadyForReview = () => {
@@ -66,7 +80,7 @@ export const QuestionContainer = ({
                     <p>{question.questionDesc}</p>
                   </div>
                   <div>
-                    <div key={`question_${index}`} className="question__body">
+                    <div key={`question_${index}`} className="question__body" id={questionId}>
                       <p>{question.question}</p>
                     </div>
                     {question.questionHints &&

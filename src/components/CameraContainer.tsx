@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { Camera, CameraType } from "./Camera";
@@ -11,6 +11,7 @@ import { UserPhoto } from "../interfaces";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
 import { add, checkmark, close, sync } from "ionicons/icons";
+import { Capacitor } from "@capacitor/core";
 
 const CameraContainer = () => {
   const camera = useRef<CameraType>(null);
@@ -23,6 +24,8 @@ const CameraContainer = () => {
   const questionIndexNumber = parseInt(questionIndex, 10);
   const [image, setImage] = useState<string | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
+
+  const history = useHistory();
 
   useEffect(() => {
     const initCamera = async () => {
@@ -55,32 +58,31 @@ const CameraContainer = () => {
   const handleCaptureClick = async () => {
     if (camera.current) {
       try {
-        const imageData = await camera.current.takePhoto();
+        const imageData = camera.current.takePhoto();
         setImage(imageData);
         setReviewMode(true);
       } catch (error) {
-        console.error("Failed to take photo: ", error);
+        console.error("Failed to takes photo: ", error);
       }
     }
   };
 
+  const handleCameraFlip = () => {
+    const currentIndex = devices.findIndex(device => device.deviceId === activeDeviceId);
+    const nextIndex = (currentIndex + 1) % devices.length;
+    setActiveDeviceId(devices[nextIndex].deviceId);
+  };
+
   const handleSaveClick = async () => {
     if (image) {
-      const fileName = `photo_${new Date().getTime()}.jpeg`;
       try {
-        const savedFileImage = await Filesystem.writeFile({
-          path: fileName,
-          data: image,
-          directory: Directory.Data,
-        });
-
-        const imageUrl = `capacitor://${savedFileImage.uri}`;
-        addImage(`question_${questionIndexNumber}`, imageUrl);
-        updateImageInState(questionIndexNumber, imageUrl);
+        addImage(`question_${questionIndexNumber}`, image);
+        updateImageInState(questionIndexNumber, image);
         setReviewMode(false);
         setImage(null);
+        history.goBack();
       } catch (error) {
-        console.error("Failed to save photo: ", error);
+        console.error("Failed to add image: ", error);
       }
     }
   };
@@ -116,7 +118,7 @@ const CameraContainer = () => {
           <div className="capture__button" onClick={handleCaptureClick}>
             <div className="capture__button__inner" />
           </div>
-          <div>
+          <div onClick={handleCameraFlip}>
             <IonIcon icon={sync} className="camera__flip" />
           </div>
         </div>
