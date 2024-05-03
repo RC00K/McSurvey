@@ -155,6 +155,40 @@ var Camera = React.forwardRef(function (_a, ref) {
     [numberOfCameras]
   );
 
+  useEffect(() => {
+    async function initCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        setStream(null);
+      }
+
+      const constraints = {
+        video: {
+          deviceId: videoSourceDeviceId ? { exact: videoReadyCallback } : undefined,
+          facingMode: facingMode,
+          aspectRatio: aspectRatio,
+        }
+      };
+
+      try {
+        const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+        setStream(newStream);
+        player.current.srcObject = newStream;
+        videoReadyCallback();
+      } catch (error) {
+        console.error("Failed to initialize camera", error);
+      }
+    }
+
+    initCamera();
+
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [videoSourceDeviceId, facingMode, aspectRatio]);
+
   useImperativeHandle(ref, function () {
     return {
       takePhoto: function () {
