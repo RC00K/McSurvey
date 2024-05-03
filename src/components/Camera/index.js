@@ -61,65 +61,23 @@ var ErrorMsg = styled.div(
     ))
 );
 
-// Initial zoom level of 1
-const [zoomLevel, setZoomLevel] = useState(1);
-
-// Tracking distance between fingers
-let touchDistance = null;
-
-const handleTouchStart = (event) => {
-  if (event.touches.length === 2) {
-    // Two-finger touch: Calculate initial distance
-    const [touch1, touch2] = event.touches;
-
-    touchDistance = Math.hypot(
-      touch1.clientX - touch2.clientX,
-      touch1.clientY - touch2.clientY
-    );
-  } else {
-    // Single-finger touch: Reset distance
-    touchDistance = null;
-  }
-};
-
-const handleTouchMove = (event) => {
-  if (event.touches.length === 2 && touchDistance) {
-    const [touch1, touch2] = event.touches;
-    const newDistance = Math.hypot(
-      touch1.clientX - touch2.clientX,
-      touch1.clientY - touch2.clientY
-    );
-
-    const zoomFactor = newDistance / touchDistance;
-    const newZoomLevel = Math.max(1, Math.min(zoomLevel * zoomFactor, 5));
-
-    setZoomLevel(newZoomLevel);
-    touchDistance = newDistance;
-  }
-};
-
-const handleTouchEnd = () => {
-  touchDistance = null;
-};
-
 var Cam = styled.video(
   templateObject_4 ||
     (templateObject_4 = __makeTemplateObject(
       [
         "\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  z-index: 0;\n  transform: rotateY(",
-        ") scale(", ");\n",
+        ");\n",
       ],
       [
         "\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  z-index: 0;\n  transform: rotateY(",
-        ") scale(", ");\n",
+        ");\n",
       ]
     )),
   function (_a) {
     var mirrored = _a.mirrored;
 
     return mirrored ? "180deg" : "0deg";
-  },
-  zoomLevel
+  }
 );
 
 var Canvas = styled.canvas(
@@ -197,58 +155,90 @@ var Camera = React.forwardRef(function (_a, ref) {
     [numberOfCameras]
   );
 
-  useEffect(() => {
-    const videoElement = player.current;
-    if (videoElement) {
-      videoElement.addEventListener("touchstart", handleTouchStart);
-      videoElement.addEventListener("touchmove", handleTouchMove);
-      videoElement.addEventListener("touchend", handleTouchEnd);
-
-      // Cleanup listeners on unmount
-      return () => {
-        if (videoElement) {
-          videoElement.removeEventListener("touchstart", handleTouchStart);
-          videoElement.removeEventListener("touchmove", handleTouchMove);
-          videoElement.removeEventListener("touchend", handleTouchEnd);
-        }
-      };
-    }
-  }, []);
-
   useImperativeHandle(ref, function () {
     return {
       takePhoto: function () {
         var _a, _b, _c, _d;
-      
+
         if (numberOfCameras < 1) {
           throw new Error(errorMessages.noCameraAccessible);
         }
-      
-        if (canvas && canvas.current && player && player.current) {
-          const videoElement = player.current;
 
-          // The intrinsic video resolution for the canvas
-          const canvasWidth = videoElement.videoWidth;
-          const canvasHeight = videoElement.videoHeight;
+        if (canvas === null || canvas === void 0 ? void 0 : canvas.current) {
+          var playerWidth =
+            ((_a =
+              player === null || player === void 0
+                ? void 0
+                : player.current) === null || _a === void 0
+              ? void 0
+              : _a.videoWidth) || 1280;
 
-          canvas.current.width = canvasWidth;
-          canvas.current.height = canvasHeight;
+          var playerHeight =
+            ((_b =
+              player === null || player === void 0
+                ? void 0
+                : player.current) === null || _b === void 0
+              ? void 0
+              : _b.videoHeight) || 720;
 
-          const context = canvas.current.getContext("2d");
+          var playerAR = playerWidth / playerHeight;
 
-          if (context) {
-            // Flip the image if the camera mode is user (front-facing camera)
-            if (currentFacingMode === "user") {
-              context.translate(canvasWidth, 0);
-              context.scale(-1, 1);
-            }
+          var canvasWidth =
+            ((_c =
+              container === null || container === void 0
+                ? void 0
+                : container.current) === null || _c === void 0
+              ? void 0
+              : _c.offsetWidth) || 1280;
 
-            context.drawImage(videoElement, 0, 0, canvasWidth, canvasHeight);
-            const imgData = canvas.current.toDataURL("image/jpeg");
-            return imgData;
+          var canvasHeight =
+            ((_d =
+              container === null || container === void 0
+                ? void 0
+                : container.current) === null || _d === void 0
+              ? void 0
+              : _d.offsetHeight) || 1280;
+
+          var canvasAR = canvasWidth / canvasHeight;
+
+          var sX = void 0,
+            sY = void 0,
+            sW = void 0,
+            sH = void 0;
+
+          if (playerAR > canvasAR) {
+            sH = playerHeight;
+
+            sW = playerHeight * canvasAR;
+
+            sX = (playerWidth - sW) / 2;
+
+            sY = 0;
           } else {
-            throw new Error(errorMessages.canvas);
+            sW = playerWidth;
+
+            sH = playerWidth / canvasAR;
+
+            sX = 0;
+
+            sY = (playerHeight - sH) / 2;
           }
+
+          canvas.current.width = sW;
+          canvas.current.height = sH;
+
+          var context = canvas.current.getContext("2d");
+
+          if (
+            context &&
+            (player === null || player === void 0 ? void 0 : player.current)
+          ) {
+            context.drawImage(player.current, sX, sY, sW, sH, 0, 0, sW, sH);
+          }
+
+          var imgData = canvas.current.toDataURL("image/jpeg");
+
+          return imgData;
         } else {
           throw new Error(errorMessages.canvas);
         }
@@ -264,7 +254,7 @@ var Camera = React.forwardRef(function (_a, ref) {
         }
 
         var newFacingMode =
-          currentFacingMode === "environment" ? "user" : "environment";
+          currentFacingMode === "user" ? "environment" : "user";
 
         setFacingMode(newFacingMode);
 
