@@ -14,6 +14,7 @@ import { add, checkmark, close, sync } from "ionicons/icons";
 import { Capacitor } from "@capacitor/core";
 
 const CameraContainer = () => {
+  const [numberOfCameras, setNumberOfCameras] = useState(0);
   const camera = useRef<CameraType>(null);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [activeDeviceId, setActiveDeviceId] = useState<string | undefined>(
@@ -30,7 +31,7 @@ const CameraContainer = () => {
   useEffect(() => {
     const initCamera = async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter((i) => i.kind == "videoinput");
+      const videoDevices = devices.filter(device => device.kind === "videoinput");
       if (videoDevices.length > 0) {
         setActiveDeviceId(videoDevices[0].deviceId);
       }
@@ -38,7 +39,7 @@ const CameraContainer = () => {
     };
     
     initCamera();
-  });
+  }, []);
 
   useEffect(() => {
     // Check if an image already exists for question index
@@ -66,7 +67,7 @@ const CameraContainer = () => {
       }
     }
   };
-
+  
   const handleCameraFlip = () => {
     const currentIndex = devices.findIndex(device => device.deviceId === activeDeviceId);
     const nextIndex = (currentIndex + 1) % devices.length;
@@ -101,26 +102,22 @@ const CameraContainer = () => {
           <Camera
               ref={camera}
               aspectRatio="cover"
-              videoSourceDeviceId={activeDeviceId}
-              errorMessages={{
-                  noCameraAccessible:
-                  "No camera device accessible. Please connect your camera or try a different browser.",
-                  permissionDenied:
-                  "Permission denied. Please refresh and give camera permission.",
-                  switchCamera:
-                  "It is not possible to switch camera to different one because there is only one video device accessible.",
-                  canvas: "Canvas is not supported.",
-              }}
-              videoReadyCallback={() => {
-                  console.log("Video feed ready.");
-              }}
+              numberOfCamerasCallback={setNumberOfCameras}
           />
           <div className="capture__button" onClick={handleCaptureClick}>
             <div className="capture__button__inner" />
           </div>
-          <div onClick={handleCameraFlip}>
+          <button
+            disabled={numberOfCameras <= 1} 
+            onClick={() => {
+              if (camera.current) {
+                const result = camera.current.switchCamera();
+                console.log(result);
+              }
+            }}
+          >
             <IonIcon icon={sync} className="camera__flip" />
-          </div>
+          </button>
         </div>
         {reviewMode && image && (
           <div className="image__review">

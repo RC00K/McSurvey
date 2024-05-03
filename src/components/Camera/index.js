@@ -96,7 +96,7 @@ var templateObject_1,
 
 var Camera = React.forwardRef(function (_a, ref) {
   var _b = _a.facingMode,
-    facingMode = _b === void 0 ? "environment" : _b,
+    facingMode = _b === void 0 ? "user" : _b,
     _c = _a.aspectRatio,
     aspectRatio = _c === void 0 ? "cover" : _c,
     _d = _a.numberOfCamerasCallback,
@@ -105,199 +105,134 @@ var Camera = React.forwardRef(function (_a, ref) {
         ? function () {
             return null;
           }
-        : _d,
-    _e = _a.videoSourceDeviceId,
-    videoSourceDeviceId = _e === void 0 ? undefined : _e,
-    _f = _a.errorMessages,
-    errorMessages =
-      _f === void 0
-        ? {
-            noCameraAccessible:
-              "No camera device accessible. Please connect your camera or try a different browser.",
-            permissionDenied:
-              "Permission denied. Please refresh and give camera permission.",
-            switchCamera:
-              "It is not possible to switch camera to different one because there is only one video device accessible.",
-            canvas: "Canvas is not supported.",
-          }
-        : _f,
-    _g = _a.videoReadyCallback,
-    videoReadyCallback =
-      _g === void 0
-        ? function () {
-            return null;
-          }
-        : _g;
-
+        : _d;
   var player = useRef(null);
   var canvas = useRef(null);
   var container = useRef(null);
-  var _h = useState(0),
-    numberOfCameras = _h[0],
-    setNumberOfCameras = _h[1];
-  var _j = useState(null),
-    stream = _j[0],
-    setStream = _j[1];
-  var _k = useState(facingMode),
-    currentFacingMode = _k[0],
-    setFacingMode = _k[1];
-  var _l = useState(false),
-    notSupported = _l[0],
-    setNotSupported = _l[1];
-  var _m = useState(false),
-    permissionDenied = _m[0],
-    setPermissionDenied = _m[1];
-
+  var _e = useState(0),
+    numberOfCameras = _e[0],
+    setNumberOfCameras = _e[1];
+  var _f = useState(null),
+    stream = _f[0],
+    setStream = _f[1];
+  var _g = useState(facingMode),
+    currentFacingMode = _g[0],
+    setFacingMode = _g[1];
   useEffect(
     function () {
       numberOfCamerasCallback(numberOfCameras);
     },
     [numberOfCameras]
   );
-
-  useEffect(() => {
-    async function initCamera() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        setStream(null);
-      }
-
-      const constraints = {
-        video: {
-          deviceId: videoSourceDeviceId ? { exact: videoReadyCallback } : undefined,
-          facingMode: facingMode,
-          aspectRatio: aspectRatio,
-        }
-      };
-
-      try {
-        const newStream = await navigator.mediaDevices.getUserMedia(constraints);
-        setStream(newStream);
-        player.current.srcObject = newStream;
-        videoReadyCallback();
-      } catch (error) {
-        console.error("Failed to initialize camera", error);
-      }
-    }
-
-    initCamera();
-
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, [videoSourceDeviceId, facingMode, aspectRatio]);
-
   useImperativeHandle(ref, function () {
     return {
       takePhoto: function () {
-        var _a, _b, _c, _d;
-      
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         if (numberOfCameras < 1) {
-          throw new Error(errorMessages.noCameraAccessible);
+          throw new Error("There isn't any video device accessible.");
         }
-      
-        if (canvas && canvas.current && player && player.current) {
-          const videoElement = player.current;
-
-          // The intrinsic video resolution for the canvas
-          const canvasWidth = videoElement.videoWidth;
-          const canvasHeight = videoElement.videoHeight;
-
-          canvas.current.width = canvasWidth;
-          canvas.current.height = canvasHeight;
-
-          const context = canvas.current.getContext("2d");
-
-          if (context) {
-            // Flip the image if the camera mode is user (front-facing camera)
-            if (currentFacingMode === "user") {
-              context.translate(canvasWidth, 0);
-              context.scale(-1, 1);
-            }
-
-            context.drawImage(videoElement, 0, 0, canvasWidth, canvasHeight);
-            const imgData = canvas.current.toDataURL("image/jpeg");
-            return imgData;
+        if ((_a = canvas) === null || _a === void 0 ? void 0 : _a.current) {
+          var playerWidth =
+            ((_c =
+              (_b = player) === null || _b === void 0 ? void 0 : _b.current) ===
+              null || _c === void 0
+              ? void 0
+              : _c.videoWidth) || 1280;
+          var playerHeight =
+            ((_e =
+              (_d = player) === null || _d === void 0 ? void 0 : _d.current) ===
+              null || _e === void 0
+              ? void 0
+              : _e.videoHeight) || 720;
+          var playerAR = playerWidth / playerHeight;
+          var canvasWidth =
+            ((_g =
+              (_f = container) === null || _f === void 0
+                ? void 0
+                : _f.current) === null || _g === void 0
+              ? void 0
+              : _g.offsetWidth) || 1280;
+          var canvasHeight =
+            ((_j =
+              (_h = container) === null || _h === void 0
+                ? void 0
+                : _h.current) === null || _j === void 0
+              ? void 0
+              : _j.offsetHeight) || 1280;
+          var canvasAR = canvasWidth / canvasHeight;
+          var sX = void 0,
+            sY = void 0,
+            sW = void 0,
+            sH = void 0;
+          if (playerAR > canvasAR) {
+            sH = playerHeight;
+            sW = playerHeight * canvasAR;
+            sX = (playerWidth - sW) / 2;
+            sY = 0;
           } else {
-            throw new Error(errorMessages.canvas);
+            sW = playerWidth;
+            sH = playerWidth / canvasAR;
+            sX = 0;
+            sY = (playerHeight - sH) / 2;
           }
+          canvas.current.width = sW;
+          canvas.current.height = sH;
+          var context = canvas.current.getContext("2d");
+          if (
+            context &&
+            ((_k = player) === null || _k === void 0 ? void 0 : _k.current)
+          ) {
+            context.drawImage(player.current, sX, sY, sW, sH, 0, 0, sW, sH);
+          }
+          var imgData = canvas.current.toDataURL("image/jpeg");
+          return imgData;
         } else {
-          throw new Error(errorMessages.canvas);
+          throw new Error("Canvas is not supported");
         }
       },
-
       switchCamera: function () {
         if (numberOfCameras < 1) {
-          throw new Error(errorMessages.noCameraAccessible);
+          throw new Error("There isn't any video device accessible.");
         } else if (numberOfCameras < 2) {
-          console.error(
-            "Error: Unable to switch camera. Only one device is accessible."
-          ); // console only
+          console.warn(
+            "It is not possible to switch camera to different one, because there is only one video device accessible."
+          );
         }
-
         var newFacingMode =
-          currentFacingMode === "environment" ? "user" : "environment";
-
+          currentFacingMode === "user" ? "environment" : "user";
         setFacingMode(newFacingMode);
-
         return newFacingMode;
       },
-
       getNumberOfCameras: function () {
         return numberOfCameras;
       },
     };
   });
-
   useEffect(
     function () {
-      initCameraStream(
+      return initCameraStream(
         stream,
         setStream,
         currentFacingMode,
-        videoSourceDeviceId,
-        setNumberOfCameras,
-        setNotSupported,
-        setPermissionDenied
+        setNumberOfCameras
       );
     },
-    [currentFacingMode, videoSourceDeviceId]
+    [currentFacingMode]
   );
-
   useEffect(
     function () {
       if (stream && player && player.current) {
         player.current.srcObject = stream;
       }
-
-      return function () {
-        if (stream) {
-          stream.getTracks().forEach(function (track) {
-            track.stop();
-          });
-        }
-      };
     },
     [stream]
   );
-
   return React.createElement(
     Container,
     { ref: container, aspectRatio: aspectRatio },
-
     React.createElement(
       Wrapper,
       null,
-
-      notSupported
-        ? React.createElement(ErrorMsg, null, errorMessages.noCameraAccessible)
-        : null,
-      permissionDenied
-        ? React.createElement(ErrorMsg, null, errorMessages.permissionDenied)
-        : null,
-
       React.createElement(Cam, {
         ref: player,
         id: "video",
@@ -305,112 +240,60 @@ var Camera = React.forwardRef(function (_a, ref) {
         autoPlay: true,
         playsInline: true,
         mirrored: currentFacingMode === "user" ? true : false,
-        onLoadedData: function () {
-          videoReadyCallback();
-        },
       }),
-
       React.createElement(Canvas, { ref: canvas })
     )
   );
 });
-
 Camera.displayName = "Camera";
-
 var initCameraStream = function (
   stream,
   setStream,
   currentFacingMode,
-  videoSourceDeviceId,
-  setNumberOfCameras,
-  setNotSupported,
-  setPermissionDenied
+  setNumberOfCameras
 ) {
-  var _a;
-
   // stop any active streams in the window
-
   if (stream) {
     stream.getTracks().forEach(function (track) {
       track.stop();
     });
   }
-
   var constraints = {
     audio: false,
     video: {
-      deviceId: videoSourceDeviceId
-        ? { exact: videoSourceDeviceId }
-        : undefined,
       facingMode: currentFacingMode,
       width: { ideal: 1920 },
       height: { ideal: 1920 },
     },
   };
-
-  if (
-    (_a =
-      navigator === null || navigator === void 0
-        ? void 0
-        : navigator.mediaDevices) === null || _a === void 0
-      ? void 0
-      : _a.getUserMedia
-  ) {
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(function (stream) {
-        setStream(handleSuccess(stream, setNumberOfCameras));
-      })
-      .catch(function (err) {
-        handleError(err, setNotSupported, setPermissionDenied);
-      });
-  } else {
-    var getWebcam =
-      navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.msGetUserMedia;
-
-    if (getWebcam) {
-      getWebcam(
-        constraints,
-        function (stream) {
-          setStream(handleSuccess(stream, setNumberOfCameras));
-        },
-        function (err) {
-          handleError(err, setNotSupported, setPermissionDenied);
-        }
-      );
-    } else {
-      setNotSupported(true);
-    }
-  }
-};
-
-var handleSuccess = function (stream, setNumberOfCameras) {
   navigator.mediaDevices
-    .enumerateDevices()
-    .then(function (r) {
-      return setNumberOfCameras(
-        r.filter(function (i) {
-          return i.kind === "videoinput";
-        }).length
-      );
-    });
-
+    .getUserMedia(constraints)
+    .then(function (stream) {
+      setStream(handleSuccess(stream, setNumberOfCameras));
+    })
+    .catch(handleError);
+};
+var handleSuccess = function (stream, setNumberOfCameras) {
+  var track = stream.getVideoTracks()[0];
+  var settings = track.getSettings();
+  var str = JSON.stringify(settings, null, 4);
+  console.log("Camera settings " + str);
+  navigator.mediaDevices.enumerateDevices().then(function (r) {
+    return setNumberOfCameras(
+      r.filter(function (i) {
+        return i.kind === "videoinput";
+      }).length
+    );
+  });
   return stream;
 };
-
-var handleError = function (error, setNotSupported, setPermissionDenied) {
+var handleError = function (error) {
   console.error(error);
-
   //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-
   if (error.name === "PermissionDeniedError") {
-    setPermissionDenied(true);
-  } else {
-    setNotSupported(true);
+    throw new Error(
+      "Permission denied. Please refresh and give camera permission."
+    );
   }
 };
 
