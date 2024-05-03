@@ -164,46 +164,31 @@ var Camera = React.forwardRef(function (_a, ref) {
           throw new Error(errorMessages.noCameraAccessible);
         }
       
-        if (canvas === null || canvas === void 0 ? void 0 : canvas.current) {
-          var playerWidth = ((_a = player === null || player === void 0 ? void 0 : player.current) === null || _a === void 0 ? void 0 : _a.videoWidth) || 1280;
-          var playerHeight = ((_b = player === null || player === void 0 ? void 0 : player.current) === null || _b === void 0 ? void 0 : _b.videoHeight) || 720;
-      
-          var playerAR = playerWidth / playerHeight;
-      
-          var canvasWidth = ((_c = container === null || container === void 0 ? void 0 : container.current) === null || _c === void 0 ? void 0 : _c.offsetWidth) || 1280;
-          var canvasHeight = ((_d = container === null || container === void 0 ? void 0 : container.current) === null || _d === void 0 ? void 0 : _d.offsetHeight) || 1280;
-      
-          var canvasAR = canvasWidth / canvasHeight;
-      
-          var sX = void 0, sY = void 0, sW = void 0, sH = void 0;
-      
-          if (playerAR > canvasAR) {
-            sH = playerHeight;
-            sW = playerHeight * canvasAR;
-            sX = (playerWidth - sW) / 2;
-            sY = 0;
-          } else {
-            sW = playerWidth;
-            sH = playerWidth / canvasAR;
-            sX = 0;
-            sY = (playerHeight - sH) / 2;
-          }
-      
+        if (canvas && canvas.current && player && player.current) {
+          const videoElement = player.current;
+
+          // The intrinsic video resolution for the canvas
+          const canvasWidth = videoElement.videoWidth;
+          const canvasHeight = videoElement.videoHeight;
+
           canvas.current.width = canvasWidth;
           canvas.current.height = canvasHeight;
-      
-          var context = canvas.current.getContext("2d");
-      
-          if (context && (player === null || player === void 0 ? void 0 : player.current)) {
-            // Apply a transformation to flip the image horizontally
-            context.translate(canvasWidth, 0);
-            context.scale(-1, 1);
-            context.drawImage(player.current, sX, sY, sW, sH, 0, 0, canvasWidth, canvasHeight);
+
+          const context = canvas.current.getContext("2d");
+
+          if (context) {
+            // Flip the image if the camera mode is user (front-facing camera)
+            if (currentFacingMode === "user") {
+              context.translate(canvasWidth, 0);
+              context.scale(-1, 1);
+            }
+
+            context.drawImage(videoElement, 0, 0, canvasWidth, canvasHeight);
+            const imgData = canvas.current.toDataURL("image/jpeg");
+            return imgData;
+          } else {
+            throw new Error(errorMessages.canvas);
           }
-      
-          var imgData = canvas.current.toDataURL("image/jpeg");
-      
-          return imgData;
         } else {
           throw new Error(errorMessages.canvas);
         }
