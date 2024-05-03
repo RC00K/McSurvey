@@ -108,6 +108,7 @@ var Camera = React.forwardRef(function (_a, ref) {
         : _d;
   var player = useRef(null);
   var canvas = useRef(null);
+  var streams = useRef(new Map());
   var container = useRef(null);
   var _e = useState(0),
     numberOfCameras = _e[0],
@@ -118,6 +119,40 @@ var Camera = React.forwardRef(function (_a, ref) {
   var _g = useState(facingMode),
     currentFacingMode = _g[0],
     setFacingMode = _g[1];
+  var _h = useState(null),
+    activeStream = _h[0],
+    setActiveStream = _h[1];
+
+  useEffect(() => {
+    async function initStreams() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === "videoinput");
+
+      const streamsPromise = videoDevices.map(device => 
+        navigator.mediaDevices.getUserMedia({
+          video: {
+            deviceId: device.deviceId,
+          }
+        })
+      );
+
+      const allStreams = await Promise.all(streamsPromise);
+
+      videoDevices.forEach((device, index) => {
+        streams.current.set(device.deviceId, allStreams[index]);
+        if (index === 0) setActiveStream(allStreams[index]);
+      });
+    }
+
+    initStreams();
+
+    return () => {
+      streams.current.forEach(stream => {
+        stream.getTracks().forEach(track => track.stop());
+      });
+    };
+  }, []);
+    
   useEffect(
     function () {
       numberOfCamerasCallback(numberOfCameras);
@@ -161,34 +196,37 @@ var Camera = React.forwardRef(function (_a, ref) {
         }
       },
       switchCamera: function () {
-        if (numberOfCameras < 1) {
-          throw new Error("There isn't any video device accessible.");
-        } else if (numberOfCameras < 2) {
-          console.warn(
-            "It is not possible to switch camera to different one, because there is only one video device accessible."
-          );
-        }
-        var newFacingMode =
-          currentFacingMode === "environment" ? "user" : "environment";
-        setFacingMode(newFacingMode);
-        return newFacingMode;
+        const devices = Array.from(streams.current.keys());
+        const currentIndex = devices.indexOf(activeStream.id);
+        const nextIndex = (currentIndex + 1) % devices.length;
+        const nextDeviceId = devices[nextIndex];
+        setActiveStream(streams.current.get(nextDeviceId));
+        setFacingMode(currentFacingMode === "environment" ? "user" : "environment");
       },
       stopCamera: function () {
-        if (stream) {
-          stream.getTracks().forEach(function (track) {
-            track.stop();
-          });
-          setStream(null);
-        }
+        activeStream.getTracks().forEach(track => track.stop());
       },
       restartCamera: function () {
-        initCameraStream(stream, setStream, currentFacingMode, setNumberOfCameras);
+        const devices = Array.from(streams.current.keys());
+        const device = devices.find(deviceId => streams.current.get(deviceId) === activeStream);
+        navigator.mediaDevices.getUserMedia({
+          video: { deviceId: device }
+        }).then(newStream => {
+          streams.current.set(device, newStream);
+          setActiveStream(newStream);
+        });
       },
       getNumberOfCameras: function () {
         return numberOfCameras;
       },
     };
   });
+
+  useEffect(() => {
+    if (player.current && activeStream) {
+      player.current.srcObject = activeStream;
+    }
+  }, [activeStream]);
 
   useEffect(() => {
     if (stream) { 

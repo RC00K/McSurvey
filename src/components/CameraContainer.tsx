@@ -10,10 +10,6 @@ import { add, checkmark, close, sync } from "ionicons/icons";
 const CameraContainer = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const camera = useRef<CameraType>(null);
-  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [activeDeviceId, setActiveDeviceId] = useState<string | undefined>(
-    undefined
-  );
   const { addImage, images, setImages } = useReview();
   const { questionIndex } = useParams<{ questionIndex: string }>();
   const questionIndexNumber = parseInt(questionIndex, 10);
@@ -21,20 +17,7 @@ const CameraContainer = () => {
   const [reviewMode, setReviewMode] = useState(false);
 
   const history = useHistory();
-
-  useEffect(() => {
-    const initCamera = async () => {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(device => device.kind === "videoinput");
-      if (videoDevices.length > 0) {
-        setActiveDeviceId(videoDevices[0].deviceId);
-      }
-      setDevices(videoDevices);
-    };
-    
-    initCamera();
-  }, []);
-
+  
   useEffect(() => {
     // Check if an image already exists for question index
     const existingImage = images[`question_${questionIndexNumber}`];
