@@ -70,7 +70,9 @@ const Survey: React.FC = () => {
             onReadyForReviewChange={handleReadyForReviewChange}
           />
         </div>
-        <IonButton expand="block" color="dark" onClick={handleGoToReview} disabled={!readyForReview}>Continue to Review</IonButton>
+        <button className="button dark continue__btn" onClick={handleGoToReview} disabled={!readyForReview}>
+          Continue to Review
+        </button>
       </IonContent>
     </IonPage>
   );

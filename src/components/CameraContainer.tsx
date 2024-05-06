@@ -6,6 +6,7 @@ import { useReview } from "../components/Review/ReviewContext";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
 import { add, checkmark, close, sync } from "ionicons/icons";
+import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const CameraContainer = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
@@ -26,11 +27,36 @@ const CameraContainer = () => {
     }
   }, [questionIndexNumber, images]);
 
-  const updateImageInState = (questionIndex: number, imageSrc: string) => {
-    const updatedImages = { ...images, [`question_${questionIndex}`]: imageSrc };
-    setImages(updatedImages);
-    // Store images persistently using localStorage
-    localStorage.setItem("surveyData", JSON.stringify({ images: updatedImages }));
+  const ensureDirectoryExists = async () => {
+    try {
+      await Filesystem.mkdir({
+        path: "surveyData/images",
+        directory: Directory.Data,
+        recursive: true,
+      });
+    } catch (error: any) {
+      if (error.code !== "EEXIST") {
+        console.error("Failed to create directory", error);
+      }
+    }
+  };
+
+  const updateImageInState = async (questionIndex: number, imageSrc: string) => {
+    try {
+      await ensureDirectoryExists();
+      const path = `surveyData/images/question_${questionIndex}.jpg`;
+      await Filesystem.writeFile({
+        path,
+        data: imageSrc,
+        directory: Directory.Data,
+      });
+      console.log("File written successfully");
+
+      const updatedImages = { ...images, [`question_${questionIndex}`]: imageSrc };
+      setImages(updatedImages);
+    } catch (error) {
+      console.error("Failed to write file or update state", error);
+    }
   };
 
   const handleCaptureClick = async () => {

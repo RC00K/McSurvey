@@ -1,11 +1,9 @@
 import { IonIcon, IonCardSubtitle } from "@ionic/react";
 import { timeOutline, listOutline, fastFood } from "ionicons/icons";
-import mcdrive from "../assets/images/mcdrive.jpg";
 import "./CardContainer.css";
 
 const surveys = [
   {
-    img: mcdrive,
     surveyCategory: "Drive Thru",
     surveyTitle: "Drive Thru Survey",
     surveyCompletionTime: "5 minutes",
@@ -19,7 +17,6 @@ const CardContainer = ({ onCardClick }: { onCardClick: any }) => {
       {surveys.map(
         (
           {
-            img,
             surveyCategory,
             surveyTitle,
             surveyCompletionTime,
