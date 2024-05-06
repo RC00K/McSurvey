@@ -39,20 +39,22 @@ const CameraContainer = () => {
         const imageData = camera.current.takePhoto();
         setImage(imageData);
         setReviewMode(true);
-        camera.current.stopCamera();
+        camera.current.pauseCamera();
       } catch (error) {
         console.error("Failed to takes photo: ", error);
       }
     }
   };
 
-  const handleSaveClick = async () => {
-    if (image) {
+  const handleSaveClick = () => {
+    if (image && camera.current) {
       try {
+        camera.current.stopCamera();
         addImage(`question_${questionIndexNumber}`, image);
         updateImageInState(questionIndexNumber, image);
         setReviewMode(false);
         setImage(null);
+        camera.current.stopCamera();
         history.goBack();
       } catch (error) {
         console.error("Failed to add image: ", error);

@@ -71,12 +71,27 @@ var Camera = React.forwardRef(function (_a, ref) {
   var _g = useState(1),
     lastZoom = _g[0],
     setLastZoom = _g[1];
-  var _h = useState("continuous"),
-    focusMode = _h[0],
-    setFocusMode = _h[1];
-  var _j = useState({ x: 0.5, y: 0.5 }),
-    focusPoint = _j[0],
-    setFocusPoint = _j[1];
+
+  const acquireStream = () => {
+    const constraints = {
+      video: {
+        facingMode: currentFacingMode,
+        width: { ideal: 1920 }, // Change this as needed
+        height: { ideal: 1080 } // Change this as needed
+      }
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(function (newStream) {
+        setStream(newStream);
+        if (player.current) {
+          player.current.srcObject = newStream;
+        }
+      })
+      .catch(function (error) {
+        console.error("Failed to initialize camera stream:", error);
+      });
+  };
 
   const getPinchDistance = (touches) => {
     const touch1 = touches[0];
@@ -93,13 +108,43 @@ var Camera = React.forwardRef(function (_a, ref) {
     }
   };
 
+  const zoomSmoothing = 0.1;
+  let zoomAnimationFrame;
+
+  const handleSmoothZoom = (newZoom) => {
+    if (zoomAnimationFrame) {
+      cancelAnimationFrame(zoomAnimationFrame);
+    }
+
+    const step = () => {
+      if (Math.abs(currentZoom - newZoom) < 0.01) {
+        setCurrentZoom(newZoom);
+        updateCameraZoom(newZoom);
+      } else {
+        const zoomStep = currentZoom + (newZoom - currentZoom) * zoomSmoothing;
+        setCurrentZoom(zoomStep);
+        updateCameraZoom(zoomStep);
+        zoomAnimationFrame = requestAnimationFrame(step);
+      }
+    };
+
+    step();
+  };
+
+  const updateCameraZoom = (zoomLevel) => {
+    if (stream) {
+      const track = stream.getVideoTracks()[0];
+      track.applyConstraints({ advanced: [{ zoom: zoomLevel }] });
+    }
+  };
+
   const handleTouchMove = (event) => {
     if (event.touches.length === 2 && initialPinchDistance != null) {
       event.preventDefault();
       const currentDistance = getPinchDistance(event.touches);
       const scale = currentDistance / initialPinchDistance;
       const newZoom = Math.max(1, lastZoom * scale);
-      setCurrentZoom(newZoom);
+      handleSmoothZoom(newZoom);
     }
   };
 
@@ -146,60 +191,47 @@ var Camera = React.forwardRef(function (_a, ref) {
           setStream(null);
         }
       },
+      pauseCamera: function () {
+        if (player.current && player.current.srcObject) {
+          player.current.pause();
+        }
+      },
+      restartCamera: function () {
+        if (player.current && player.current.srcObject) {
+          player.current.play();
+        }
+      },
     };
   });
 
   useEffect(() => {
-    const constraints = {
-      video: {
-        facingMode: currentFacingMode,
-        width: { ideal: 1920 }, 
-        height: { ideal: 1080 },
-        focusMode: { exact: focusMode },
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: "camera" }).then((permissionStatus) => {
+        if (permissionStatus.state === "granted") {
+          acquireStream();
+        }
+      });
+    }
+
+    if (!stream) {
+      console.log("Attempting to acquire camera stream...");
+      acquireStream();
+    }
+
+    return () => {
+      if (stream) {
+        console.log("Stopping camera stream...");
+        stream.getTracks().forEach(track => track.stop());
       }
     };
-
-    if (focusMode === "manual") {
-      constraints.video.advanced = [{ focusPointOfInterest: focusPoint }];
-    }
-
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then(function (newStream) {
-        setStream(newStream);
-        if (player.current) {
-          player.current.srcObject = newStream;
-        }
-      })
-      .catch(function (error) {
-        console.error("Failed to initialize camera stream:", error);
-      });
-
-    // Revert to auto-focus after 3 seconds
-    if (focusMode === "manual") {
-      const timer = setTimeout(() => {
-        setFocusMode("continuous");
-        setFocusPoint({ x: 0.5, y: 0.5 });
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [currentFacingMode, focusMode, focusPoint]);
-
-  const handleVideoTap = (event) => {
-    const bounds = player.current.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width;
-    const y = (event.clientY - bounds.top) / bounds.height;
-
-    setFocusPoint({ x, y });
-    setFocusMode("manual");
-  };
+  }, [currentFacingMode]);
 
   return React.createElement(
     Wrapper,
     {
       onTouchStart: handleTouchStart,
       onTouchMove: handleTouchMove,
-      onTouchEnd: handleTouchEnd,
-      onClick: handleVideoTap,
+      onTouchEnd: handleTouchEnd
     },
     React.createElement(Cam, {
       ref: player,
