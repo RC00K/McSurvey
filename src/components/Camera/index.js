@@ -62,9 +62,47 @@ var Camera = React.forwardRef(function (_a, ref) {
   var _d = useState(facingMode),
     currentFacingMode = _d[0],
     setFacingMode = _d[1];
-  var _e = useState(1),
-    zoom = _e[0],
-    setZoom = _e[1];
+  var _e = useState(null),
+    initialPinchDistance = _e[0],
+    setInitialPinchDistance = _e[1];
+  var _f = useState(1),
+    currentZoom = _f[0],
+    setCurrentZoom = _f[1];
+
+  const getPinchDistance = (touches) => {
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchStart = (event) => {
+    if (event.touches.length === 2) {
+      setInitialPinchDistance(getPinchDistance(event.touches));
+    }
+  };
+
+  const handleTouchMove = (event) => {
+    if (event.touches.length === 2 && initialPinchDistance != null) {
+      const currentDistance = getPinchDistance(event.touches);
+      const factor = currentDistance / initialPinchDistance;
+      const track = stream.getVideoTracks()[0];
+      const capabilities = track.getCapabilities();
+      if (capabilities.zoom) {
+        const newZoom = Math.max(capabilities.zoom.min, Math.min(capabilities.zoom.max, factor * currentZoom));
+        track.applyConstraints({
+          advanced: [{ zoom: newZoom }]
+        });
+      }
+    }
+  };
+
+  const handleTouchEnd = (event) => {
+    if (event.touches.length < 2) {
+      setInitialPinchDistance(null);
+    }
+  };
 
   useImperativeHandle(ref, function () {
     return {
@@ -99,20 +137,6 @@ var Camera = React.forwardRef(function (_a, ref) {
           setStream(null);
         }
       },
-      adjustZoom: function (factor) {
-        const track = stream.getVideoTracks()[0];
-        const capabilities = track.getCapabilities();
-
-        if (!capabilities.zoom) {
-          return;
-        }
-
-        const newZoom = Math.min(capabilities.zoom.max, Math.max(capabilities.zoom.min, factor));
-        track.applyConstraints({
-          advanced: [{ zoom: newZoom }]
-        });
-        setZoom(newZoom);
-      }
     };
   });
 
@@ -145,7 +169,11 @@ var Camera = React.forwardRef(function (_a, ref) {
 
   return React.createElement(
     Wrapper,
-    null,
+    {
+      onTouchStart: handleTouchStart,
+      onTouchMove: handleTouchMove,
+      onTouchEnd: handleTouchEnd
+    },
     React.createElement(Cam, {
       ref: player,
       muted: true,
@@ -154,8 +182,6 @@ var Camera = React.forwardRef(function (_a, ref) {
       mirrored: currentFacingMode === "user"
     }),
     React.createElement(Canvas, { ref: canvas }),
-    React.createElement("button", { onClick: () => ref.current.adjustZoom(zoom + 0.1) }, "Zoom In"),
-    React.createElement("button", { onClick: () => ref.current.adjustZoom(zoom - 0.1) }, "Zoom Out")
   );
 });
 
