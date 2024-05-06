@@ -71,14 +71,17 @@ const CameraContainer = () => {
   return (
     <div className="camera__container">
         <div className="camera__overlay">
+          <div className="camera__top-bar">
           <div>
             <IonIcon icon={close} className="camera__close" />
+          </div>
           </div>
           <Camera
               ref={camera}
               aspectRatio="cover"
               numberOfCamerasCallback={setNumberOfCameras}
           />
+          <div className="camera__bottom-bar">
           <div className="capture__button" onClick={handleCaptureClick}>
             <div className="capture__button__inner" />
           </div>
@@ -93,6 +96,7 @@ const CameraContainer = () => {
           >
             <IonIcon icon={sync} className="camera__flip" />
           </button>
+          </div>
         </div>
         {reviewMode && image && (
           <div className="image__review">

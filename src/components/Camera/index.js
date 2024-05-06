@@ -2,19 +2,6 @@
 import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
 import styled from "styled-components";
 
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-
 function __makeTemplateObject(cooked, raw) {
   if (Object.defineProperty) {
     Object.defineProperty(cooked, "raw", { value: raw });
@@ -36,31 +23,6 @@ var Wrapper = styled.div(
     ))
 );
 
-var Container = styled.div(
-  templateObject_2 ||
-    (templateObject_2 = __makeTemplateObject(
-      ["\n  width: 100%;\n  ", "\n"],
-      ["\n  width: 100%;\n  ", "\n"]
-    )),
-  function (_a) {
-    var aspectRatio = _a.aspectRatio;
-
-    return aspectRatio === "cover"
-      ? "\n    position: absolute;\n    bottom: 0;\n    top: 0;\n    left: 0;\n    right: 0;"
-      : "\n    position: relative;\n    padding-bottom: " +
-          100 / aspectRatio +
-          "%;";
-  }
-);
-
-var ErrorMsg = styled.div(
-  templateObject_3 ||
-    (templateObject_3 = __makeTemplateObject(
-      ["\n  padding: 40px;\n"],
-      ["\n  padding: 40px;\n"]
-    ))
-);
-
 var Cam = styled.video(
   templateObject_4 ||
     (templateObject_4 = __makeTemplateObject(
@@ -75,7 +37,6 @@ var Cam = styled.video(
     )),
   function (_a) {
     var mirrored = _a.mirrored;
-
     return mirrored ? "180deg" : "0deg";
   }
 );
@@ -88,90 +49,47 @@ var Canvas = styled.canvas(
     ))
 );
 
-var templateObject_1,
-  templateObject_2,
-  templateObject_3,
-  templateObject_4,
-  templateObject_5;
+var templateObject_1, templateObject_4, templateObject_5;
 
 var Camera = React.forwardRef(function (_a, ref) {
   var _b = _a.facingMode,
-    facingMode = _b === void 0 ? "environment" : _b,
-    _c = _a.aspectRatio,
-    aspectRatio = _c === void 0 ? "cover" : _c,
-    _d = _a.numberOfCamerasCallback,
-    numberOfCamerasCallback =
-      _d === void 0
-        ? function () {
-            return null;
-          }
-        : _d;
+    facingMode = _b === void 0 ? "environment" : _b;
   var player = useRef(null);
   var canvas = useRef(null);
-  var container = useRef(null);
-  var _e = useState(0),
-    numberOfCameras = _e[0],
-    setNumberOfCameras = _e[1];
-  var _f = useState(null),
-    stream = _f[0],
-    setStream = _f[1];
-  var _g = useState(facingMode),
-    currentFacingMode = _g[0],
-    setFacingMode = _g[1];
-  useEffect(
-    function () {
-      numberOfCamerasCallback(numberOfCameras);
-    },
-    [numberOfCameras]
-  );
+  var _c = useState(null),
+    stream = _c[0],
+    setStream = _c[1];
+  var _d = useState(facingMode),
+    currentFacingMode = _d[0],
+    setFacingMode = _d[1];
+  var _e = useState(1),
+    zoom = _e[0],
+    setZoom = _e[1];
+
   useImperativeHandle(ref, function () {
     return {
-      takePhoto: function () {      
-        if (numberOfCameras < 1) {
-          throw new Error("There isn't any video device accessible.");
-        }
-      
-        if (canvas && canvas.current && player && player.current) {
-          const videoElement = player.current;
-
-          // The intrinsic video resolution for the canvas
-          const canvasWidth = videoElement.videoWidth;
-          const canvasHeight = videoElement.videoHeight;
-
-          canvas.current.width = canvasWidth;
-          canvas.current.height = canvasHeight;
-
+      takePhoto: function () {
+        if (canvas.current && player.current) {
           const context = canvas.current.getContext("2d");
+          const { videoWidth, videoHeight } = player.current;
 
-          if (context) {
-            // Flip the image if the camera mode is user (front-facing camera)
-            if (currentFacingMode === "user") {
-              context.translate(canvasWidth, 0);
-              context.scale(-1, 1);
-            }
+          canvas.current.width = videoWidth;
+          canvas.current.height = videoHeight;
 
-            context.drawImage(videoElement, 0, 0, canvasWidth, canvasHeight);
-            const imgData = canvas.current.toDataURL("image/jpeg");
-            return imgData;
-          } else {
-            throw new Error(errorMessages.canvas);
+          if (currentFacingMode === "user") {
+            context.translate(videoWidth, 0);
+            context.scale(-1, 1);
           }
-        } else {
-          throw new Error(errorMessages.canvas);
+
+          context.drawImage(player.current, 0, 0, videoWidth, videoHeight);
+          return canvas.current.toDataURL("image/jpeg");
         }
+        throw new Error("No video or canvas available");
       },
       switchCamera: function () {
-        if (numberOfCameras < 1) {
-          throw new Error("There isn't any video device accessible.");
-        } else if (numberOfCameras < 2) {
-          console.warn(
-            "It is not possible to switch camera to different one, because there is only one video device accessible."
-          );
-        }
         var newFacingMode =
           currentFacingMode === "environment" ? "user" : "environment";
         setFacingMode(newFacingMode);
-        return newFacingMode;
       },
       stopCamera: function () {
         if (stream) {
@@ -181,116 +99,66 @@ var Camera = React.forwardRef(function (_a, ref) {
           setStream(null);
         }
       },
-      restartCamera: function () {
-        initCameraStream(stream, setStream, currentFacingMode, setNumberOfCameras);
-      },
-      getNumberOfCameras: function () {
-        return numberOfCameras;
-      },
+      adjustZoom: function (factor) {
+        const track = stream.getVideoTracks()[0];
+        const capabilities = track.getCapabilities();
+
+        if (!capabilities.zoom) {
+          return;
+        }
+
+        const newZoom = Math.min(capabilities.zoom.max, Math.max(capabilities.zoom.min, factor));
+        track.applyConstraints({
+          advanced: [{ zoom: newZoom }]
+        });
+        setZoom(newZoom);
+      }
     };
   });
 
   useEffect(() => {
-    if (stream) { 
-      player.current.srcObject = stream;
-    }
-  }, [stream]);
+    const constraints = {
+      video: {
+        facingMode: currentFacingMode,
+        width: { ideal: 1920 }, // Change this as needed
+        height: { ideal: 1080 } // Change this as needed
+      }
+    };
 
-  useEffect(() => {
-    return function cleanup() {
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(function (newStream) {
+        setStream(newStream);
+        if (player.current) {
+          player.current.srcObject = newStream;
+        }
+      })
+      .catch(function (error) {
+        console.error("Failed to initialize camera stream:", error);
+      });
+
+    return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
-    }
-  }, [stream]);
+    };
+  }, [currentFacingMode]);
 
-  useEffect(
-    function () {
-      return initCameraStream(
-        stream,
-        setStream,
-        currentFacingMode,
-        setNumberOfCameras
-      );
-    },
-    [currentFacingMode]
-  );
-  useEffect(
-    function () {
-      if (stream && player && player.current) {
-        player.current.srcObject = stream;
-      }
-    },
-    [stream]
-  );
   return React.createElement(
-    Container,
-    { ref: container, aspectRatio: aspectRatio },
-    React.createElement(
-      Wrapper,
-      null,
-      React.createElement(Cam, {
-        ref: player,
-        id: "video",
-        muted: true,
-        autoPlay: true,
-        playsInline: true,
-        mirrored: currentFacingMode === "user" ? true : false,
-      }),
-      React.createElement(Canvas, { ref: canvas })
-    )
+    Wrapper,
+    null,
+    React.createElement(Cam, {
+      ref: player,
+      muted: true,
+      autoPlay: true,
+      playsInline: true,
+      mirrored: currentFacingMode === "user"
+    }),
+    React.createElement(Canvas, { ref: canvas }),
+    React.createElement("button", { onClick: () => ref.current.adjustZoom(zoom + 0.1) }, "Zoom In"),
+    React.createElement("button", { onClick: () => ref.current.adjustZoom(zoom - 0.1) }, "Zoom Out")
   );
 });
+
 Camera.displayName = "Camera";
-var initCameraStream = function (
-  stream,
-  setStream,
-  currentFacingMode,
-  setNumberOfCameras
-) {
-  // stop any active streams in the window
-  if (stream) {
-    stream.getTracks().forEach(function (track) {
-      track.stop();
-    });
-  }
-  var constraints = {
-    audio: false,
-    video: {
-      facingMode: currentFacingMode,
-      width: { ideal: 1920 },
-      height: { ideal: 1920 },
-    },
-  };
-  navigator.mediaDevices
-    .getUserMedia(constraints)
-    .then(function (stream) {
-      setStream(handleSuccess(stream, setNumberOfCameras));
-    })
-    .catch(handleError);
-};
-var handleSuccess = function (stream, setNumberOfCameras) {
-  var track = stream.getVideoTracks()[0];
-  var settings = track.getSettings();
-  var str = JSON.stringify(settings, null, 4);
-  console.log("Camera settings " + str);
-  navigator.mediaDevices.enumerateDevices().then(function (r) {
-    return setNumberOfCameras(
-      r.filter(function (i) {
-        return i.kind === "videoinput";
-      }).length
-    );
-  });
-  return stream;
-};
-var handleError = function (error) {
-  console.error(error);
-  //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-  if (error.name === "PermissionDeniedError") {
-    throw new Error(
-      "Permission denied. Please refresh and give camera permission."
-    );
-  }
-};
 
 export { Camera };

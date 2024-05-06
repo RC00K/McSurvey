@@ -27,102 +27,82 @@
     z-index: 1;
 }
 
-.camera__close {
+.camera__top-bar, .camera__bottom-bar {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 5;
+}
+
+.camera__top-bar {
+    top: 0;
+    height: 10%;
+}
+
+.camera__bottom-bar {
+    bottom: 0;
+    height: 20%;
+}
+
+.camera__close, .camera__flip {
+    position: absolute;
     width: 50px !important;
     height: 50px !important;
     justify-content: center;
     align-items: center;
-    color: var(--ion-color-light);
+    color: #ffffff;
     z-index: 1000;
-}
-
-.capture__button {
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 70px;
-    border-radius: 50px;
-    border: 5px solid var(--ion-color-light);
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.capture__button__inner {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
-    background-color: var(--ion-color-light);
-}
-
-.capture__button__inner:active {
-    top: 10px;
-    left: 10px;
-    width: 40px;
-    height: 40px;
 }
 
 .camera__close {
-    position: absolute;
     top: 20px;
     left: 20px;
-    width: 50px !important;
-    height: 50px !important;
-    justify-content: center;
-    align-items: center;
-    color: var(--ion-color-light);
-    z-index: 1000;
-}
-
-.capture__button {
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 70px;
-    border-radius: 50px;
-    border: 5px solid var(--ion-color-light);
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.capture__button__inner {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
-    background-color: var(--ion-color-light);
-}
-
-.capture__button__inner:active {
-    top: 10px;
-    left: 10px;
-    width: 40px;
-    height: 40px;
 }
 
 .camera__flip {
-    position: absolute;
     bottom: 60px;
     right: 30px;
-    width: 50px !important;
-    height: 50px !important;
-    justify-content: center;
+}
+
+.capture__button, 
+.retake__button, 
+.save__button {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50px;
     align-items: center;
-    color: var(--ion-color-light);
+    justify-content: center;
     z-index: 1000;
+}
+
+.capture__button {
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid #ffffff;
+}
+
+.capture__button__inner, 
+.capture__button__inner:active {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: #ffffff;
+}
+
+.capture__button__inner {
+    top: 5px;
+    left: 5px;
+}
+
+.capture__button__inner:active {
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
 }
 
 .image__review {
@@ -145,57 +125,38 @@
     object-fit: cover;
 }
 
-.review__buttons {
-    display: flex;
-    justify-content: center;
-}
-
-.retake__button {
-    position: absolute;
+.retake__button, .save__button {
     bottom: 60px;
-    left: 30px;
     width: 70px;
     height: 70px;
-    justify-content: center;
-    align-items: center;
     background-color: var(--ion-color-danger);
     border-radius: 50px;
     z-index: 1000;
 }
 
-.retake__button__icon {
-    color: var(--ion-color-light);
-    font-size: 2.5rem !important;
-}
-
-.retake__button__icon:active {
-    font-size: 2.3rem !important;
+.retake__button {
+    left: 30px;
+    background-color: var(--ion-color-danger);
 }
 
 .save__button {
-    position: absolute;
-    bottom: 60px;
     right: 30px;
-    width: 70px;
-    height: 70px;
-    justify-content: center;
-    align-items: center;
     background-color: var(--ion-color-success);
-    border-radius: 50px;
-    z-index: 1000;
 }
 
-.save__button__icon {
-    color: var(--ion-color-light);
+.retake__button__icon, .save__button__icon, 
+.retake__button__icon:active, .save__button__icon:active {
+    color: #ffffff;
     font-size: 2.5rem !important;
 }
 
+.retake__button__icon:active, 
 .save__button__icon:active {
     font-size: 2.3rem !important;
 }
 
 .icon {
-    color: var(--ion-color-light);
+    color: #ffffff;
     width: 40px;
     height: 40px;
 }
