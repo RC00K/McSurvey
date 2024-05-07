@@ -97,7 +97,6 @@ export const QuestionContainer = ({
                       openCameraPage(qIndex);
                     }}
                   >
-                    {/* imageSrc from imageUrl = capacitor://${savedFileImage.uri} */}
                     {imageSrc ? (
                       <img
                         src={imageSrc}

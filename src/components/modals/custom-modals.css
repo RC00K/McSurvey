@@ -32,22 +32,6 @@
     z-index: 2;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .modal {
-        padding: 1rem;
-        gap: 0.3rem;
-    }
-
-    .modal__title, .modal p, .modal__body__option__text {
-        font-size: 0.8rem; /* Smaller text on smaller screens */
-    }
-
-    .btn, .modal input {
-        padding: 0.6rem 1rem; /* Adjust button and input padding */
-    }
-}
-
 .modal .flex {
     display: flex;
     align-items: center;
@@ -205,6 +189,19 @@ button {
     display: none;
 }
 
+.modal-closing {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
 @keyframes slideOutBottom {
     from {
         transform: translateY(0);
@@ -214,10 +211,6 @@ button {
         transform: translateY(100%);
         opacity: 0;
     }
-}
-
-.modal-closing {
-    animation: slideOutBottom 0.5s forwards;
 }
 
 @media (max-width: 768px) {
@@ -235,5 +228,9 @@ button {
 
     .modal__title, .modal p, .modal__body__option__text {
         font-size: 0.8rem; /* Smaller text on smaller screens */
+    }
+
+    .btn, .modal input {
+        padding: 0.6rem 1rem; /* Adjust button and input padding */
     }
 }

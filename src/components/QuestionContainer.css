@@ -3,17 +3,13 @@
 .question__container {
     max-width: 800px;  
     width: 100%;       
-    margin: 20px auto;
-    background: white;
     padding: 20px;
-    border-radius: 8px;
-    box-sizing: border-box;
 }
 
 input {
     border: 2px solid var(--ion-color-medium);
     border-radius: 50px;
-    padding: 15px 20px;
+    padding: 13px 20px;
     width: 100%;
     margin-bottom: 20px;
     font-size: 16px;

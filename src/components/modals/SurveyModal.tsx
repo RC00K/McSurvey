@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { IonIcon } from "@ionic/react";
-import { car, close } from "ionicons/icons";
+import { car } from "ionicons/icons";
 import "./custom-modals.css";
 
 const SurveyModal = ({
@@ -40,79 +40,75 @@ const SurveyModal = ({
     if (showModal && isClosing) {
       setIsClosing(false);
     }
-
-    // Add or remove the 'modal-open' class to the body
-    if (showModal) {
-      document.body.classList.add("modal__open");
-    } else {
-      document.body.classList.remove("modal__open");
-    }
   }, [showModal]);
 
   return (
     <>
       <div
-        className={`modal ${
-          showModal ? (isClosing ? "modal__closing" : "") : "hidden"
+        className={`modal__container ${
+          showModal ? (isClosing ? "modal-closing" : "") : "hidden"
         }`}
       >
-        <div className="modal__header">
-          <h2>Start Survey</h2>
-          <button className="close__btn" onClick={closeModal}>
-            <IonIcon icon={close} size="large" />
-          </button>
-        </div>
-        <div className="modal__content">
-          <h3>Drive Thur Options</h3>
-          <p>
-            Select the number of drive thrus you would like to use in your
-            survey.
-          </p>
-          <div className="modal__body">
-            <div className="modal__body__options">
-              <button
-                className={`modal__body__option ${
-                  selected === 0 ? "selected" : ""
-                }`}
-                onClick={() => handleSelection(0)}
-              >
-                <div
-                  className={`modal__body__option__text ${
+        <div className="modal">
+          <div className="flex">
+            <button className="btn-close" onClick={closeModal}>
+              X
+            </button>
+          </div>
+          <div>
+            <h3>Drive Thur Options</h3>
+            <p>
+              Select the number of drive thrus you would like to use in your
+              survey.
+            </p>
+          </div>
+          <div className="block">
+            <div className="modal__body">
+              <div className="modal__body__options">
+                <button
+                  className={`modal__body__option ${
                     selected === 0 ? "selected" : ""
                   }`}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
+                  onClick={() => handleSelection(0)}
                 >
-                  <IonIcon icon={car} size="large" />
-                  <span>1 Drive Thru</span>
-                </div>
-              </button>
-              <button
-                className={`modal__body__option ${
-                  selected === 1 ? "selected" : ""
-                }`}
-                onClick={() => handleSelection(1)}
-              >
-                <div
-                  className={`modal__body__option__text ${
+                  <div
+                    className={`modal__body__option__text ${
+                      selected === 0 ? "selected" : ""
+                    }`}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IonIcon icon={car} size="large" />
+                    <span>1 Drive Thru</span>
+                  </div>
+                </button>
+                <button
+                  className={`modal__body__option ${
                     selected === 1 ? "selected" : ""
                   }`}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
+                  onClick={() => handleSelection(1)}
                 >
-                  <IonIcon icon={car} size="large" />
-                  <span>2 Drive Thrus</span>
-                </div>
-              </button>
+                  <div
+                    className={`modal__body__option__text ${
+                      selected === 1 ? "selected" : ""
+                    }`}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IonIcon icon={car} size="large" />
+                    <span>2 Drive Thrus</span>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
-          <button className="modal__btn" onClick={handleStartSurvey}>
+          <button className="btn" onClick={handleStartSurvey}>
             Start Survey
           </button>
         </div>
