@@ -118,10 +118,9 @@
 } */
 
 .survey__card {
-    background-color: var(--ion-color-light);
+    background-color: #f6f6f6;
     border-radius: 10px;
-    border: 1px solid var(--ion-color-super-medium);
-    box-shadow: 0 2px 5px var(--ion-color-light);
+    border: 1px solid #7c7c7c;
     padding: 20px;
     margin-bottom: 20px;
     cursor: pointer;

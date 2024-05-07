@@ -240,23 +240,3 @@ html {
   https://ionicframework.com/docs/layout/dynamic-font-scaling */
   --ion-dynamic-font: var(--ion-default-dynamic-font);
 }
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.content {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-}

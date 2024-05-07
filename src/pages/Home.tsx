@@ -14,23 +14,19 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <section>
+      <section className="container">
         <div className="home__body">
           <div className="home__content">
-            <div className="container">
-              <div className="container__title">
+            <div className="home__title">
                 <h3>Available Surveys</h3>
-              </div>
-              <div className="grid">
-                <div className="row">
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <CardContainer onCardClick={handleCardClick} />
-                  </div>
-                  <div className="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <CardContainer onCardClick={handleCardClick} />
-                  </div>
-                </div>
-              </div>
+            </div>
+            <div className="home__grid__container home__grid">
+              <CardContainer onCardClick={handleCardClick} />
+              <CardContainer onCardClick={handleCardClick} />
+              <CardContainer onCardClick={handleCardClick} />
+              <CardContainer onCardClick={handleCardClick} />
+              <CardContainer onCardClick={handleCardClick} />
+              <CardContainer onCardClick={handleCardClick} />
             </div>
           </div>
         </div>
