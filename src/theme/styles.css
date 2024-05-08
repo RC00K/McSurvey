@@ -1,81 +1,161 @@
+/* Barlow Font */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
+
+/* Variables */
+:root {
+    --header-height: 3rem;
+
+    /* Font and Typography */
+    --body-font: 'Barlow', sans-serif, 'Roboto', sans-serif;
+
+    /* .5rem = 8px, 1rem = 16px, 1.5rem = 24px */
+    --big-font-size: 2rem;
+    --h1-font-size: 1.5rem;
+    --h2-font-size: 1.25rem;
+    --h3-font-size: 1.125rem;
+    --normal-font-size: .938rem;
+    --small-font-size: .813rem;
+    --smaller-font-size: .75rem;
+
+    /* Font Weights */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semi-bold: 600;
+    --font-bold: 700;
+
+    /* Margins and Paddings */
+    /* .25rem = 4px, .5rem = 8px, .75rem = 12px */
+    --mb-0-25: 0.25rem;
+    --mb-0-5: 0.5rem;
+    --mb-0-75: 0.75rem;
+    --mb-1: 1rem;
+    --mb-1-5: 1.5rem;
+    --mb-2: 2rem;
+    --mb-2-5: 2.5rem;
+    --mb-3: 3rem;
+
+    /* Z-Index */
+    --z-tooltip: 10;
+    --z-fixed: 100;
+    --z-modal: 1000;
+}
+
+/* Font Size for Large Devices */
+@media screen and (min-width: 968px) {
+    :root {
+        --big-font-size: 3rem;
+        --h1-font-size: 2.25rem;
+        --h2-font-size: 1.5rem;
+        --h3-font-size: 1.25rem;
+        --normal-font-size: 1rem;
+        --small-font-size: .875rem;
+        --smaller-font-size: .813rem;
+    }
+}
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
+    margin: 0 0 var(--header-height) 0;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    background-color: var(--ion-color-light);
+    color: var(--ion-color-dark);
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 body.modal-open {
     overflow: hidden;
 }
 
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+h1, h2, h3 {
+    color: var(--ion-color-dark);
+    font-weight: var(--font-semi-bold);
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+svg {
     width: 100%;
-    padding: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: scale(-1, -1) rotate(180deg);
+    z-index: 1;
 }
 
-/*  320px - 480px Mobile Devices */
-@media (min-width: 320px) and (max-width: 480px) {
-
+/* Reusable Classes */
+.section {
+    padding: 2rem 0 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Portrait on Mobile */
-@media (min-width: 320px) and (max-width: 480px) and (orientation: portrait) {
-
+.section__title {
+    font-size: var(--h1-font-size);
+    color: var(--ion-color-dark);
 }
 
-/* Landscape on Mobile */
-@media (min-width: 320px) and (max-width: 480px) and (orientation: landscape) {
-
+.section__subtitle {
+    display: block;
+    font-size: var(--small-font-size);
+    margin-bottom: var(--mb-3);
 }
 
-/*  481px - 768px Tablet Devices */
-@media (min-width: 481px) and (max-width: 768px) {
-    
+.section__title,
+.section__subtitle {
+    text-align: center;
 }
 
-/* Portrait on Tablet */
-@media (min-width: 481px) and (max-width: 768px) and (orientation: portrait) {
-    
+#survey {
+    position: relative;
+    top: -50px;
+    z-index: 2;
 }
 
-/* Landscape on Tablet */
-@media (min-width: 481px) and (max-width: 768px) and (orientation: landscape) {
-
+.container {
+    margin-left: 0;
+    margin-right: auto;
 }
 
-/*  769px - 1024px Small Screens, Laptops */
-@media (min-width: 769px) and (max-width: 1024px) {
-
+.header {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: var(--z-fixed);
+    background-color: var(--ion-color-light);
 }
 
-/*  1025px - 1200px Desktops, Large Screens */
-@media (min-width: 1025px) and (max-width: 1200px) {
-
-}
-
-/*  1201px - 1920px Extra Large Screens, TV */
-@media (min-width: 1201px) and (max-width: 1920px) {
-
-}
-
-/*  1921px - 2560px 4K Ultra HD Screens */
-@media (min-width: 1921px) and (max-width: 2560px) {
+@media screen and (max-width: 480px) {
 
 }

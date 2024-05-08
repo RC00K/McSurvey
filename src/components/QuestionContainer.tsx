@@ -55,66 +55,64 @@ export const QuestionContainer = ({
 
   return (
     <>
-      <div className="question__container">
-        <label className="text__input__label">
-          <h2>Store Number</h2>
-        </label>
-        <input
-          id="storeNumber"
-          className="text__input"
-          value={storeNumber}
-          placeholder="Store Number"
-          onChange={(e) => setStoreNumber(e.target.value!)}
-        />
-        {selectedDriveThru.map((item, index) => {
-          return item.questions.map((question, qIndex) => {
-            const questionId = `question_${qIndex}`;
-            const imageSrc = images[questionId];
-            return (
-              <div key={`question_${index}_${qIndex}`}>
-                <div className="question__header">
-                  <h2>{question.questionTitle}</h2>
-                  <p>{question.questionDesc}</p>
+      <label className="text__input__label">
+        <h2>Store Number</h2>
+      </label>
+      <input
+        id="storeNumber"
+        className="text__input"
+        value={storeNumber}
+        placeholder="Store Number"
+        onChange={(e) => setStoreNumber(e.target.value!)}
+      />
+      {selectedDriveThru.map((item, index) => {
+        return item.questions.map((question, qIndex) => {
+          const questionId = `question_${qIndex}`;
+          const imageSrc = images[questionId];
+          return (
+            <div key={`question_${index}_${qIndex}`}>
+              <div className="question__header">
+                <h2>{question.questionTitle}</h2>
+                <p>{question.questionDesc}</p>
+              </div>
+              <div>
+                <div key={`question_${index}`} className="question__body" id={questionId}>
+                  <p>{question.question}</p>
                 </div>
-                <div>
-                  <div key={`question_${index}`} className="question__body" id={questionId}>
-                    <p>{question.question}</p>
-                  </div>
-                  {question.questionHints &&
-                    question.questionHints.length > 0 && (
-                      <ol>
-                        {question.questionHints.map((hint, hintIndex) => (
-                          <li key={`hint_${hintIndex}`}>{hint.hint}</li>
-                        ))}
-                      </ol>
-                    )}
-                  <AccordionContainer question={question} />
-                  <div
-                    key={`question_${index}_${qIndex}`}
-                    className="file__upload"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openCameraPage(qIndex);
-                    }}
-                  >
-                    {imageSrc ? (
-                      <img
-                        src={imageSrc}
-                        alt="Uploaded"
-                        className="image__preview"
-                      />
-                    ) : (
-                      <button type="button" className="add__photo">
-                        <IonIcon icon={add} size="large" />
-                      </button>
-                    )}
-                  </div>
+                {question.questionHints &&
+                  question.questionHints.length > 0 && (
+                    <ol>
+                      {question.questionHints.map((hint, hintIndex) => (
+                        <li key={`hint_${hintIndex}`}>{hint.hint}</li>
+                      ))}
+                    </ol>
+                  )}
+                <AccordionContainer question={question} />
+                <div
+                  key={`question_${index}_${qIndex}`}
+                  className="file__upload"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openCameraPage(qIndex);
+                  }}
+                >
+                  {imageSrc ? (
+                    <img
+                      src={imageSrc}
+                      alt="Uploaded"
+                      className="image__preview"
+                    />
+                  ) : (
+                    <button type="button" className="add__photo">
+                      <IonIcon icon={add} size="large" />
+                    </button>
+                  )}
                 </div>
               </div>
-            );
-          });
-        })}
-      </div>
+            </div>
+          );
+        });
+      })}
     </>
   );
 };
