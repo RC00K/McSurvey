@@ -106,7 +106,7 @@ svg.survey__header__svg {
   padding: 20px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) and (min-width: 424px){
   .survey__header__content {
     padding: 20px;
   }
@@ -135,6 +135,24 @@ svg.survey__header__svg {
   }
 
   .survey__content {
-    max-width: 400px;
+    max-width: 600px;
+  }
+}
+
+@media screen and (max-width: 425px) and (min-width: 374px) {
+  .survey__content {
+    max-width: 390px;
+  }
+}
+
+@media screen and (max-width: 375px) and (min-width: 319px) {
+  .survey__content {
+    max-width: 340px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .survey__content {
+    max-width: 290px;
   }
 }

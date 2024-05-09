@@ -29,6 +29,19 @@ const CameraContainer = () => {
     }
   }, [questionIndexNumber, images]);
 
+  // Loading camera settings
+  useEffect(() => {
+    const storedCameraSettings = localStorage.getItem("cameraSettings");
+    if (storedCameraSettings) {
+      setFlashMode(storedCameraSettings);
+    }
+  }, []);
+
+  // Saving camera settings 
+  useEffect(() => {
+    localStorage.setItem("cameraSettings", flashMode);
+  }, [flashMode]);
+
   const handleCloseCamera = () => {
     if (camera.current) {
       camera.current.stopCamera();
@@ -85,9 +98,11 @@ const CameraContainer = () => {
   };
 
   const toggleFlash = () => {
-    if (camera.current) {
+    if (camera.current && camera.current.hasFlashSupport()) {
       camera.current.toggleFlash();
-      setFlashMode(flashMode === "off" ? "on" : "off");
+      setFlashMode(flashMode === "off" ? "on" : (flashMode === "on" ? "auto" : "off"))
+    } else {
+      console.error("Flash is not supported on this device");
     }
   };
 
@@ -99,6 +114,7 @@ const CameraContainer = () => {
         updateImageInState(questionIndexNumber, image);
         setReviewMode(false);
         setImage(null);
+        setCloseCamera(true);
         camera.current.stopCamera();
         history.goBack();
       } catch (error) {
@@ -122,7 +138,7 @@ const CameraContainer = () => {
             <button onClick={handleCloseCamera}>
               <IonIcon icon={close} className="camera__close" />
             </button>
-            <button onClick={toggleFlash}>
+            <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()}>
               <IonIcon icon={flashMode === "off" ? flashOff : flash} className="camera__flash" />
             </button>
           </div>

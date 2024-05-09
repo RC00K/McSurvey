@@ -71,10 +71,15 @@ var Camera = React.forwardRef(function (_a, ref) {
       video: {
         facingMode: currentFacingMode,
         width: { ideal: 1920 }, // Change this as needed
-        height: { ideal: 1080 }, // Change this as needed
-        torch: currentFlashMode === "on"
+        height: { ideal: 1080 } // Change this as needed
       }
     };
+
+    if (currentFlashMode === "on") {
+      constraints.video.torch = true;
+    } else if (currentFlashMode === "auto") {
+      // TODO: Auto Mode
+    }
 
     navigator.mediaDevices.getUserMedia(constraints)
       .then(function (newStream) {
@@ -153,6 +158,27 @@ var Camera = React.forwardRef(function (_a, ref) {
     }
   };
 
+  const hasFlashSupport = () => {
+    if (stream) {
+      const track = stream.getVideoTracks()[0];
+      const capabilities = track.getCapabilities();
+      return capabilities.torch;
+    }
+    return false;
+  };
+
+  const toggleFlash = () => {
+    const newFlashMode = currentFlashMode === "off" ? "on" : (currentFlashMode === "on" ? "auto" : "off");
+    setFlashMode(newFlashMode);
+
+    if (stream) {
+      const track = stream.getVideoTracks()[0];
+      track.applyConstraints({ 
+        advanced: [{ torch: newFlashMode === "on" }]
+      })
+    }
+  }
+
   useImperativeHandle(ref, function () {
     return {
       takePhoto: function () {
@@ -178,16 +204,8 @@ var Camera = React.forwardRef(function (_a, ref) {
           currentFacingMode === "environment" ? "user" : "environment";
         setFacingMode(newFacingMode);
       },
-      toggleFlash: function () {
-        const newFlashMode = currentFlashMode === "off" ? "on" : "off";
-        setFlashMode(newFlashMode);
-
-        if (stream) {
-          stream.getTracks().forEach(track => track.stop());
-        }
-
-        acquireStream();
-      },
+      hasFlashSupport,
+      toggleFlash,
       stopCamera: function () {
         if (stream) {
           stream.getTracks().forEach(function (track) {
@@ -211,9 +229,11 @@ var Camera = React.forwardRef(function (_a, ref) {
 
   useEffect(() => {
     if (navigator.permissions) {
+      console.log("Checking camera permissions...");
       navigator.permissions.query({ name: "camera" }).then((permissionStatus) => {
         if (permissionStatus.state === "granted") {
           acquireStream();
+          console.log("Camera permissions granted.");
         }
       });
     }
@@ -229,7 +249,7 @@ var Camera = React.forwardRef(function (_a, ref) {
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [currentFacingMode]);
+  }, [currentFacingMode, currentFlashMode]);
 
   return React.createElement(
     Wrapper,
