@@ -72,7 +72,7 @@ var Camera = React.forwardRef(function (_a, ref) {
         facingMode: currentFacingMode,
         width: { ideal: 1920 }, // Change this as needed
         height: { ideal: 1080 }, // Change this as needed
-        advanced: [{ torch: currentFlashMode === "on" }]
+        torch: currentFlashMode === "on"
       }
     };
 
@@ -181,6 +181,12 @@ var Camera = React.forwardRef(function (_a, ref) {
       toggleFlash: function () {
         const newFlashMode = currentFlashMode === "off" ? "on" : "off";
         setFlashMode(newFlashMode);
+
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+
+        acquireStream();
       },
       stopCamera: function () {
         if (stream) {

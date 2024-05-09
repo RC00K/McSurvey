@@ -133,4 +133,8 @@ svg.survey__header__svg {
     height: 40px;
     font-size: 1.25rem;
   }
+
+  .survey__content {
+    max-width: 400px;
+  }
 }
