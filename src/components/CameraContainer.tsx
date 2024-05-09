@@ -11,6 +11,7 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 const CameraContainer = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [flashMode, setFlashMode] = useState("off");
+  const [focusArea, setFocusArea] = useState(null);
   const camera = useRef<CameraType>(null);
   const { addImage, images, setImages } = useReview();
   const { questionIndex } = useParams<{ questionIndex: string }>();
@@ -139,7 +140,9 @@ const CameraContainer = () => {
               <IonIcon icon={close} className="camera__close" />
             </button>
             <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()}>
-              <IonIcon icon={flashMode === "off" ? flashOff : flash} className="camera__flash" />
+              <IonIcon 
+                icon={flashMode === "off" ? flashOff : flash} 
+                className={flashMode === "off" ? "camera__flash__off" : "camera__flash" } />
             </button>
           </div>
           <Camera

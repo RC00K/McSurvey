@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
+import React, { useRef, useState, useEffect, useLayoutEffect, useImperativeHandle } from "react";
 import styled from "styled-components";
 
 function __makeTemplateObject(cooked, raw) {
@@ -65,6 +65,9 @@ var Camera = React.forwardRef(function (_a, ref) {
   var _e = useState("off"),
     currentFlashMode = _e[0],
     setFlashMode = _e[1];
+  var _f = useState(null),
+    focusArea = _f[0],
+    setFocusArea = _f[1];
 
   const acquireStream = () => {
     const constraints = {
@@ -93,67 +96,22 @@ var Camera = React.forwardRef(function (_a, ref) {
       });
   };
 
-  const getPinchDistance = (touches) => {
-    const touch1 = touches[0];
-    const touch2 = touches[1];
-    const dx = touch1.clientX - touch2.clientX;
-    const dy = touch1.clientY - touch2.clientY;
-    return Math.sqrt(dx * dx + dy * dy);
-  };
-
-  const handleTouchStart = (event) => {
-    if (event.touches.length === 2) {
-      setInitialPinchDistance(getPinchDistance(event.touches));
-      setLastZoom(currentZoom);
-    }
-  };
-
-  const zoomSmoothing = 0.1;
-  let zoomAnimationFrame;
-
-  const handleSmoothZoom = (newZoom) => {
-    if (zoomAnimationFrame) {
-      cancelAnimationFrame(zoomAnimationFrame);
-    }
-
-    const step = () => {
-      if (Math.abs(currentZoom - newZoom) < 0.01) {
-        setCurrentZoom(newZoom);
-        updateCameraZoom(newZoom);
-      } else {
-        const zoomStep = currentZoom + (newZoom - currentZoom) * zoomSmoothing;
-        setCurrentZoom(zoomStep);
-        updateCameraZoom(zoomStep);
-        zoomAnimationFrame = requestAnimationFrame(step);
-      }
-    };
-
-    step();
-  };
-
-  const updateCameraZoom = (zoomLevel) => {
+  const supportsFocusArea = () => {
     if (stream) {
       const track = stream.getVideoTracks()[0];
-      track.applyConstraints({ advanced: [{ zoom: zoomLevel }] });
+      const capabilities = track.getCapabilities();
+      return capabilities.focusDistance || capabilities.focusMode.includes("zone");
     }
+    return false;
   };
 
-  const handleTouchMove = (event) => {
-    if (event.touches.length === 2 && initialPinchDistance != null) {
-      event.preventDefault();
-      const currentDistance = getPinchDistance(event.touches);
-      const scale = currentDistance / initialPinchDistance;
-      const newZoom = Math.max(1, lastZoom * scale);
-      handleSmoothZoom(newZoom);
-    }
-  };
+  const triggerAutofocus = () => {
+    if (stream) {
+      const track = stream.getVideoTracks()[0];
+      const capabilities = track.getCapabilities();
 
-  const handleTouchEnd = (event) => {
-    if (event.touches.length < 2) {
-      setInitialPinchDistance(null);
-      if (stream) {
-        const track = stream.getVideoTracks()[0];
-        track.applyConstraints({ advanced: [{ zoom: currentZoom }] });
+      if (capabilities.focusMode && "single-shot" in capabilities.focusMode) {
+        track.applyConstraints({ advanced: [{ focusMode: "single-shot" }] })
       }
     }
   };
@@ -178,6 +136,30 @@ var Camera = React.forwardRef(function (_a, ref) {
       })
     }
   }
+
+  // Auto focus
+  useLayoutEffect(() => {
+    let focusInterval;
+
+    const attemptFocus = () => {
+      if (stream) {
+        const track = stream.getVideoTracks()[0];
+        const capabilities = track.getCapabilities();
+        const settings = track.getSettings();
+
+        if (capabilities.focusMode && "continuous" in capabilities.focusMode) {
+          track.applyConstraints({ advanced: [{ focusMode: "continuous" }] })
+            .catch(error => console.error("Error setting focus mode:", error));
+        }
+      }
+    };
+
+    if (stream) {
+      focusInterval = setInterval(attemptFocus, 5000);
+    }
+
+    return () => clearInterval(focusInterval);
+  }, [stream]);
 
   useImperativeHandle(ref, function () {
     return {
@@ -253,11 +235,7 @@ var Camera = React.forwardRef(function (_a, ref) {
 
   return React.createElement(
     Wrapper,
-    {
-      onTouchStart: handleTouchStart,
-      onTouchMove: handleTouchMove,
-      onTouchEnd: handleTouchEnd
-    },
+    { },
     React.createElement(Cam, {
       ref: player,
       muted: true,

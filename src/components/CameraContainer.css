@@ -45,13 +45,23 @@
     height: 20%;
 }
 
-.camera__close, .camera__flip, .camera__flash {
+.camera__close, .camera__flip, .camera__flash__off {
     position: absolute;
     width: 50px !important;
     height: 50px !important;
     justify-content: center;
     align-items: center;
     color: #ffffff;
+    z-index: 1000;
+}
+
+.camera__flash {
+    position: absolute;
+    width: 50px !important;
+    height: 50px !important;
+    justify-content: center;
+    align-items: center;
+    color: var(--ion-color-warning);
     z-index: 1000;
 }
 
@@ -65,7 +75,7 @@
     right: 30px;
 }
 
-.camera__flash {
+.camera__flash__off, .camera__flash {
     top: 20px;
     right: 20px;
 }
