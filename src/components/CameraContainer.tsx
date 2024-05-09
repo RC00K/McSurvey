@@ -5,17 +5,19 @@ import { Camera, CameraType } from "./Camera";
 import { useReview } from "../components/Review/ReviewContext";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
-import { add, checkmark, close, sync } from "ionicons/icons";
+import { add, checkmark, close, sync, flashOff, flash } from "ionicons/icons";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const CameraContainer = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
+  const [flashMode, setFlashMode] = useState("off");
   const camera = useRef<CameraType>(null);
   const { addImage, images, setImages } = useReview();
   const { questionIndex } = useParams<{ questionIndex: string }>();
   const questionIndexNumber = parseInt(questionIndex, 10);
   const [image, setImage] = useState<string | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
+  const [closeCamera, setCloseCamera] = useState(false);
 
   const history = useHistory();
   
@@ -26,6 +28,16 @@ const CameraContainer = () => {
       setImage(existingImage);
     }
   }, [questionIndexNumber, images]);
+
+  const handleCloseCamera = () => {
+    if (camera.current) {
+      camera.current.stopCamera();
+      setCloseCamera(true);
+      setTimeout(() => {
+        history.goBack();
+      }, 100);
+    }
+  };
 
   const ensureDirectoryExists = async () => {
     try {
@@ -72,6 +84,13 @@ const CameraContainer = () => {
     }
   };
 
+  const toggleFlash = () => {
+    if (camera.current) {
+      camera.current.toggleFlash();
+      setFlashMode(flashMode === "off" ? "on" : "off");
+    }
+  };
+
   const handleSaveClick = () => {
     if (image && camera.current) {
       try {
@@ -100,9 +119,12 @@ const CameraContainer = () => {
     <div className="camera__container">
         <div className="camera__overlay">
           <div className="camera__top-bar">
-          <div>
-            <IonIcon icon={close} className="camera__close" />
-          </div>
+            <button onClick={handleCloseCamera}>
+              <IonIcon icon={close} className="camera__close" />
+            </button>
+            <button onClick={toggleFlash}>
+              <IonIcon icon={flashMode === "off" ? flashOff : flash} className="camera__flash" />
+            </button>
           </div>
           <Camera
               ref={camera}

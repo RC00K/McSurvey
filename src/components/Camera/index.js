@@ -62,22 +62,17 @@ var Camera = React.forwardRef(function (_a, ref) {
   var _d = useState(facingMode),
     currentFacingMode = _d[0],
     setFacingMode = _d[1];
-  var _e = useState(null),
-    initialPinchDistance = _e[0],
-    setInitialPinchDistance = _e[1];
-  var _f = useState(1),
-    currentZoom = _f[0],
-    setCurrentZoom = _f[1];
-  var _g = useState(1),
-    lastZoom = _g[0],
-    setLastZoom = _g[1];
+  var _e = useState("off"),
+    currentFlashMode = _e[0],
+    setFlashMode = _e[1];
 
   const acquireStream = () => {
     const constraints = {
       video: {
         facingMode: currentFacingMode,
         width: { ideal: 1920 }, // Change this as needed
-        height: { ideal: 1080 } // Change this as needed
+        height: { ideal: 1080 }, // Change this as needed
+        advanced: [{ torch: currentFlashMode === "on" }]
       }
     };
 
@@ -182,6 +177,10 @@ var Camera = React.forwardRef(function (_a, ref) {
         var newFacingMode =
           currentFacingMode === "environment" ? "user" : "environment";
         setFacingMode(newFacingMode);
+      },
+      toggleFlash: function () {
+        const newFlashMode = currentFlashMode === "off" ? "on" : "off";
+        setFlashMode(newFlashMode);
       },
       stopCamera: function () {
         if (stream) {

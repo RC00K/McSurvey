@@ -1,5 +1,6 @@
 /* Barlow Font */
 @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
+@import url('./variables.css');
 
 /* Variables */
 :root {
@@ -54,64 +55,6 @@
     }
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    margin: 0 0 var(--header-height) 0;
-    font-family: var(--body-font);
-    font-size: var(--normal-font-size);
-    background-color: var(--ion-color-light);
-    color: var(--ion-color-dark);
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-body.modal-open {
-    overflow: hidden;
-}
-
-h1, h2, h3 {
-    color: var(--ion-color-dark);
-    font-weight: var(--font-semi-bold);
-}
-
-ul {
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-svg {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    transform: scale(-1, -1) rotate(180deg);
-    z-index: 1;
-}
-
 /* Reusable Classes */
 .section {
     padding: 2rem 0 4rem;
@@ -134,12 +77,6 @@ svg {
 .section__title,
 .section__subtitle {
     text-align: center;
-}
-
-#survey {
-    position: relative;
-    top: -50px;
-    z-index: 2;
 }
 
 .container {

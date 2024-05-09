@@ -23,6 +23,25 @@ button.back__btn {
   font-size: 1.5rem;
 }
 
+.continue__btn {
+  position: relative;
+  top: 0;
+  z-index: 3;
+}
+
+button.continue__btn {
+  width: 800px;
+  padding: 15px 20px;
+  border-radius: 50px;
+  background-color: var(--ion-color-dark);
+  color: var(--ion-color-light);
+}
+
+button.continue__btn::disabled {
+  background-color: var(--ion-color-danger);
+  color: var(--ion-color-primary);
+}
+
 .survey__header__upper {
   max-width: 600px;
   width: 100%;
@@ -37,7 +56,7 @@ h1.survey__header__title {
   font-weight: var(--font-bold);
   text-transform: capitalize;
   line-height: 1.25em;
-  color: #04030D;
+  color: var(--ion-color-dark);
 }
 
 .survey__header__title span {
@@ -48,27 +67,43 @@ h1.survey__header__title {
 p.survey__header__description {
   font-size: 1.15rem;
   font-weight: 600;
-  color: #616161;
+  color: var(--ion-color-dark-tint);
   margin-top: var(--mb-0-5);
 }
 
-.survey {
-  max-width: 800px;
+svg.survey__header__svg {
   width: 100%;
-  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: scale(-1, -1) rotate(180deg);
+  z-index: 1;
+}
+
+.survey {
   position: relative;
-  z-index: 4;
+  height: 100vh;
 }
 
 .survey__container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: absolute;
+  padding: 50px;
+  top: -100px;
+  z-index: 2;
 }
 
 .survey__content {
   display: block;
+  max-width: 800px;
   width: 100%;
+}
+
+.survey__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
 }
 
 @media screen and (max-width: 768px) {

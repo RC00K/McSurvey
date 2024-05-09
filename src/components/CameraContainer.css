@@ -45,7 +45,7 @@
     height: 20%;
 }
 
-.camera__close, .camera__flip {
+.camera__close, .camera__flip, .camera__flash {
     position: absolute;
     width: 50px !important;
     height: 50px !important;
@@ -63,6 +63,11 @@
 .camera__flip {
     bottom: 60px;
     right: 30px;
+}
+
+.camera__flash {
+    top: 20px;
+    right: 20px;
 }
 
 .capture__button, 
@@ -160,3 +165,4 @@
     width: 40px;
     height: 40px;
 }
+

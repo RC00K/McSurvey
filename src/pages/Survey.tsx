@@ -85,7 +85,7 @@ const Survey: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <svg viewBox="0 0 1160 400" preserveAspectRatio="none">
+                <svg className="survey__header__svg" viewBox="0 0 1160 400" preserveAspectRatio="none">
                   <defs>
                       <linearGradient id="gradient1" x1="0%" y1="100%" x2="0%" y2="0%">
                           <stop offset="15%" style={{ stopColor: '#ffffff', stopOpacity: 1 }} />
@@ -93,15 +93,18 @@ const Survey: React.FC = () => {
                           <stop offset="95%" style={{ stopColor: '#2C2686', stopOpacity: 1 }} />
                       </linearGradient>
                       <mask id="mask1">
-                          <path x="0" y="0" width="1160" height="400" d="M1160 400H0V0H1160V400Z" fill="black" />
+                          <path x="0" y="0" width="1160" height="400" d="M1160 400H0V0H1160V400Z" />
                           <path
                               d="M0 400C116 342.876 255.29 378.22 450.512 331.607C513.907 316.522 575.489 292.54 857.86 363.527C1000.84 400 1160 351.042 1160 376.995C1160 468.678 1160 -198.621 1160 0H0V400Z"
                               fill="white"
                           />
                       </mask>
+                      <clipPath id="clip">
+                          <path d="M20 395C136 337.876 275.29 373.22 470.512 326.607C533.907 311.522 595.489 287.54 877.86 358.527C1020.84 395 1180 346.042 1180 371.995C1180 463.678 1180 -183.621 1180 15H20V395Z"/>
+                      </clipPath>
                   </defs>
-                  <rect width="1160" height="400" mask="url(#mask1)" fill="url(#gradient1)"/>
-                  <g mask="url(#mask1)" style={{ mixBlendMode: 'color-dodge' }}>
+                  <rect width="1160" height="400" mask="url(#mask1)" fill="url(#gradient1)" />
+                  <g style={{ mixBlendMode: 'color-dodge' }} clip-path="url(#clip)" >
                     <path d="M228.916 938.986C223.636 937.366 220.67 931.772 222.291 926.492L275.622 752.764C277.243 747.484 282.837 744.518 288.117 746.139L462.153 799.565C467.433 801.185 470.399 806.779 468.778 812.059L415.447 985.787C413.826 991.067 408.232 994.033 402.953 992.412L228.916 938.986Z" fill="#6B67AA"/>
                     <path d="M953.667 924.13C949.283 927.489 943.006 926.659 939.647 922.275L813.001 756.993C809.642 752.609 810.473 746.332 814.857 742.973L980.428 616.106C984.812 612.747 991.089 613.577 994.448 617.961L1121.09 783.243C1124.45 787.627 1123.62 793.904 1119.24 797.263L953.667 924.13Z" fill="#6B67AA"/>
                     <path d="M283 296C283 346.258 242.482 387 192.5 387C142.518 387 102 346.258 102 296C102 245.742 142.518 205 192.5 205C242.482 205 283 245.742 283 296Z" fill="#6B67AA"/>
