@@ -176,3 +176,57 @@
     height: 40px;
 }
 
+@media (orientation: landscape) {
+    .camera__top-bar, .camera__bottom-bar {
+        width: 10%;
+        height: 100%;
+        left: unset;
+        right: 0;
+    }
+
+    .camera__top-bar {
+        top: 0;
+        left: 0;
+    }
+
+    .camera__bottom-bar {
+        bottom: 0;
+        right: 0;
+    }
+
+    .camera__close, .camera__flip, .camera__flash__off, .camera__flash {
+        transform: rotate(0deg);
+    }
+
+    .camera__close {
+        top: unset;
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .camera__flip {
+        top: 20px;
+        right: 20px;
+    }
+
+    .camera__flash__off, .camera__flash {
+        top: 20px;
+        left: 20px;
+    }
+
+    .capture__button, .retake__button, .save__button {
+        width: 70px;
+        height: 70px;
+        border-radius: 50px;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .capture__button {
+        bottom: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid #ffffff;
+    }
+}
