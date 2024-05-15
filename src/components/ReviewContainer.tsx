@@ -2,21 +2,11 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useReview } from "../components/Review/ReviewContext";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
-import {
-  IonButton,
-  IonRow,
-  IonCol,
-  IonGrid,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonThumbnail,
-  IonModal,
-  IonToast,
-  IonLoading
-} from "@ionic/react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { IonIcon, IonLabel } from "@ionic/react";
+import { pencil } from "ionicons/icons";
+import "./ReviewContainer.css";
 
 export const ReviewContainer = () => {
   const { driveThruSelection, images, storeNumber } = useReview();
@@ -29,7 +19,6 @@ export const ReviewContainer = () => {
   const [showLoading, setShowLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  // Generate PDF and return as base64 string
   const generatePDF = async () => {
     setIsGeneratingPDF(true);
     const pdf = new jsPDF();
@@ -235,52 +224,37 @@ export const ReviewContainer = () => {
     history.push("/");
   };
 
+  const handleEditResponse = (questionIndex: number) => {
+    history.push(`/camera/${questionIndex}#question_${questionIndex}`);
+  };
+
   useEffect(() => {
     if (emailSent) {
       setTimeout(() => {
         navigateToHome();
       }, 5000);
     }
-  }, [emailSent]);;
+  }, [emailSent]);
 
   return (
-    <div className="review__container">
-      {selectedDriveThru.map((item, index) => item.questions.map((question, qIndex) => {
-        const questionId = `question_${qIndex}`;
-        const imageSrc = storedImages[questionId] || images[questionId];
-        return imageSrc ? (
-          <IonList key={questionId}>
-            <IonItem lines="full">
-              <IonItem lines="none">
-                <IonGrid>
-                  <IonRow>
-                    <IonCol>
-                      <IonThumbnail>
-                        <img src={imageSrc} alt={`Captured image for ${question.questionTitle}`} />
-                      </IonThumbnail>
-                    </IonCol>
-                  </IonRow>
-                </IonGrid>
-              </IonItem>
-              <IonLabel>
-                <h2>{question.questionTitle}</h2>
-                <p>{question.questionDesc}</p>
-              </IonLabel>
-            </IonItem>
-          </IonList>
-        ) : null;
-      }))}
-      <IonButton expand="block" color="dark" onClick={handleGeneratePDF}>Submit</IonButton>
-      <IonLoading isOpen={showLoading} message={'Sending email...'} onDidDismiss={() => setShowLoading(false)} />
-      <IonToast
-        isOpen={showToast}
-        onDidDismiss={() => setShowToast(false)}
-        message={emailSent ? "Email sent successfully!" : "Failed to send email"}
-        duration={2000}
-        position="top"
-        color={emailSent ? "success" : "danger"}
-      />
-    </div>
+    <>
+        {selectedDriveThru.map((item, index) => item.questions.map((question, qIndex) => {
+          const questionId = `question_${qIndex}`;
+          const imageSrc = storedImages[questionId] || images[questionId];
+          return imageSrc ? (
+            <div className="item" key={questionId}>
+              <div className="image">
+                <img src={imageSrc} alt="Capture Image" />
+              </div>
+              <div className="description">
+                <span>{question.questionTitle}</span>
+                <span>{question.questionDesc}</span>
+              </div>
+            </div>
+          ) : null;
+        }))}
+      {showLoading && <div className="loading">Sending email...</div>}
+      {showToast && <div className={`toast ${emailSent ? "success" : "error"}`}>{emailSent ? "Email sent successfully!" : "Failed to send email"}</div>}
+    </>
   );
-
 };

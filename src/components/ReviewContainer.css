@@ -1,152 +1,109 @@
-.review__card {
-  display: flex;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 15px;
-  margin-bottom: 20px;
+@import url('../theme/variables.css');
+
+.review__container {
+  max-width: 1200px;
+  width: 100%;
+  padding: 20px;
 }
 
-.review__card__content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-grow: 1;
+.title {
+  height: 60px;
+  border-bottom: 1px solid var(--ion-color-medium);
+  padding: 20px 30px;
+  color: var(--ion-color-dark);
+  font-size: 2rem;
+  font-weight: 400;
 }
 
-.review__card__image {
+.item {
+  padding: 20px 30px;
+  display: flex;
+}
+
+.item:nth-child(2n) {
+  border-top: 1px solid var(--ion-color-medium);
+  border-bottom: 1px solid var(--ion-color-medium);
+}
+
+.buttons {
+  position: relative;
+  padding-top: 30px;
+  margin-right: 60px;
+}
+
+.edit__btn {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.edit__btn ion-icon {
+  font-size: 1.5rem;
+  color: var(--ion-color-primary);
+}
+
+.image img {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 5px;
   margin-right: 20px;
 }
 
-.review__card__info {
+.description {
+  padding-top: 10px;
+  margin-right: 60px;
   display: flex;
-  flex-grow: 1;
+  align-items: flex-start;
   flex-direction: column;
   justify-content: center;
 }
 
-.review__card__title {
-  font-size: 1.2rem;
-  font-weight: 600;
+.description span {
+  display: block;
+  font-size: 16px;
+  color: var(--ion-color-medium);
+  font-weight: 400;
+}
+
+.description span:first-child {
   margin-bottom: 5px;
 }
 
-.review__card__desc {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #666;
-  margin-bottom: 15px;
+.description span:last-child {
+  font-weight: 300;
+  margin-top: 8px;
+  color: var(--ion-color-dark);
 }
 
-.review__card__image__id {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #666;
+.total__price {
+  width: 83px;
+  padding-top: 27px;
+  text-align: center;
+  color: var(--ion-color-dark);
+  font-size: 1.2rem;
+  font-weight: 400;
 }
 
-.review__card__button {
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    color: #666;
-    border: 1px solid #666;
-    border-radius: 5px;
-    margin-left: auto;
-}
-
-.review__card__button:hover {
-    background: #666;
-    color: #fff;
-}
-
-@media (min-width: 1281px) {
-  .review__card {
-    width: 400px;
-  }
-}
-
-@media (min-width: 1025px) and (max-width: 1280px) {
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {
-  .review__card__image {
-    width: 90px;
-    height: 90px;
-  }
-}
-
-@media (min-width: 481px) and (max-width: 767px) {
-  /* Stack the flex-direction: column */
-  .review__card {
-    flex-direction: column;
+@media (max-width: 768px) {
+  .review__container {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
   }
 
-  /* Make the image the same height as the content */
-  .review__card__image {
-    width: 100px;
-    height: 100px;
-  }
-}
-
-@media (min-width: 320px) and (max-width: 480px) {
-  .review__card__content {
-    flex-direction: row;
+  .item {
+    height: auto;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .review__card__image {
-    width: 100px;
-    height: 100px;
-    object-fit: fill;
-  }
-}
-
-@media (min-width: 281px) and (max-width: 319px) {
-  .review__card__content {
-    flex-direction: row;
+  .image img {
+    width: 50%;
   }
 
-  .review__card__image {
-    width: 100px;
-    height: 100px;
-    object-fit: fill;
-  }
-
-  .review__card__title {
-    font-size: 1rem;
-  }
-
-  .review__card__desc {
-    font-size: 0.8rem;
-  }
-
-  .review__card__image__id {
-    font-size: 0.6rem;
-  }
-}
-
-@media (min-width: 280px) {
-  .review__card__content {
-    flex-direction: row;
-  }
-
-  .review__card__image {
-    width: 80px;
-    height: 80px;
-    object-fit: fill;
-  }
-
-  .review__card__title {
-    font-size: 1rem;
-  }
-
-  .review__card__desc {
-    font-size: 0.8rem;
-  }
-
-  .review__card__image__id {
-    font-size: 0.6rem;
+  .image,
+  .description {
+    width: 100%;
+    text-align: center;
+    margin: 6px 0;
   }
 }

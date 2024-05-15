@@ -17,7 +17,6 @@ const Survey: React.FC = () => {
   const [readyForReview, setReadyForReview] = useState(false);
   const [showExitAlert, setShowExitAlert] = useState(false);
 
-  // Load data from the API or local storage
   useEffect(() => {
     const surveyData = localStorage.getItem("surveyData");
     if (surveyData) {
@@ -26,11 +25,9 @@ const Survey: React.FC = () => {
       setReadyForReview(data.readyForReview);
     }
 
-    // Set the drive-thru selection and reset the review state
     setDriveThruSelection(driveThruSelection);
   }, [selected, setDriveThruSelection, reset]);
 
-  // Save to local storage whenever answers or state changes
   useEffect(() => {
     localStorage.setItem("surveyData", JSON.stringify({ 
       isComplete: isSurveyComplete, 
@@ -68,11 +65,10 @@ const Survey: React.FC = () => {
           />
         )}
         <main className="main">
-          {/* Header */}
           <section className="section" id="survey-header">
             <div className="container">
               <div className="survey__header__content">
-                <button className="back__btn">
+                <button className="back__btn" onClick={() => history.goBack()}>
                   <IonIcon icon={chevronBack} />
                 </button>
                 <div className="survey__header__upper">
@@ -100,7 +96,7 @@ const Survey: React.FC = () => {
                           />
                       </mask>
                       <clipPath id="clip">
-                          <path d="M20 395C136 337.876 275.29 373.22 470.512 326.607C533.907 311.522 595.489 287.54 877.86 358.527C1020.84 395 1180 346.042 1180 371.995C1180 463.678 1180 -183.621 1180 15H20V395Z"/>
+                          <path d="M0 395C136 337.876 275.29 373.22 470.512 326.607C533.907 311.522 595.489 287.54 877.86 358.527C1020.84 395 1180 346.042 1180 371.995C1180 463.678 1180 -183.621 1180 15H20V395Z"/>
                       </clipPath>
                   </defs>
                   <rect width="1160" height="400" mask="url(#mask1)" fill="url(#gradient1)" />
@@ -119,7 +115,6 @@ const Survey: React.FC = () => {
               </div>
             </div>
           </section>
-          {/* Question Container*/}
           <section className="survey section" id="survey">
             <div className="survey__container container">
               <div className="survey__content">

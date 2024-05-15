@@ -1,161 +1,128 @@
-.review__container {
-  max-width: 800px;
-  margin: 0 auto;
+.survey__header__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 50px;
 }
 
-ion-thumbnail {
-  --size: 120px;
-  --border-radius: 5px;
+.back__btn {
+  position: relative;
+  bottom: 40px;
+  margin-left: 20px;
+  z-index: 3;
 }
-.review__card {
-    display: flex;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
+
+button.back__btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #AAA8CE;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.edit__btn,
+.submit__btn {
+  position: relative;
+  top: 0;
+  z-index: 3;
+  margin: 10px;
+}
+
+button.edit__btn,
+button.submit__btn {
+  width: 100%;
+  max-width: 1200px;
+  padding: 15px 20px;
+  border-radius: 50px;
+  background-color: var(--ion-color-dark);
+  color: var(--ion-color-light);
+}
+
+button.edit__btn:disabled,
+button.submit__btn:disabled {
+  background-color: var(--ion-color-dark-shade);
+  color: var(--ion-color-dark-tint);
+}
+
+.survey__header__upper {
+  max-width: 600px;
+  width: 100%;
+  top: 140px;
+  margin-left: 20px;
+  text-wrap: wrap;
+  z-index: 4;
+}
+
+h1.survey__header__title {
+  font-size: 4.25rem;
+  font-weight: var(--font-bold);
+  text-transform: capitalize;
+  line-height: 1.25em;
+  color: var(--ion-color-dark);
+}
+
+.survey__header__title span {
+  font-size: 5rem;
+  color: #56519E;
+}
+
+p.survey__header__description {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ion-color-dark-tint);
+  margin-top: var(--mb-0-5);
+}
+
+svg.survey__header__svg {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: scale(-1, -1) rotate(180deg);
+  z-index: 1;
+}
+
+.survey {
+  position: relative;
+  height: 100vh;
+}
+
+.survey__container {
+  position: absolute;
+  padding: 50px;
+  top: -100px;
+  z-index: 2;
+}
+
+.survey__content {
+  display: block;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.survey__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .survey__header__content, .survey__container {
+    padding: 20px;
   }
-  
-  .review__card__content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-grow: 1;
+
+  h1.survey__header__title {
+    font-size: 2.5rem;
   }
-  
-  .review__card__image {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-right: 20px;
+
+  .survey__header__title span {
+    font-size: 3rem;
   }
-  
-  .review__card__info {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .review__card__title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-  
-  .review__card__desc {
+
+  p.survey__header__description {
     font-size: 1rem;
-    font-weight: 500;
-    color: #666;
-    margin-bottom: 15px;
   }
-  
-  .review__card__image__id {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #666;
-  }
-  
-  .review__card__button {
-      width: 20px;
-      height: 20px;
-      background: transparent;
-      color: #666;
-      border: 1px solid #666;
-      border-radius: 5px;
-      margin-left: auto;
-  }
-  
-  .review__card__button:hover {
-      background: #666;
-      color: #fff;
-  }
-  
-  @media (min-width: 1281px) {
-    .review__card {
-      width: 400px;
-    }
-  }
-  
-  @media (min-width: 1025px) and (max-width: 1280px) {
-  }
-  
-  @media (min-width: 768px) and (max-width: 1024px) {
-    .review__card__image {
-      width: 90px;
-      height: 90px;
-    }
-  }
-  
-  @media (min-width: 481px) and (max-width: 767px) {
-    /* Stack the flex-direction: column */
-    .review__card {
-      flex-direction: column;
-    }
-  
-    /* Make the image the same height as the content */
-    .review__card__image {
-      width: 100px;
-      height: 100px;
-    }
-  }
-  
-  @media (min-width: 320px) and (max-width: 480px) {
-    .review__card__content {
-      flex-direction: row;
-    }
-  
-    .review__card__image {
-      width: 100px;
-      height: 100px;
-      object-fit: fill;
-    }
-  }
-  
-  @media (min-width: 281px) and (max-width: 319px) {
-    .review__card__content {
-      flex-direction: row;
-    }
-  
-    .review__card__image {
-      width: 100px;
-      height: 100px;
-      object-fit: fill;
-    }
-  
-    .review__card__title {
-      font-size: 1rem;
-    }
-  
-    .review__card__desc {
-      font-size: 0.8rem;
-    }
-  
-    .review__card__image__id {
-      font-size: 0.6rem;
-    }
-  }
-  
-  @media (min-width: 280px) {
-    .review__card__content {
-      flex-direction: row;
-    }
-  
-    .review__card__image {
-      width: 80px;
-      height: 80px;
-      object-fit: fill;
-    }
-  
-    .review__card__title {
-      font-size: 1rem;
-    }
-  
-    .review__card__desc {
-      font-size: 0.8rem;
-    }
-  
-    .review__card__image__id {
-      font-size: 0.6rem;
-    }
-  }
+}

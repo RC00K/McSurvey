@@ -1,12 +1,12 @@
 @import url('../theme/variables.css');
 
 .question__container {
-    max-width: 800px;  
-    width: 100%;       
+    max-width: 1200px;
+    width: 100%;
     padding: 20px;
 }
 
-input {
+.text__input {
     border: 2px solid var(--ion-color-medium);
     border-radius: 50px;
     padding: 13px 20px;
@@ -19,13 +19,6 @@ input {
 .text__input:focus {
     border: 2px solid var(--ion-color-dark);
     outline: none;
-}
-
-.text__input:focus + .text__input__label, .text__input:not(:placeholder-shown) + .text__input__label {
-    color: var(--ion-color-primary);
-    transform: translateY(-26px);
-    background: white;
-    padding: 0 5px;
 }
 
 .text__input__label h2 {
@@ -45,21 +38,18 @@ input {
     pointer-events: none;
 }
 
-.question__header h2 {
+.question__header {
     margin-bottom: 10px;
 }
 
-.question__header p {
+.question__header p,
+.question__body p {
     font-size: 16px;
     color: var(--ion-color-medium);
 }
 
-.question__body p {
-    font-size: 16px;
-    color: var(--ion-color-dark);
-}
-
-.file__upload, .missing__image {
+.file__upload,
+.missing__image {
     border: 2px dashed var(--ion-color-medium);
     border-radius: 4px;
     margin-bottom: 20px;
@@ -69,7 +59,8 @@ input {
     transition: background-color 0.3s ease;
 }
 
-.file__upload:hover, .missing__image:hover {
+.file__upload:hover,
+.missing__image:hover {
     background-color: var(--ion-color-light-tint);
 }
 
@@ -93,8 +84,21 @@ input {
     border: none;
 }
 
-@media screen and (max-width: 768px) {
-    .file__upload, .missing__image {
+@media (max-width: 768px) {
+
+    .text__input__label,
+    .question__header h2,
+    .text__input,
+    .question__header p,
+    .question__body p {
+        font-size: 16px;
+    }
+
+    .question__container {
+        padding: 10px;
+    }
+
+    .file__upload {
         padding: 10px;
     }
 }

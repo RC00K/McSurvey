@@ -1,5 +1,3 @@
-@import url('../theme/styles.css');
-
 .survey__header__content {
   display: flex;
   flex-direction: column;
@@ -30,16 +28,17 @@ button.back__btn {
 }
 
 button.continue__btn {
-  width: 800px;
+  width: 100%;
+  max-width: 1200px;
   padding: 15px 20px;
   border-radius: 50px;
   background-color: var(--ion-color-dark);
   color: var(--ion-color-light);
 }
 
-button.continue__btn::disabled {
-  background-color: var(--ion-color-danger);
-  color: var(--ion-color-primary);
+button.continue__btn:disabled {
+  background-color: var(--ion-color-dark-shade);
+  color: var(--ion-color-dark-tint);
 }
 
 .survey__header__upper {
@@ -95,7 +94,7 @@ svg.survey__header__svg {
 
 .survey__content {
   display: block;
-  max-width: 800px;
+  max-width: 1200px;
   width: 100%;
 }
 
@@ -106,53 +105,20 @@ svg.survey__header__svg {
   padding: 20px;
 }
 
-@media screen and (max-width: 768px) and (min-width: 424px){
-  .survey__header__content {
+@media (max-width: 768px) {
+  .survey__header__content, .survey__container {
     padding: 20px;
   }
 
-  .survey__header__upper {
-    max-width: 340px;
-    top: 100px;
-  }
-
   h1.survey__header__title {
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
 
   .survey__header__title span {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 
   p.survey__header__description {
     font-size: 1rem;
-  }
-
-  button.back__btn {
-    width: 40px;
-    height: 40px;
-    font-size: 1.25rem;
-  }
-
-  .survey__content {
-    max-width: 600px;
-  }
-}
-
-@media screen and (max-width: 425px) and (min-width: 374px) {
-  .survey__content {
-    max-width: 390px;
-  }
-}
-
-@media screen and (max-width: 375px) and (min-width: 319px) {
-  .survey__content {
-    max-width: 340px;
-  }
-}
-
-@media screen and (max-width: 320px) {
-  .survey__content {
-    max-width: 290px;
   }
 }

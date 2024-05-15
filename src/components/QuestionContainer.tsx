@@ -24,12 +24,23 @@ export const QuestionContainer = ({
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+  useEffect(() => {
+    
+  });
+
   const openCameraPage = (questionIndex: number) => {
+    setCurrentQuestionIndex(questionIndex);
+    localStorage.setItem("lastQuestionIndex", questionIndex.toString());
     const questionId = `question_${questionIndex}`;
     history.push(`/camera/${questionIndex}#${questionId}`);
   };
 
   useEffect(() => {
+    const lastQuestionIndex = localStorage.getItem("lastQuestionIndex");
+    if (lastQuestionIndex) {
+      setCurrentQuestionIndex(parseInt(lastQuestionIndex, 10));
+    }
+
     if (location.hash) {
       setTimeout(() => {
         const element = document.querySelector(location.hash);
@@ -37,10 +48,16 @@ export const QuestionContainer = ({
           element.scrollIntoView();
         }
       }, 0);
+    } else if (lastQuestionIndex) {
+      setTimeout(() => {
+        const element = document.querySelector(`#question_${lastQuestionIndex}`);
+        if (element) {
+          element.scrollIntoView();
+        }
+      }, 0);
     }
   }, [location.hash]);
 
-  // Check if the survey is complete
   const isReadyForReview = () => {
     const isStoreNumberFilled = storeNumber.trim() !== "";
     const areAllImagesUploaded = selectedDriveThru.every((item) =>
