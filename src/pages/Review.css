@@ -1,4 +1,4 @@
-.survey__header__content {
+.review__header__content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -45,7 +45,7 @@ button.submit__btn:disabled {
   color: var(--ion-color-dark-tint);
 }
 
-.survey__header__upper {
+.review__header__upper {
   max-width: 600px;
   width: 100%;
   top: 140px;
@@ -54,7 +54,7 @@ button.submit__btn:disabled {
   z-index: 4;
 }
 
-h1.survey__header__title {
+h1.review__header__title {
   font-size: 4.25rem;
   font-weight: var(--font-bold);
   text-transform: capitalize;
@@ -62,19 +62,19 @@ h1.survey__header__title {
   color: var(--ion-color-dark);
 }
 
-.survey__header__title span {
+.review__header__title span {
   font-size: 5rem;
   color: #56519E;
 }
 
-p.survey__header__description {
+p.review__header__description {
   font-size: 1.15rem;
   font-weight: 600;
   color: var(--ion-color-dark-tint);
   margin-top: var(--mb-0-5);
 }
 
-svg.survey__header__svg {
+svg.review__header__svg {
   width: 100%;
   position: absolute;
   top: 0;
@@ -84,25 +84,25 @@ svg.survey__header__svg {
   z-index: 1;
 }
 
-.survey {
+.review {
   position: relative;
   height: 100vh;
 }
 
-.survey__container {
+.review__container {
   position: absolute;
   padding: 50px;
   top: -100px;
   z-index: 2;
 }
 
-.survey__content {
+.review__content {
   display: block;
   max-width: 1200px;
   width: 100%;
 }
 
-.survey__footer {
+.review__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -110,19 +110,19 @@ svg.survey__header__svg {
 }
 
 @media (max-width: 768px) {
-  .survey__header__content, .survey__container {
+  .review__header__content, .review__container {
     padding: 20px;
   }
 
-  h1.survey__header__title {
+  h1.review__header__title {
     font-size: 2.5rem;
   }
 
-  .survey__header__title span {
+  .review__header__title span {
     font-size: 3rem;
   }
 
-  p.survey__header__description {
+  p.review__header__description {
     font-size: 1rem;
   }
 }

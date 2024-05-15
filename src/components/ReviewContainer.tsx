@@ -237,24 +237,51 @@ export const ReviewContainer = () => {
   }, [emailSent]);
 
   return (
+    // <>
+    //     {selectedDriveThru.map((item, index) => item.questions.map((question, qIndex) => {
+    //       const questionId = `question_${qIndex}`;
+    //       const imageSrc = storedImages[questionId] || images[questionId];
+    //       return imageSrc ? (
+    //         <div className="item" key={questionId}>
+    //           <div className="image">
+    //             <img src={imageSrc} alt="Capture Image" />
+    //           </div>
+    //           <div className="description">
+    //             <span>{question.questionTitle}</span>
+    //             <span>{question.questionDesc}</span>
+    //           </div>
+    //         </div>
+    //       ) : null;
+    //     }))}
+    //   {showLoading && <div className="loading">Sending email...</div>}
+    //   {showToast && <div className={`toast ${emailSent ? "success" : "error"}`}>{emailSent ? "Email sent successfully!" : "Failed to send email"}</div>}
+    // </>
     <>
-        {selectedDriveThru.map((item, index) => item.questions.map((question, qIndex) => {
+      <label className="text__input__label">
+        <h2>Store Number</h2>
+      </label>
+      {selectedDriveThru.map((item, index) => item.questions.map((question, qIndex) => {
           const questionId = `question_${qIndex}`;
           const imageSrc = storedImages[questionId] || images[questionId];
           return imageSrc ? (
-            <div className="item" key={questionId}>
-              <div className="image">
+            <div key={`question_${index}_${qIndex}`} className="review__card">
+              <div
+                key={questionId}
+                className="review__card__image"
+              >
                 <img src={imageSrc} alt="Capture Image" />
               </div>
-              <div className="description">
-                <span>{question.questionTitle}</span>
-                <span>{question.questionDesc}</span>
+              <div className="review__card__body">
+                <div className="review__card__title">
+                  <h3>{question.questionTitle}</h3>
+                </div>
+                <div className="review__card__description">
+                  <p>{question.questionDesc}</p>
+                </div>
               </div>
             </div>
           ) : null;
-        }))}
-      {showLoading && <div className="loading">Sending email...</div>}
-      {showToast && <div className={`toast ${emailSent ? "success" : "error"}`}>{emailSent ? "Email sent successfully!" : "Failed to send email"}</div>}
+        }))};
     </>
   );
 };
