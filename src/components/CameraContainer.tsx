@@ -135,14 +135,14 @@ const CameraContainer = () => {
   return (
     <div className="camera__container">
         <div className="camera__overlay">
-          <div className="camera__top-bar">
-            <button onClick={handleCloseCamera}>
-              <IonIcon icon={close} className="camera__close" />
+          <div className="camera__controls camera__controls__top">
+            <button onClick={handleCloseCamera} className="camera__button">
+              <IonIcon icon={close} />
             </button>
-            <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()}>
+            <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()} className={flashMode === "off" ? "camera__button" : "camera__flash" }>
               <IonIcon 
                 icon={flashMode === "off" ? flashOff : flash} 
-                className={flashMode === "off" ? "camera__flash__off" : "camera__flash" } />
+              />
             </button>
           </div>
           <Camera
@@ -150,26 +150,38 @@ const CameraContainer = () => {
               aspectRatio="cover"
               numberOfCamerasCallback={setNumberOfCameras}
           />
-          <div className="camera__bottom-bar">
-          <div className="capture__button" onClick={handleCaptureClick}>
-            <div className="capture__button__inner" />
-          </div>
-          <button
-            disabled={numberOfCameras <= 1} 
-            onClick={() => {
-              if (camera.current) {
-                const result = camera.current.switchCamera();
-                console.log(result);
-              }
-            }}
-          >
-            <IonIcon icon={sync} className="camera__flip" />
-          </button>
+          <div className="camera__controls camera__controls__bottom">
+            <button className="camera__button">
+              
+            </button>
+            <div className="capture__button" onClick={handleCaptureClick}>
+              <div className="capture__button__inner" />
+            </div>
+            <button
+              disabled={numberOfCameras <= 1} 
+              onClick={() => {
+                if (camera.current) {
+                  const result = camera.current.switchCamera();
+                  console.log(result);
+                }
+              }}
+              className="camera__button"
+            >
+              <IonIcon icon={sync} />
+            </button>
           </div>
         </div>
         {reviewMode && image && (
           <div className="image__review">
             <img src={image} alt="Captured image" />
+            <div className="camera__controls camera__controls__bottom">
+              <button className="camera__button retake" onClick={handleRetakeClick}>
+                <IonIcon icon={close} className="retake__button__icon" />
+              </button>
+              <button className="camera__button save" onClick={handleSaveClick}>
+                <IonIcon icon={checkmark} className="save__button__icon" />
+              </button>
+            </div>
             <div className="review__buttons">
               <button className="retake__button" onClick={handleRetakeClick}>
                 <IonIcon icon={close} className="retake__button__icon" />
