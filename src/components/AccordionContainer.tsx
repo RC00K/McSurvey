@@ -8,6 +8,7 @@ import {
   } from "@ionic/react";
   import { addCircleOutline, removeCircleOutline } from "ionicons/icons";
   import "./AccordionContainer.css";
+  import { useState } from "react";
   
   interface Question {
     questionTitle: string;
@@ -22,14 +23,20 @@ import {
   }
   
   export const AccordionContainer = ({ question }: { question: Question }) => {
+    const [expanded, setExpanded] = useState(false);
+
+    const handleExpand = () => {
+      setExpanded(!expanded);
+    };
+
     return (
       <div className="accordion__container">
-        <details>
+        <details onToggle={handleExpand}>
           <summary>
             <span className="accordion__title">
               Example Pictures
             </span>
-            <IonIcon icon={addCircleOutline} className="accordion__expand" />
+            <IonIcon icon={expanded ? removeCircleOutline : addCircleOutline} className="accordion__expand" />
           </summary>
           <div className="accordion__content">
             <div className="accordion__gallery__grid">

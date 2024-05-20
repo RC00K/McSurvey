@@ -24,27 +24,28 @@ const CardContainer = ({ onCardClick }: { onCardClick: any }) => {
           },
           index
         ) => (
-          <div className="survey__card" key={index} onClick={onCardClick}>
-            <div className="survey__card__title">
-              <IonIcon icon={fastFood} />
-              <IonCardSubtitle>{surveyCategory}</IonCardSubtitle>
+          <>
+            <div className="survey__cards">
+              <article className="survey__card" key={index} onClick={onCardClick}>
+                <div className="survey__card__content">
+                  <h2 className="survey__card__title">{surveyTitle}</h2>
+                  <p className="survey__card__category">{surveyCategory}</p>
+                </div>
+                <div className="survey__card__bottom">
+                  <div className="survey__card__props">
+                    <div className="survey__card__prop">
+                      <p>
+                        {surveyCompletionTime}
+                      </p>
+                      <p>
+                        {surveyQuestions}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </article>
             </div>
-            <div className="survey__title">
-              <h3>{surveyTitle}</h3>
-            </div>
-
-            <div className="survey__completion">
-              <div className="survey__details">
-                <IonIcon icon={timeOutline} />
-                <span>{surveyCompletionTime}</span>
-              </div>
-
-              <div className="survey__details">
-                <IonIcon icon={listOutline} />
-                <span>{surveyQuestions}</span>
-              </div>
-            </div>
-          </div>
+          </>
         )
       )}
     </>

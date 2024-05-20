@@ -71,7 +71,7 @@ export const QuestionContainer = ({
   }, [storeNumber, images, onReadyForReviewChange]);
 
   return (
-    <>
+    <div className="question__container">
       <label className="text__input__label">
         <h2>Store Number</h2>
       </label>
@@ -105,8 +105,8 @@ export const QuestionContainer = ({
                     </ol>
                   )}
                 <AccordionContainer question={question} />
-                <div
-                  key={`question_${index}_${qIndex}`}
+                <div 
+                  key={`question_${index}_${qIndex}`} 
                   className="file__upload"
                   onClick={(e) => {
                     e.preventDefault();
@@ -120,9 +120,14 @@ export const QuestionContainer = ({
                       className="image__preview"
                     />
                   ) : (
-                    <button type="button" className="add__photo">
-                      <IonIcon icon={add} size="large" />
-                    </button>
+                    <>
+                      <div className="file__upload__icon">
+                        <IonIcon icon={add} size="large" />
+                      </div>
+                      <p>
+                        Click to upload
+                      </p>
+                    </>
                   )}
                 </div>
               </div>
@@ -130,6 +135,6 @@ export const QuestionContainer = ({
           );
         });
       })}
-    </>
+    </div>
   );
 };

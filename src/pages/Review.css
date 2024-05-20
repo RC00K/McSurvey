@@ -86,20 +86,20 @@ svg.review__header__svg {
 
 .review {
   position: relative;
+  width: 100%;
   height: 100vh;
 }
 
 .review__container {
-  position: absolute;
-  padding: 50px;
-  top: -100px;
-  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 2rem;
+  overflow: hidden;
 }
 
 .review__content {
-  display: block;
-  max-width: 1200px;
-  width: 100%;
+
 }
 
 .review__footer {
@@ -125,4 +125,45 @@ svg.review__header__svg {
   p.review__header__description {
     font-size: 1rem;
   }
+}
+
+.review__card {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 1.5rem;
+  background-color: var(--ion-color-light);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s;
+  max-width: clamp(320px, 70vw, 740px);
+  min-width: 20rem;
+  min-height: 17.5rem;
+}
+
+.review__card:hover {
+  box-shadow: var(--ion-color-dark-rgba) 0px 6px 16px;
+}
+
+.review__card__image {
+  flex: 1 1 15rem;
+}
+
+.review__card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.review__card__content {
+  flex: 3 1 22rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  padding: 1rem;
+}
+
+.review__card__content > h2 {
+  font-size: clamp(1.3rem, 2.5rem, 1.8rem);
+  font-weight: 700;
+  margin-bottom: clamp(0.35rem, 2vw, 0.55rem);
 }

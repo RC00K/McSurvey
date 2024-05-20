@@ -1,22 +1,34 @@
 @import url('../theme/variables.css');
 
-section {
+.home {
     width: 100%;
-    box-sizing: border-box;
 }
 
 .home__header {
     text-align: center;
-    padding: 20px 0;
+    padding: 20px;
+}
+
+.home__header__content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.home__header__logo {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
 }
 
 .home__header h1 {
     font-size: 2em;
-    color: var(--ion-color-dark);
-}
-
-.home__body {
-    padding: 20px;
+    font-weight: bolder;
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 0;
 }
 
 .home__title {
@@ -35,74 +47,58 @@ section {
     justify-content: space-between;
 }
 
+.home__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 50px;
+}
+
+.home__body__title {
+    font-size: 1.5em;
+    font-weight: bolder;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0.625rem;
+    line-height: 0;
+}
+
+.home__body__title h3 {
+    font-size: 1.2em;
+    color: var(--ion-color-dark);
+}
+
+.surveys {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
 /*  320px - 480px Mobile Devices */
 @media (min-width: 320px) and (max-width: 480px) {
-    .home__header h1 {
-        font-size: 1.5em;
-    }
 
-    .home__title h3 {
-        font-size: 1em;
-    }
 }
 
 /*  481px - 768px Tablet Devices */
 @media (min-width: 481px) and (max-width: 768px) {
-    .home__header h1 {
-        font-size: 1.75em;
-    }
 
-    .home__title h3 {
-        font-size: 1.1em;
-    }
 }
 
 /*  769px - 1024px Small Screens, Laptops */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .home__header h1 {
-        font-size: 1.9em;
-    }
 
-    .home__title h3 {
-        font-size: 1.3em;
-    }
 }
 
 /*  1201px - 1920px Extra Large Screens, TV */
 @media (min-width: 1201px) and (max-width: 1920px) {
-    .home__body {
-        padding: 30px;
-    }
-
-    .home__title h3 {
-        font-size: 1.5em;
-    }
-
-    .home__grid__container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .home__grid {
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
+    
 }
 
 /*  1921px - 2560px 4K Ultra HD Screens */
 @media (min-width: 1921px) and (max-width: 2560px) {
-    .home__body {
-        padding: 40px;
-    }
-    
-    .home__content {
-        display: flex;
-        justify-content: space-between;
-    }
 
-    .home__title h3 {
-        font-size: 2em;
-    }
 }

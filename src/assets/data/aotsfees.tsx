@@ -5,6 +5,33 @@ import dtep3 from '../images/DTEP3.jpg';
 import dtep4 from '../images/DTEP4.jpg';
 import dtep5 from '../images/DTEP5.jpg';
 import dtep6 from '../images/DTEP6.jpg';
+import sp1 from '../images/SP1.jpg';
+import sp2 from '../images/SP2.jpg';
+import sp3 from '../images/SP3.jpg';
+import sp4 from '../images/SP4.jpg';
+import sp5 from '../images/SP5.jpg';
+import ns1 from '../images/NS1.jpg';
+import ns2 from '../images/NS2.jpg';
+import ns3 from '../images/NS3.jpg';
+import ns4 from '../images/NS4.jpg';
+import ns5 from '../images/NS5.jpg';
+import ns6 from '../images/NS6.jpg';
+import mc1 from '../images/MC1.jpg';
+import mc2 from '../images/MC2.jpg';
+import mc3 from '../images/MC3.jpg';
+import mc4 from '../images/MC4.jpg';
+import mc5 from '../images/MC5.jpg';
+import mc6 from '../images/MC6.jpg';
+import bps1 from '../images/BPS1.jpg';
+import bps2 from '../images/BPS2.jpg';
+import bps3 from '../images/BPS3.jpg';
+import bps4 from '../images/BPS4.jpg';
+import bps5 from '../images/BPS5.jpg';
+import bps6 from '../images/BPS6.jpg';
+import wa1 from '../images/WA1.jpg';
+import wa2 from '../images/WA2.jpg';
+import wa3 from '../images/WA3.jpg';
+
 
 
 export const oneDrive = [
@@ -58,27 +85,27 @@ export const oneDrive = [
                     {
                         imageTitle: "Speaker Post Example 1",
                         imageAlt: "Speaker Post 1",
-                        image: "../src/images/sp1.jpg"
+                        image: sp1
                     },
                     {
                         imageTitle: "Speaker Post Example 2",
                         imageAlt: "Speaker Post 2",
-                        image: "../src/images/sp2.jpg"
+                        image: sp2
                     },
                     {
                         imageTitle: "Speaker Post Example 3",
                         imageAlt: "Speaker Post 3",
-                        image: "../src/images/sp3.jpg"
+                        image: sp3
                     },
                     {
                         imageTitle: "Speaker Post Example 4",
                         imageAlt: "Speaker Post 4",
-                        image: "../src/images/sp4.jpg"
+                        image: sp4
                     },
                     {
                         imageTitle: "Speaker Post Example 5",
                         imageAlt: "Speaker Post 5",
-                        image: "../src/images/sp5.jpg"
+                        image: sp5
                     }
                 ]
             },
@@ -90,32 +117,32 @@ export const oneDrive = [
                     {
                         imageTitle: "Network Switches Example 1",
                         imageAlt: "Network Switches 1",
-                        image: "../src/images/ns1.jpg"
+                        image: ns1
                     },
                     {
                         imageTitle: "Network Switches Example 2",
                         imageAlt: "Network Switches 2",
-                        image: "../src/images/ns2.jpg"
+                        image: ns2
                     },
                     {
                         imageTitle: "Network Switches Example 3",
                         imageAlt: "Network Switches 3",
-                        image: "../src/images/ns3.jpg"
+                        image: ns3
                     },
                     {
                         imageTitle: "Network Switches Example 4",
                         imageAlt: "Network Switches 4",
-                        image: "../src/images/ns4.jpg"
+                        image: ns4
                     },
                     {
                         imageTitle: "Network Switches Example 5",
                         imageAlt: "Network Switches 5",
-                        image: "../src/images/ns5.jpg"
+                        image: ns5
                     },
                     {
                         imageTitle: "Network Switches Example 6",
                         imageAlt: "Network Switches 6",
-                        image: "../src/images/ns6.jpg"
+                        image: ns6
                     }
                 ]
             },
@@ -138,32 +165,32 @@ export const oneDrive = [
                     {
                         imageTitle: "Modem Connectivity Example 1",
                         imageAlt: "Modem Connectivity 1",
-                        image: "../src/images/mc1.jpg"
+                        image: mc1
                     },
                     {
                         imageTitle: "Modem Connectivity Example 2",
                         imageAlt: "Modem Connectivity 2",
-                        image: "../src/images/mc2.jpg"
+                        image: mc2
                     },
                     {
                         imageTitle: "Modem Connectivity Example 3",
                         imageAlt: "Modem Connectivity 3",
-                        image: "../src/images/mc3.jpg"
+                        image: mc3
                     },
                     {
                         imageTitle: "Modem Connectivity Example 4",
                         imageAlt: "Modem Connectivity 4",
-                        image: "../src/images/mc4.jpg"
+                        image: mc4
                     },
                     {
                         imageTitle: "Modem Connectivity Example 5",
                         imageAlt: "Modem Connectivity 5",
-                        image: "../src/images/mc5.jpg"
+                        image: mc5
                     },
                     {
                         imageTitle: "Modem Connectivity Example 6",
                         imageAlt: "Modem Connectivity 6",
-                        image: "../src/images/mc6.jpg"
+                        image: mc6
                     }
                 ]
             },
@@ -175,32 +202,32 @@ export const oneDrive = [
                     {
                         imageTitle: "BOS & POS Servers Example 1",
                         imageAlt: "BOS & POS Servers 1",
-                        image: "../src/images/bps1.jpg"
+                        image: bps1
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 2",
                         imageAlt: "BOS & POS Servers 2",
-                        image: "../src/images/bps2.jpg"
+                        image: bps2
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 3",
                         imageAlt: "BOS & POS Servers 3",
-                        image: "../src/images/bps3.jpg"
+                        image: bps3
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 4",
                         imageAlt: "BOS & POS Servers 4",
-                        image: "../src/images/bps4.jpg"
+                        image: bps4
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 5",
                         imageAlt: "BOS & POS Servers 5",
-                        image: "../src/images/bps5.jpg"
+                        image: bps5
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 6",
                         imageAlt: "BOS & POS Servers 6",
-                        image: "../src/images/bps6.jpg"
+                        image: bps6
                     }
                 ]
             },
@@ -212,17 +239,17 @@ export const oneDrive = [
                     {
                         imageTitle: "Tech Equipment Overview Example 1",
                         imageAlt: "Tech Equipment Overview 1",
-                        image: "../src/images/wa1.jpg"
+                        image: wa1
                     },
                     {
                         imageTitle: "Tech Equipment Overview Example 2",
                         imageAlt: "Tech Equipment Overview 2",
-                        image: "../src/images/wa2.jpg"
+                        image: wa2
                     },
                     {
                         imageTitle: "Tech Equipment Overview Example 3",
                         imageAlt: "Tech Equipment Overview 3",
-                        image: "../src/images/wa3.jpg"
+                        image: wa3
                     }
                 ]
             }
@@ -281,27 +308,27 @@ export const twoDrive = [
                     {
                         imageTitle: "Speaker Post Example 1",
                         imageAlt: "Speaker Post 1",
-                        image: "../src/images/sp1.jpg"
+                        image: sp1
                     },
                     {
                         imageTitle: "Speaker Post Example 2",
                         imageAlt: "Speaker Post 2",
-                        image: "../src/images/sp2.jpg"
+                        image: sp2
                     },
                     {
                         imageTitle: "Speaker Post Example 3",
                         imageAlt: "Speaker Post 3",
-                        image: "../src/images/sp3.jpg"
+                        image: sp3
                     },
                     {
                         imageTitle: "Speaker Post Example 4",
                         imageAlt: "Speaker Post 4",
-                        image: "../src/images/sp4.jpg"
+                        image: sp4
                     },
                     {
                         imageTitle: "Speaker Post Example 5",
                         imageAlt: "Speaker Post 5",
-                        image: "../src/images/sp5.jpg"
+                        image: sp5
                     }
                 ]
             },
@@ -313,27 +340,27 @@ export const twoDrive = [
                     {
                         imageTitle: "Speaker Post Example 1",
                         imageAlt: "Speaker Post 1",
-                        image: "../src/images/sp1.jpg"
+                        image: sp1
                     },
                     {
                         imageTitle: "Speaker Post Example 2",
                         imageAlt: "Speaker Post 2",
-                        image: "../src/images/sp2.jpg"
+                        image: sp2
                     },
                     {
                         imageTitle: "Speaker Post Example 3",
                         imageAlt: "Speaker Post 3",
-                        image: "../src/images/sp3.jpg"
+                        image: sp3
                     },
                     {
                         imageTitle: "Speaker Post Example 4",
                         imageAlt: "Speaker Post 4",
-                        image: "../src/images/sp4.jpg"
+                        image: sp4
                     },
                     {
                         imageTitle: "Speaker Post Example 5",
                         imageAlt: "Speaker Post 5",
-                        image: "../src/images/sp5.jpg"
+                        image: sp5
                     }
                 ]
             },
@@ -345,32 +372,32 @@ export const twoDrive = [
                     {
                         imageTitle: "Network Switches Example 1",
                         imageAlt: "Network Switches 1",
-                        image: "../src/images/ns1.jpg"
+                        image: ns1
                     },
                     {
                         imageTitle: "Network Switches Example 2",
                         imageAlt: "Network Switches 2",
-                        image: "../src/images/ns2.jpg"
+                        image: ns2
                     },
                     {
                         imageTitle: "Network Switches Example 3",
                         imageAlt: "Network Switches 3",
-                        image: "../src/images/ns3.jpg"
+                        image: ns3
                     },
                     {
                         imageTitle: "Network Switches Example 4",
                         imageAlt: "Network Switches 4",
-                        image: "../src/images/ns4.jpg"
+                        image: ns4
                     },
                     {
                         imageTitle: "Network Switches Example 5",
                         imageAlt: "Network Switches 5",
-                        image: "../src/images/ns5.jpg"
+                        image: ns5
                     },
                     {
                         imageTitle: "Network Switches Example 6",
                         imageAlt: "Network Switches 6",
-                        image: "../src/images/ns6.jpg"
+                        image: ns6
                     }
                 ]
             },
@@ -393,32 +420,32 @@ export const twoDrive = [
                     {
                         imageTitle: "Modem Connectivity Example 1",
                         imageAlt: "Modem Connectivity 1",
-                        image: "../src/images/mc1.jpg"
+                        image: mc1
                     },
                     {
                         imageTitle: "Modem Connectivity Example 2",
                         imageAlt: "Modem Connectivity 2",
-                        image: "../src/images/mc2.jpg"
+                        image: mc2
                     },
                     {
                         imageTitle: "Modem Connectivity Example 3",
                         imageAlt: "Modem Connectivity 3",
-                        image: "../src/images/mc3.jpg"
+                        image: mc3
                     },
                     {
                         imageTitle: "Modem Connectivity Example 4",
                         imageAlt: "Modem Connectivity 4",
-                        image: "../src/images/mc4.jpg"
+                        image: mc4
                     },
                     {
                         imageTitle: "Modem Connectivity Example 5",
                         imageAlt: "Modem Connectivity 5",
-                        image: "../src/images/mc5.jpg"
+                        image: mc5
                     },
                     {
                         imageTitle: "Modem Connectivity Example 6",
                         imageAlt: "Modem Connectivity 6",
-                        image: "../src/images/mc6.jpg"
+                        image: mc6
                     }
                 ]
             },
@@ -430,32 +457,32 @@ export const twoDrive = [
                     {
                         imageTitle: "BOS & POS Servers Example 1",
                         imageAlt: "BOS & POS Servers 1",
-                        image: "../src/images/bps1.jpg"
+                        image: bps1
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 2",
                         imageAlt: "BOS & POS Servers 2",
-                        image: "../src/images/bps2.jpg"
+                        image: bps2
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 3",
                         imageAlt: "BOS & POS Servers 3",
-                        image: "../src/images/bps3.jpg"
+                        image: bps3
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 4",
                         imageAlt: "BOS & POS Servers 4",
-                        image: "../src/images/bps4.jpg"
+                        image: bps4
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 5",
                         imageAlt: "BOS & POS Servers 5",
-                        image: "../src/images/bps5.jpg"
+                        image: bps5
                     },
                     {
                         imageTitle: "BOS & POS Servers Example 6",
                         imageAlt: "BOS & POS Servers 6",
-                        image: "../src/images/bps6.jpg"
+                        image: bps6
                     }
                 ]
             },
@@ -467,17 +494,17 @@ export const twoDrive = [
                     {
                         imageTitle: "Tech Equipment Overview Example 1",
                         imageAlt: "Tech Equipment Overview 1",
-                        image: "../src/images/wa1.jpg"
+                        image: wa1
                     },
                     {
                         imageTitle: "Tech Equipment Overview Example 2",
                         imageAlt: "Tech Equipment Overview 2",
-                        image: "../src/images/wa2.jpg"
+                        image: wa2
                     },
                     {
                         imageTitle: "Tech Equipment Overview Example 3",
                         imageAlt: "Tech Equipment Overview 3",
-                        image: "../src/images/wa3.jpg"
+                        image: wa3
                     }
                 ]
             }
