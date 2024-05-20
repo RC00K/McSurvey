@@ -7,6 +7,7 @@ import { useReview } from "../components/Review/ReviewContext";
 import WarningModal from "../components/modals/WarningModal";
 import "./Survey.css";
 import "../theme/styles.css";
+import NavToolbar from "../components/Navigation/NavToolbar";
 
 const Survey: React.FC = () => {
   const { selected } = useParams<{ selected: string }>();
@@ -64,6 +65,7 @@ const Survey: React.FC = () => {
             onConfirmEnd={handleEndSurvey}
           />
         )}
+        <NavToolbar />
         <main className="main">
           <section className="section" id="survey-header">
             <div className="container">

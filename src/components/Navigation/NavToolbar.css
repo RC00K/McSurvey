@@ -1,0 +1,45 @@
+button {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:focus {
+    outline: revert;
+}
+
+header {
+    height: 5rem;
+    padding: 0 1rem;
+    background-color: transparent;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.navigation__group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.4rem;
+}
+
+.navigation__group ion-icon {
+    width: 3rem;
+    height: 3rem;
+    padding: 0.4rem;
+    transition: all 0.2s ease-in-out;
+    border-radius: 50%;
+}
+
+.navigation__group > button:nth-child(1) {
+    margin-right: auto;
+}
+
+.navigation__group button:hover ion-icon,
+.navigation__group button:focus ion-icon {
+    background-color: var(--ion-color-light);
+    border-radius: 50%;
+}

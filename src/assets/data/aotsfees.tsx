@@ -244,32 +244,32 @@ export const twoDrive = [
                     {
                         imageTitle: "Drive-Thru Example 1",
                         imageAlt: "Drive-Thru Entry Point 1",
-                        image: "../src/images/dtep1.jpg"
+                        image: dtep1
                     },
                     {
                         imageTitle: "Drive-Thru Example 2",
                         imageAlt: "Drive-Thru Entry Point 2",
-                        image: "../src/images/dtep2.jpg"
+                        image: dtep2
                     },
                     {
                         imageTitle: "Drive-Thru Example 3",
                         imageAlt: "Drive-Thru Entry Point 3",
-                        image: "../src/images/dtep3.jpg"
+                        image: dtep3
                     },
                     {
                         imageTitle: "Drive-Thru Example 4",
                         imageAlt: "Drive-Thru Entry Point 4",
-                        image: "../src/images/dtep4.jpg"
+                        image: dtep4
                     },
                     {
                         imageTitle: "Drive-Thru Example 5",
                         imageAlt: "Drive-Thru Entry Point 5",
-                        image: "../src/images/dtep5.jpg"
+                        image: dtep5
                     },
                     {
                         imageTitle: "Drive-Thru Example 6",
                         imageAlt: "Drive-Thru Entry Point 6",
-                        image: "../src/images/dtep6.jpg"
+                        image: dtep6
                     }
                 ]
             },
