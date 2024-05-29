@@ -162,7 +162,16 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         playsInline
         mirrored={currentFacingMode === "user"}
       />
-      <input type="range" min="1" max="10" value={zoom} onChange={(e) => setZoomValue(e.target.value)} />
+      <div style={{ position: "absolute", bottom: 10, width: "100%" }}>
+        <input 
+          type="range" 
+          min="1" 
+          max="10" 
+          value={zoom} 
+          onChange={(e) => setZoomValue(e.target.value)} 
+          style={{ width: "100%" }}
+        />
+      </div>
       <Canvas ref={canvas} />
     </Wrapper>
   );
