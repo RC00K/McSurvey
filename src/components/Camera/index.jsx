@@ -30,6 +30,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const [currentFacingMode, setFacingMode] = useState(facingMode);
   const [currentFlashMode, setFlashMode] = useState("off");
   const [zoom, setZoom] = useState(1);
+  const [isZooming, setIsZooming] = useState(false);
   const [initialDistance, setInitialDistance] = useState(null);
   const debounceTimeoutRef = useRef(null);
 
@@ -82,7 +83,9 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     debounceTimeoutRef.current = setTimeout(() => setZoomValue(value), 200);
   };
 
-  const setZoomValue = (value) => {
+  const setZoomValue = async (value) => {
+    if (isZooming) return;
+    setIsZooming(true);
     setZoom(value);
     if (stream) {
       const [videoTrack] = stream.getVideoTracks();
@@ -90,8 +93,10 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
       if ('zoom' in capabilities) {
         const constraints = { advanced: [{ zoom: value }] };
         videoTrack.applyConstraints(constraints)
+        .then(() => setIsZooming(false))
         .catch((error) => {
           console.error("Failed to set zoom:", error);
+          setIsZooming(false);
         });
       }
     }
