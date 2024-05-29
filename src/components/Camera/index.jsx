@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { useRef, useState, useEffect, useLayoutEffect, useImperativeHandle } from "react";
+import { set } from "react-hook-form";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -22,27 +23,13 @@ const Canvas = styled.canvas`
   display: none;
 `;
 
-const FocusPoint = styled.div`
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border: 2px solid ${(props) => (props.isLocked ? "red" : "white")};
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease-in-out;
-  opacity: ${(props) => (props.visible ? 1 : 0)};
-`;
-
 const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const player = useRef(null);
   const canvas = useRef(null);
   const [stream, setStream] = useState(null);
   const [currentFacingMode, setFacingMode] = useState(facingMode);
   const [currentFlashMode, setFlashMode] = useState("off");
-  const [isFocusLocked, setFocusLocked] = useState(false);
-  const [focusPoint, setFocusPoint] = useState({ x: 0, y: 0, visible: false });
-  const focusTimeout = useRef(null);
+  const [zoom, setZoom] = useState(1);
 
   const acquireStream = () => {
     const constraints = {
@@ -88,38 +75,20 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     }
   };
 
-  const handleTapToFocus = (event) => {
-    if (stream && !isFocusLocked) {
-      const rect = player.current.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width;
-      const y = (event.clientY - rect.top) / rect.height;
-
-      setFocusPoint({ x: event.clientX, y: event.clientY, visible: true });
-
-      const track = stream.getVideoTracks()[0];
-      const capabilities = track.getCapabilities();
-
-      if (capabilities.focusMode && capabilities.focusMode.includes("single-shot")) {
-        const focusArea = { x, y, width: 0.1, height: 0.1 }; // Adjust the size of the focus area as needed
-        track.applyConstraints({ advanced: [{ focusMode: "single-shot", pointsOfInterest: [focusArea] }] })
-          .catch((error) => console.error("Error setting focus area:", error));
+  const setZoomValue = (value) => {
+    setZoom(value);
+    if (stream) {
+      const [videoTrack] = stream.getVideoTracks();
+      const capabilities = videoTrack.getCapabilities();
+      if ('zoom' in capabilities) {
+        const constraints = { advanced: [{ zoom: value }] };
+        videoTrack.applyConstraints(constraints)
+        .catch((error) => {
+          console.error("Failed to set zoom:", error);
+        });
       }
     }
-  };
-
-  const handleHoldToLockFocus = (event) => {
-    focusTimeout.current = setTimeout(() => {
-      setFocusLocked(true);
-      handleTapToFocus(event);
-    }, 1000); // 1 second hold duration
-  };
-
-  const clearFocusTimeout = () => {
-    if (focusTimeout.current) {
-      clearTimeout(focusTimeout.current);
-      focusTimeout.current = null;
-    }
-  };
+  }
 
   useImperativeHandle(ref, () => ({
     takePhoto: () => {
@@ -182,7 +151,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [currentFacingMode, currentFlashMode]);
+  }, [currentFacingMode, currentFlashMode, zoom]);
 
   return (
     <Wrapper>
@@ -192,19 +161,9 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         autoPlay
         playsInline
         mirrored={currentFacingMode === "user"}
-        onClick={handleTapToFocus}
-        onMouseDown={handleHoldToLockFocus}
-        onMouseUp={clearFocusTimeout}
-        onMouseLeave={clearFocusTimeout}
-        onTouchStart={handleHoldToLockFocus}
-        onTouchEnd={clearFocusTimeout}
       />
+      <input type="range" min="1" max="10" value={zoom} onChange={(e) => setZoomValue(e.target.value)} />
       <Canvas ref={canvas} />
-      <FocusPoint
-        style={{ left: `${focusPoint.x}px`, top: `${focusPoint.y}px` }}
-        visible={focusPoint.visible}
-        isLocked={isFocusLocked}
-      />
     </Wrapper>
   );
 });
