@@ -105,6 +105,19 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     setTargetZoom(value);
   };
 
+  useEffect(() => {
+    if (stream && 'zoom' in stream.getTracks()[0].getCapabilities()) {
+      const [videoTrack] = stream.getVideoTracks();
+      videoTrack.applyConstraints({ advanced: [{ zoom }] })
+      .then(() => {
+        console.log('zoom set');
+      })
+      .catch((error) => {
+        console.error('zoom set error', error);
+      });
+    }
+  }, [stream, zoom]);
+
   const handlePinchStart = (event) => {
     if (event.touches.length === 2) {
       const dx = event.touches[0].clientX - event.touches[1].clientX;
@@ -185,7 +198,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [currentFacingMode, currentFlashMode, zoom]);
+  }, [currentFacingMode, currentFlashMode]);
 
   return (
     <Wrapper>
