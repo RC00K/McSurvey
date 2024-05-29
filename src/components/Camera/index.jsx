@@ -30,6 +30,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const [currentFacingMode, setFacingMode] = useState(facingMode);
   const [currentFlashMode, setFlashMode] = useState("off");
   const [zoom, setZoom] = useState(1);
+  const [initialDistance, setInitialDistance] = useState(null);
 
   const acquireStream = () => {
     const constraints = {
@@ -75,7 +76,19 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     }
   };
 
-  const setZoomValue = (value) => {
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
+
+  const setZoomValue = debounce((value) => {
     setZoom(value);
     if (stream) {
       const [videoTrack] = stream.getVideoTracks();
@@ -88,7 +101,26 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         });
       }
     }
-  }
+  }, 250);
+
+  const handlePinchStart = (event) => {
+    if (event.touches.length === 2) {
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      setInitialDistance(distance);
+    }
+  };
+
+  const handleTouchMove = (event) => {
+    if (event.touches.length === 2 && initialDistance) {
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const zoomValue = distance / initialDistance;
+      setZoomValue(zoomValue);
+    }
+  };
 
   useImperativeHandle(ref, () => ({
     takePhoto: () => {
@@ -161,17 +193,9 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         autoPlay
         playsInline
         mirrored={currentFacingMode === "user"}
+        onTouchStart={handlePinchStart}
+        onTouchMove={handleTouchMove}
       />
-      <div style={{ position: "absolute", bottom: 10, width: "100%" }}>
-        <input 
-          type="range" 
-          min="1" 
-          max="10" 
-          value={zoom} 
-          onChange={(e) => setZoomValue(e.target.value)} 
-          style={{ width: "100%" }}
-        />
-      </div>
       <Canvas ref={canvas} />
     </Wrapper>
   );
