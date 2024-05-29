@@ -22,6 +22,31 @@ const Canvas = styled.canvas`
   display: none;
 `;
 
+const FocusIndicator = styled.div`
+  position: absolute;
+  border: 2px solid yellow;
+  width: 50px;
+  height: 50px;
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
+  left: ${({ x }) => x - 25}px;
+  top: ${({ y }) => y - 25}px;
+  pointer-events: none;
+  z-index: 1;
+`;
+
+const FocusLockMessage = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
+  z-index: 1;
+`;
+
 const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const player = useRef(null);
   const canvas = useRef(null);
@@ -33,6 +58,8 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const [targetZoom, setTargetZoom] = useState(1);
   const [initialDistance, setInitialDistance] = useState(null);
   const [isFocusLocked, setIsFocusLocked] = useState(false);
+  const [focusPoint, setFocusPoint] = useState({ x: 0, y: 0 });
+  const [showFocusIndicator, setShowFocusIndicator] = useState(false);
   const debounceTimeoutRef = useRef(null);
 
   const acquireStream = () => {
@@ -141,11 +168,23 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
       const track = stream.getVideoTracks()[0];
       const capabilities = track.getCapabilities();
 
+      if (isFocusLocked) {
+        setIsFocusLocked(false);
+        track.applyConstraints({
+          advanced: [{ focusMode: "continuous" }],
+        });
+        setShowFocusIndicator(false);
+        return;
+      }
+
       if (capabilities.focusMode && capabilities.focusMode.includes("manual")) {
         const settings = track.getSettings();
         const { width, height } = settings;
         const focusX = event.clientX / width;
         const focusY = event.clientY / height;
+
+        setFocusPoint({ x: event.clientX, y: event.clientY });
+        setShowFocusIndicator(true);
 
         track.applyConstraints({
           advanced: [
@@ -153,6 +192,12 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
             { pointsOfInterest: [{ x: focusX, y: focusY }] },
           ],
         });
+
+        setTimeout(() => {
+          if (!isFocusLocked) {
+            setShowFocusIndicator(false);
+          }
+        }, 2000);
       }
     }
   };
@@ -171,7 +216,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     }
   };
 
-  const detectBrightnessAndToggleFlash = (track) => {
+  const detectBrightness = () => {
     const context = canvas.current.getContext("2d");
     canvas.current.width = player.current.videoWidth;
     canvas.current.height = player.current.videoHeight;
@@ -191,13 +236,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
       colorSum += avg;
     }
 
-    const brightness = Math.floor(colorSum / (canvas.current.width * canvas.current.height));
-
-    if (brightness < 50) {
-      track.applyConstraints({ advanced: [{ torch: true }] });
-    } else {
-      track.applyConstraints({ advanced: [{ torch: false }] });
-    }
+    return Math.floor(colorSum / (canvas.current.width * canvas.current.height));
   };
 
   useImperativeHandle(ref, () => ({
@@ -216,12 +255,21 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
 
         if (currentFlashMode === "on") {
           applyFlash(true);
+        } else if (currentFlashMode === "auto") {
+          const brightness = detectBrightness();
+          if (brightness < 50) {
+            applyFlash(true);
+          }
         }
 
         context.drawImage(player.current, 0, 0, videoWidth, videoHeight);
 
-        if (currentFlashMode === "on") {
+        if (currentFlashMode !== "off") {
           applyFlash(false);
+        }
+
+        if (isFocusLocked) {
+          lockFocus();
         }
 
         return canvas.current.toDataURL("image/jpeg");
@@ -273,14 +321,6 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     };
   }, [currentFacingMode, currentFlashMode]);
 
-  useEffect(() => {
-    if (currentFlashMode === "auto" && stream) {
-      const track = stream.getVideoTracks()[0];
-      const interval = setInterval(() => detectBrightnessAndToggleFlash(track), 1000);
-      return () => clearInterval(interval);
-    }
-  }, [currentFlashMode, stream]);
-
   return (
     <Wrapper>
       <Cam
@@ -293,6 +333,8 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         onTouchMove={handleTouchMove}
         onClick={handleTapFocus}
       />
+      <FocusIndicator visible={showFocusIndicator || isFocusLocked} x={focusPoint.x} y={focusPoint.y} />
+      <FocusLockMessage visible={isFocusLocked}>Focus Locked</FocusLockMessage>
       <Canvas ref={canvas} />
     </Wrapper>
   );
