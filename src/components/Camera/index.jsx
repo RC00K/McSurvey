@@ -31,6 +31,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const [currentFlashMode, setFlashMode] = useState("off");
   const [zoom, setZoom] = useState(1);
   const [isZooming, setIsZooming] = useState(false);
+  const [targetZoom, setTargetZoom] = useState(1);
   const [initialDistance, setInitialDistance] = useState(null);
   const debounceTimeoutRef = useRef(null);
 
@@ -83,23 +84,25 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     debounceTimeoutRef.current = setTimeout(() => setZoomValue(value), 200);
   };
 
-  const setZoomValue = async (value) => {
+  const updateZoom = async () => {
     if (isZooming) return;
     setIsZooming(true);
-    setZoom(value);
-    if (stream) {
-      const [videoTrack] = stream.getVideoTracks();
-      const capabilities = videoTrack.getCapabilities();
-      if ('zoom' in capabilities) {
-        const constraints = { advanced: [{ zoom: value }] };
-        videoTrack.applyConstraints(constraints)
-        .then(() => setIsZooming(false))
-        .catch((error) => {
-          console.error("Failed to set zoom:", error);
-          setIsZooming(false);
-        });
-      }
-    }
+
+    setZoom(oldZoom => {
+      const difference = targetZoom - oldZoom;
+      const newZoom = oldZoom + difference * 0.1;
+      return newZoom;
+    });
+    setIsZooming(false);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(updateZoom, 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  const setZoomValue = async (value) => {
+    setTargetZoom(value);
   };
 
   const handlePinchStart = (event) => {
