@@ -31,6 +31,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const [currentFlashMode, setFlashMode] = useState("off");
   const [zoom, setZoom] = useState(1);
   const [initialDistance, setInitialDistance] = useState(null);
+  const debounceTimeoutRef = useRef(null);
 
   const acquireStream = () => {
     const constraints = {
@@ -76,19 +77,12 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
     }
   };
 
-  const debounce = (func, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
+  const debounceZoom = (value) => {
+    clearTimeout(debounceTimeoutRef.current);
+    debounceTimeoutRef.current = setTimeout(() => setZoomValue(value), 200);
   };
 
-  const setZoomValue = debounce((value) => {
+  const setZoomValue = (value) => {
     setZoom(value);
     if (stream) {
       const [videoTrack] = stream.getVideoTracks();
@@ -101,7 +95,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         });
       }
     }
-  }, 250);
+  };
 
   const handlePinchStart = (event) => {
     if (event.touches.length === 2) {
@@ -118,7 +112,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
       const dy = event.touches[0].clientY - event.touches[1].clientY;
       const distance = Math.sqrt(dx * dx + dy * dy);
       const zoomValue = distance / initialDistance;
-      setZoomValue(zoomValue);
+      debounceZoom(zoomValue);
     }
   };
 
