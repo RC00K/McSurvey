@@ -11,6 +11,10 @@
   color: var(--ion-color-dark);
 }
 
+.camera__container:fullscreen {
+    
+}
+
 .camera__overlay {
     position: absolute;
     top: 0;
@@ -38,7 +42,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    height: 6em;
+    height: 10em;
     padding: 1.5em;
     z-index: 5;
 }
@@ -50,7 +54,7 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 6em;
+    height: 10em;
     padding: 1.5em;
     z-index: 5;
 }
@@ -61,10 +65,19 @@
     align-items: center;
     color: var(--ion-color-dark);
     z-index: 1000;
-    background-color: var(--ion-color-light-shade);
+    background-color: var(--ion-color-light-tint);
     border-radius: 50px;
     padding: 10px;
     cursor: pointer;
+}
+
+.camera__button:hover {
+    background-color: var(--ion-color-light-shade);
+}
+
+.camera__button:active {
+    background-color: var(--ion-color-light-tint);
+    transform: scale(0.95);
 }
 
 ion-icon {
@@ -145,16 +158,16 @@ ion-icon {
 @media (orientation: landscape) {
     .camera__controls__top {
         left: 0;
-        width: 6em;
+        width: 10em;
         height: 100%;
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     .camera__controls__bottom {
         right: 0;
-        width: 6em;
+        width: 10em;
         height: 100%;
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     .capture__button {

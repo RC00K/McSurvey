@@ -5,7 +5,7 @@ import { Camera, CameraType } from "./Camera";
 import { useReview } from "../components/Review/ReviewContext";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
-import { add, checkmark, close, sync, flashOff, flash } from "ionicons/icons";
+import { add, checkmark, close, sync, flashOff, flash, imageOutline } from "ionicons/icons";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const CameraContainer = () => {
@@ -19,6 +19,22 @@ const CameraContainer = () => {
   const [image, setImage] = useState<string | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
   const [closeCamera, setCloseCamera] = useState(false);
+
+  const cameraContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Request fullscreen when camera mounts
+    if (cameraContainerRef.current) {
+      cameraContainerRef.current.requestFullscreen();
+    }
+
+    // Exit fullscreen when camera unmounts
+    return () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+    };
+  }, []);
 
   const history = useHistory();
   
@@ -133,7 +149,7 @@ const CameraContainer = () => {
   };
 
   return (
-    <div className="camera__container">
+    <div className="camera__container" ref={cameraContainerRef}>
         <div className="camera__overlay">
           <div className="camera__controls camera__controls__top">
             <button onClick={handleCloseCamera} className="camera__button">
@@ -152,7 +168,7 @@ const CameraContainer = () => {
           />
           <div className="camera__controls camera__controls__bottom">
             <button className="camera__button">
-              
+              <IonIcon icon={imageOutline} />
             </button>
             <div className="capture__button" onClick={handleCaptureClick}>
               <div className="capture__button__inner" />
