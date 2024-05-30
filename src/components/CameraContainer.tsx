@@ -23,14 +23,25 @@ const CameraContainer = () => {
   const cameraContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Request fullscreen when camera mounts
-    if (cameraContainerRef.current) {
-      cameraContainerRef.current.requestFullscreen();
-    }
+    const enterFullscreen = async () => {
+      if (cameraContainerRef.current) {
+        try {
+          if (cameraContainerRef.current.requestFullscreen) {
+            await cameraContainerRef.current.requestFullscreen();
+          } else if ((cameraContainerRef.current as any).webkitEnterFullscreen) {
+            await (cameraContainerRef.current as any).webkitEnterFullscreen();
+          }
+        } catch (error) {
+          console.error("Failed to enter fullscreen: ", error);
+        }
+      }
+    };
 
-    // Exit fullscreen when camera unmounts
+    const delay = 50;
+    setTimeout(enterFullscreen, delay);
+
     return () => {
-      if (document.fullscreenElement) {
+      if (document.exitFullscreen) {
         document.exitFullscreen();
       }
     };
