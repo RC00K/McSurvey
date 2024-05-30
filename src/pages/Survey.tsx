@@ -64,24 +64,21 @@ const Survey: React.FC = () => {
             onConfirmEnd={handleEndSurvey}
           />
         )}
-        <NavToolbar />
-        <main>
-          <section className="survey" id="survey">
-            <div className="survey__container">
-              <div className="survey__content">
-                <QuestionContainer
-                  driveThruSelection={driveThruSelection}
-                  onReadyForReviewChange={handleReadyForReviewChange}
-                />
-                <div className="survey__footer">
-                  <button className="continue__btn" onClick={handleGoToReview} disabled={!readyForReview}>
-                    Continue to Review
-                  </button>
-                </div>
+        <div className="survey" id="survey">
+          <div className="survey__container">
+            <div className="survey__content">
+              <QuestionContainer
+                driveThruSelection={driveThruSelection}
+                onReadyForReviewChange={handleReadyForReviewChange}
+              />
+              <div className="survey__footer">
+                <button className="continue__btn" onClick={handleGoToReview} disabled={!readyForReview}>
+                  Continue to Review
+                </button>
               </div>
             </div>
-          </section>
-        </main>
+          </div>
+        </div>
         </IonContent>
       </IonPage>
     </>

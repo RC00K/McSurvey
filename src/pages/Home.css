@@ -1,7 +1,12 @@
 @import url('../theme/variables.css');
 
 .home {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
 }
 
 .home__header {
@@ -47,14 +52,8 @@
     justify-content: space-between;
 }
 
-.home__body {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 50px;
-}
-
 .home__body__title {
+    width: 100%;
     font-size: 1.5em;
     font-weight: bolder;
     margin-top: 0;

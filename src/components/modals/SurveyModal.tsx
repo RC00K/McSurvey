@@ -13,9 +13,16 @@ const SurveyModal = ({
   setShowModal: (value: boolean) => void;
   setDriveThruSelection: (value: string) => void;
 }) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [selected, setSelected] = useState(0);
   const [isClosing, setIsClosing] = useState(false);
   const history = useHistory();
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setIsMobile(window.innerWidth < 768);
+    });
+  }, []);
 
   const handleSelection = (value: number) => {
     setSelected(value);
@@ -47,76 +54,49 @@ const SurveyModal = ({
       <div
         className={`modal__container ${
           showModal ? (isClosing ? "modal-closing" : "") : "hidden"
-        }`}
+        } ${isMobile ? "mobile" : ""}`}
       >
-        <div className="modal">
-          <div className="flex">
-            <button className="btn-close" onClick={closeModal}>
+        <div className="modal__header">
+          <div className="modal__header-top">
+            <h2>Drive Thur Options</h2>
+            <button className="close__btn" onClick={closeModal}>
               X
             </button>
           </div>
-          <div>
-            <h3>Drive Thur Options</h3>
-            <p>
-              Select the number of drive thrus you would like to use in your
-              survey.
-            </p>
+          <div className="modal__header-bottom">
+            <h3>
+              How many drive thrus are at your location?
+            </h3>
           </div>
-          <div className="block">
-            <div className="modal__body">
-              <div className="modal__body__options">
-                <button
-                  className={`modal__body__option ${
-                    selected === 0 ? "selected" : ""
-                  }`}
-                  onClick={() => handleSelection(0)}
-                >
-                  <div
-                    className={`modal__body__option__text ${
-                      selected === 0 ? "selected" : ""
-                    }`}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <IonIcon icon={car} size="large" />
-                    <span>1 Drive Thru</span>
-                  </div>
-                </button>
-                <button
-                  className={`modal__body__option ${
-                    selected === 1 ? "selected" : ""
-                  }`}
-                  onClick={() => handleSelection(1)}
-                >
-                  <div
-                    className={`modal__body__option__text ${
-                      selected === 1 ? "selected" : ""
-                    }`}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <IonIcon icon={car} size="large" />
-                    <span>2 Drive Thrus</span>
-                  </div>
-                </button>
-              </div>
-            </div>
+        </div>
+        <div className="modal__body">
+          <div className="modal__options">
+            <button
+              className={`modal__option ${selected === 0 ? "selected" : ""}`}
+              onClick={() => handleSelection(0)}
+            >
+              <IonIcon icon={car} size="large" />
+              <span>1 Drive Thru</span>
+            </button>
+            <button
+              className={`modal__option ${selected === 1 ? "selected" : ""}`}
+              onClick={() => handleSelection(1)}
+            >
+              <IonIcon icon={car} size="large" />
+              <span>2 Drive Thrus</span>
+            </button>
           </div>
-          <button className="btn" onClick={handleStartSurvey}>
+        </div>
+        <div className="modal__footer">
+          <button className="primary__btn" onClick={handleStartSurvey}>
             Start Survey
           </button>
         </div>
-        <div
-          className={`overlay ${showModal ? "" : "hidden"}`}
-          onClick={closeModal}
-        />
       </div>
+      <div
+        className={`overlay ${showModal ? "" : "hidden"}`}
+        onClick={closeModal}
+      />
     </>
   );
 };

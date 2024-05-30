@@ -19,14 +19,6 @@ const Home: React.FC = () => {
     <IonPage>
       <IonContent>
         <div className="home">
-          <div className="home__header">
-            <div className="home__header__content">
-              <div className="home__header__logo">
-                <img src={mcsurveylogo} alt="McSurvey" />
-                <h1>McSurvey</h1>
-              </div>
-            </div>
-          </div>
           <div className="home__content">
             <div className="home__body">
               <div className="home__body__title">

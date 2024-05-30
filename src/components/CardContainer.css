@@ -9,10 +9,11 @@
 
 .survey__card {
     background: var(--ion-color-light);
-    border-radius: 1.5rem;
-    box-shadow: var(--ion-color-dark-rgba) 0px 2px 6px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--ion-color-light-tint);
     display: flex;
-    width: 22rem;
+    width: 30rem;
+    padding: 1.25rem;
     flex-direction: column;
     overflow: hidden;
     cursor: pointer;
@@ -20,11 +21,10 @@
 }
 
 .survey__card:hover {
-    box-shadow: var(--ion-color-dark-rgba) 0px 6px 16px;
+    border: 1px solid var(--ion-color-light);
 }
 
 .survey__card__content {
-    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -37,7 +37,6 @@
 
 .survey__card__bottom {
     margin-top: auto;
-    padding: 1.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
