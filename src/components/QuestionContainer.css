@@ -12,7 +12,8 @@
 }
 
 .text__input {
-    border: 2px solid var(--ion-color-medium);
+    background: var(--ion-color-light);
+    border: 1px solid var(--ion-color-light-tint);
     border-radius: 50px;
     padding: 13px 20px;
     width: 100%;
@@ -21,8 +22,18 @@
     transition: border 0.3s ease;
 }
 
+/* Supports autofill */
+.text__input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px var(--ion-color-light) inset;
+    -webkit-text-fill-color: var(--ion-color-dark);
+}
+
+.text__input:hover {
+    border: 1px solid var(--ion-color-dark);
+}
+
 .text__input:focus {
-    border: 2px solid var(--ion-color-dark);
+    border: 1px solid var(--ion-color-dark-tint);
     outline: none;
 }
 

@@ -51,20 +51,6 @@ import {
           </div>
         </details>
       </div>
-      // <IonAccordionGroup className="accordion__container">
-      //   <IonAccordion value={question.question}>
-      //     <IonItem slot="header">
-      //       <IonLabel>Examples</IonLabel>
-      //     </IonItem>
-      //     <div className="accordion__image__grid" slot="content">
-      //       {question.questionImages.map((image, imgIndex) => (
-      //         <IonItem key={`image_${imgIndex}`}>
-      //           <IonImg src={image.image} alt={image.imageAlt} />
-      //         </IonItem>
-      //       ))}
-      //     </div>
-      //   </IonAccordion>
-      // </IonAccordionGroup>
     );
   };
   

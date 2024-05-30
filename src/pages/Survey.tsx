@@ -4,7 +4,8 @@ import { QuestionContainer } from "../components/QuestionContainer";
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useReview } from "../components/Review/ReviewContext";
-import WarningModal from "../components/modals/WarningModal";
+import AgreeModal from "../components/modals/AgreeModal";
+import DangerModal from "../components/modals/DangerModal";
 import "./Survey.css";
 import NavToolbar from "../components/Navigation/NavToolbar";
 
@@ -14,7 +15,8 @@ const Survey: React.FC = () => {
   const history = useHistory();
   const { reset, setDriveThruSelection } = useReview();
   const [isSurveyComplete, setIsSurveyComplete] = useState(false);
-  const [readyForReview, setReadyForReview] = useState(false);
+  const [readyForSubmitting, setReadyForSubmitting] = useState(false);
+  const [showAgreeModal, setShowAgreeModal] = useState(false);
   const [showExitAlert, setShowExitAlert] = useState(false);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const Survey: React.FC = () => {
     if (surveyData) {
       const data = JSON.parse(surveyData);
       setIsSurveyComplete(data.isSurveyComplete);
-      setReadyForReview(data.readyForReview);
+      setReadyForSubmitting(data.readyForSubmitting);
     }
 
     setDriveThruSelection(driveThruSelection);
@@ -31,49 +33,64 @@ const Survey: React.FC = () => {
   useEffect(() => {
     localStorage.setItem("surveyData", JSON.stringify({ 
       isComplete: isSurveyComplete, 
-      isReadForReview: readyForReview }));
-  }, [isSurveyComplete, readyForReview]);
+      isReadyToSubmit: readyForSubmitting }));
+  }, [isSurveyComplete, readyForSubmitting]);
 
-  const handleExitSurvey = () => {
-    setShowExitAlert(true);
+  const handleReadyForSubmitting = (isReady: boolean) => {
+    setReadyForSubmitting(isReady);
   };
+
+  const handlePresentAgreement = () => {
+    setShowAgreeModal(true);
+  };
+
+  useEffect(() => {
+    const handleBackButtonEvent = (e: any) => {
+      e.preventDefault();
+      setShowExitAlert(true);
+    };
+    window.history.pushState(null, "null", window.location.pathname);
+    window.addEventListener("popstate", handleBackButtonEvent);
+    
+    return () => {
+      window.removeEventListener("popstate", handleBackButtonEvent);
+    };
+  }, []);
 
   const handleEndSurvey = () => {
     reset();
     localStorage.removeItem("surveyData");
     setShowExitAlert(false);
-    history.push("/");
-  }
-
-  const handleReadyForReviewChange = (isReady: boolean) => {
-    setReadyForReview(isReady);
-  };
-
-  const handleGoToReview = () => {
-    history.push("/review");
+    window.history.back();
   };
 
   return (
     <>
       <IonPage>
-        <IonContent>
-        {showExitAlert && (
-          <WarningModal
-            showModal={showExitAlert}
-            setShowModal={setShowExitAlert}
-            onConfirmEnd={handleEndSurvey}
+        {showAgreeModal && (
+          <AgreeModal
+            showModal={showAgreeModal}
+            setShowModal={setShowAgreeModal}
           />
         )}
+        {showExitAlert && (
+          <DangerModal
+            showModal={showExitAlert}
+            setShowModal={setShowExitAlert}
+            handleEnd={handleEndSurvey}
+          />
+        )}
+        <IonContent>
         <div className="survey" id="survey">
           <div className="survey__container">
             <div className="survey__content">
               <QuestionContainer
                 driveThruSelection={driveThruSelection}
-                onReadyForReviewChange={handleReadyForReviewChange}
+                readyToSubmit={handleReadyForSubmitting}
               />
               <div className="survey__footer">
-                <button className="continue__btn" onClick={handleGoToReview} disabled={!readyForReview}>
-                  Continue to Review
+                <button className="primary__btn" onClick={handlePresentAgreement} disabled={!readyForSubmitting}>
+                  Continue
                 </button>
               </div>
             </div>

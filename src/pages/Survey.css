@@ -96,15 +96,12 @@ svg.survey__header__svg {
   overflow: hidden;
 }
 
-.survey__content {
-
-}
-
 .survey__footer {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  margin-top: 1rem;
 }
 
 @media (max-width: 768px) {

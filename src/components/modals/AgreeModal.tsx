@@ -1,24 +1,50 @@
-import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useReview } from "../components/Review/ReviewContext";
-import { ReviewContainer } from "../components/ReviewContainer";
-import { oneDrive, twoDrive } from "../assets/data/aotsfees";
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router";
+import { useReview } from "../../components/Review/ReviewContext";
+import { oneDrive, twoDrive } from "../../assets/data/aotsfees";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { IonPage, IonContent } from "@ionic/react";
-import { ToastSuccess, ToastError } from "../components/toast/ToastNotification";
-import NavToolbar from "../components/Navigation/NavToolbar";
+import SendingLoader from "../loaders/SendingLoader";
+import "./custom-modals.css";
 
-const Review: React.FC = () => {
-  const { driveThruSelection, images, storeNumber } = useReview();
-  const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
-  const storedImages = images || JSON.parse(localStorage.getItem("reviewImages") || "{}");
+const AgreeModal = ({
+  showModal,
+  setShowModal,
+}: {
+  showModal: boolean;
+  setShowModal: (value: boolean) => void;
+}) => {
+    const { driveThruSelection, images, storeNumber } = useReview();
+    const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
+    const storedImages = images || JSON.parse(localStorage.getItem("reviewImages") || "{}");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailSendStatus, setEmailSendStatus] = useState("notSent");
   const history = useHistory();
 
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-  const [showLoading, setShowLoading] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setIsMobile(window.innerWidth < 768);
+    });
+  }, []);
+
+  const closeModal = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setShowModal(false);
+      setIsClosing(false); // Reset state for next opening
+    }, 500); // Match this timeout to your CSS animation duration
+  };
+
+  // Effect to listen for showModal changes and reset isClosing state if needed
+  useEffect(() => {
+    if (showModal && isClosing) {
+      setIsClosing(false);
+    }
+  }, [showModal]);
 
   const generatePDF = async () => {
     setIsGeneratingPDF(true);
@@ -184,7 +210,7 @@ const Review: React.FC = () => {
 
   const handleSendEmail = async (event: any) => {
     event.preventDefault();
-    setShowLoading(true);
+    setEmailSendStatus("sending");
     try {
       const pdfBlob = await generatePDF();
       const formData = new FormData();
@@ -201,19 +227,18 @@ const Review: React.FC = () => {
       const responseData = await response.json();
 
       if (response.ok) {
+        setEmailSendStatus("sent");
         setEmailSent(true);
-        setShowToast(true);
-        setShowLoading(false);
         console.log("Email sent successfully");
       } else {
+        setEmailSendStatus("notSent");
         throw new Error(responseData.error || "Failed to send email");
       }
     } catch (error) {
       console.error("Email sending failed", error);
       setEmailSent(false);
-      setShowToast(true);
-      setShowLoading(false);
     }
+    setEmailSendStatus("notSent");
   };
 
   const handleGeneratePDF = (event: any) => {
@@ -225,10 +250,6 @@ const Review: React.FC = () => {
     history.push("/");
   };
 
-  const handleEditResponse = (questionIndex: number) => {
-    history.push(`/camera/${questionIndex}#question_${questionIndex}`);
-  };
-
   useEffect(() => {
     if (emailSent) {
       setTimeout(() => {
@@ -237,26 +258,51 @@ const Review: React.FC = () => {
     }
   }, [emailSent]);
 
-    return (
-        <IonPage>
-            <IonContent>
-                <NavToolbar />
-                <main>
-                    <section className="review" id="review">
-                        <div className="review__container">
-                            <div className="review__content">
-                                <ReviewContainer />
-                                <button onClick={handleGeneratePDF} className="review__button">
-                                    Submit
-                                </button>
-                                {showToast && (emailSent ? <ToastSuccess message="Email sent successfully!" /> : <ToastError message="Failed to send email!" />)}
-                            </div>
+  return (
+    <>
+        <div
+        className={`modal__container ${
+            showModal ? (isClosing ? "modal-closing" : "") : "hidden"
+        } ${isMobile ? "mobile" : ""}`}
+        >
+            {emailSendStatus === "sending" ? (
+                <div className="modal__article">
+                    <SendingLoader 
+                        emailSendingStatus={emailSendStatus}
+                    />
+                </div>
+            ) : (
+                <>
+                    <div className="modal__header">
+                        <div className="modal__header-top">
+                            <h2>Photo submission agreement</h2>
+                            <button className="close__btn" onClick={closeModal}>
+                            X
+                            </button>
                         </div>
-                    </section>
-                </main>
-            </IonContent>
-        </IonPage>
-    );
-}
+                    </div>
+                    <div className="modal__article">
+                        <article>
+                            <p>
+                            By submitting these photos, I grant MAPS permission to use them
+                            for any business purposes related to the equipment installation at
+                            McDonald's. I confirm that I have the right to share these photos
+                            and that they accurately depict the installed equipment.
+                            </p>
+                        </article>
+                    </div>
+                    <div className="modal__footer">
+                        <button className="primary__btn" onClick={handleGeneratePDF}>Agree</button>
+                    </div>
+                </>
+            )}
+        </div>
+        <div
+            className={`overlay ${showModal ? "" : "hidden"}`}
+            onClick={closeModal}
+        />
+    </>
+  );
+};
 
-export default Review;
+export default AgreeModal;

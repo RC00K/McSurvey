@@ -10,12 +10,12 @@ import "../theme/floating-button.css";
 
 interface QuestionContainerProps {
   driveThruSelection: string;
-  onReadyForReviewChange: (isReady: boolean) => void;
+  readyToSubmit: (isReady: boolean) => void;
 }
 
 export const QuestionContainer = ({
   driveThruSelection,
-  onReadyForReviewChange,
+  readyToSubmit,
 }: QuestionContainerProps) => {
   const { images, storeNumber, setStoreNumber } = useReview();
   const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
@@ -58,7 +58,7 @@ export const QuestionContainer = ({
     }
   }, [location.hash]);
 
-  const isReadyForReview = () => {
+  const isReadyForSubmitting = () => {
     const isStoreNumberFilled = storeNumber.trim() !== "";
     const areAllImagesUploaded = selectedDriveThru.every((item) =>
       item.questions.every((question, qIndex) => images[`question_${qIndex}`])
@@ -67,8 +67,8 @@ export const QuestionContainer = ({
   };
 
   useEffect(() => {
-    onReadyForReviewChange(isReadyForReview());
-  }, [storeNumber, images, onReadyForReviewChange]);
+    readyToSubmit(isReadyForSubmitting());
+  }, [storeNumber, images, readyToSubmit]);
 
   return (
     <div className="question__container">
