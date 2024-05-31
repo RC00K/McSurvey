@@ -219,7 +219,7 @@ const AgreeModal = ({
       formData.append("subject", "AOTS Fees Review");
       formData.append("text", "Attached is a PDF of your AOTS Fees review. Please review and provide feedback. Thank you!");
 
-      const response = await fetch("mcsurvey.netlify.app/send", {
+      const response = await fetch("/send", {
         method: "POST",
         body: formData,
       });
