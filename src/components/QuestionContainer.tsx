@@ -32,7 +32,7 @@ export const QuestionContainer = ({
     setCurrentQuestionIndex(questionIndex);
     localStorage.setItem("lastQuestionIndex", questionIndex.toString());
     const questionId = `question_${questionIndex}`;
-    history.push(`/camera/${questionIndex}#${questionId}`);
+    history.push(`mcsurvey.netlify.app/camera/${questionIndex}#${questionId}`);
   };
 
   useEffect(() => {

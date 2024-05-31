@@ -23,7 +23,6 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Review from './pages/Review';
 import { ReviewProvider } from './components/Review/ReviewContext';
 import Camera from './pages/Camera';
 import CameraContainer from './components/CameraContainer';
@@ -35,9 +34,8 @@ const App: React.FC = () => (
     <Switch>
       <Route path="/" exact component={Home} />
       <ReviewProvider>
-        <Route path="/survey/:surveyId" component={Survey} />
-        <Route path="/camera/:questionIndex" component={CameraContainer} />
-        <Route path="/review" component={Review} />
+        <Route path="mcsurvey.netlify.app/survey/:surveyId" component={Survey} />
+        <Route path="mcsurvey.netlify.app/camera/:questionIndex" component={CameraContainer} />
       </ReviewProvider>
     </Switch>
   </Router>

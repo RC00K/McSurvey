@@ -31,7 +31,7 @@ const SurveyModal = ({
 
   const handleStartSurvey = () => {
     closeModal();
-    history.push("/survey/" + selected);
+    history.push("mcsurvey.netlify.app/survey/" + selected);
   };
 
   const closeModal = () => {

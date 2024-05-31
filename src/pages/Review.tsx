@@ -226,7 +226,7 @@ const Review: React.FC = () => {
   };
 
   const handleEditResponse = (questionIndex: number) => {
-    history.push(`/camera/${questionIndex}#question_${questionIndex}`);
+    history.push(`meek-duckanoo-69bd5c.netlify.app/camera/${questionIndex}#question_${questionIndex}`);
   };
 
   useEffect(() => {
