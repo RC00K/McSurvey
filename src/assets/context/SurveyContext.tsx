@@ -6,24 +6,23 @@ import React, {
   useState,
   useEffect,
 } from "react";
-import { ReviewContextType } from "../../interfaces";
+import { SurveyContextType } from "../../interfaces";
 
-const ReviewContext = createContext<ReviewContextType | undefined>(undefined);
+const SurveyContext = createContext<SurveyContextType | undefined>(undefined);
 
-export const useReview = () => {
-  const context = useContext(ReviewContext);
+export const useSurvey = () => {
+  const context = useContext(SurveyContext);
   if (context === undefined) {
-    throw new Error("useReview must be used within a ReviewProvider");
+    throw new Error("useSurvey must be used within a SurveyProvider");
   }
   return context;
 };
 
-export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({
+export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [userInput, setUserInput] = useState<Record<string, string>>({});
   const [images, setImages] = useState<Record<string, string>>({});
-  const [driveThruSelection, setDriveThruSelection] = useState("");
   const [storeNumber, setStoreNumber] = useState("");
 
   const saveImages = async (newImages: Record<string, string>) => {
@@ -76,14 +75,12 @@ export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <ReviewContext.Provider
+    <SurveyContext.Provider
       value={{
         userInput,
         images,
-        driveThruSelection,
         storeNumber,
         setStoreNumber,
-        setDriveThruSelection,
         addUserInput,
         setImages,
         addImage,
@@ -91,6 +88,6 @@ export const ReviewProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-    </ReviewContext.Provider>
+    </SurveyContext.Provider>
   );
 };

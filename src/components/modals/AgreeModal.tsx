@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import { useReview } from "../../components/Review/ReviewContext";
+import { useSurvey } from "../../assets/context/SurveyContext";
 import { oneDrive, twoDrive } from "../../assets/data/aotsfees";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -14,8 +14,7 @@ const AgreeModal = ({
   showModal: boolean;
   setShowModal: (value: boolean) => void;
 }) => {
-    const { driveThruSelection, images, storeNumber } = useReview();
-    const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
+    const { images, storeNumber } = useSurvey();
     const storedImages = images || JSON.parse(localStorage.getItem("reviewImages") || "{}");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isClosing, setIsClosing] = useState(false);
@@ -219,7 +218,7 @@ const AgreeModal = ({
       formData.append("subject", "AOTS Fees Review");
       formData.append("text", "Attached is a PDF of your AOTS Fees review. Please review and provide feedback. Thank you!");
 
-      const response = await fetch("http://localhost:3001/send", {
+      const response = await fetch("http://localhost:3002/send", {
         method: "POST",
         body: formData,
       });

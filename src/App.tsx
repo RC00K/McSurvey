@@ -1,7 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { setupIonicReact } from '@ionic/react';
 import Home from './pages/Home';
 import Survey from './pages/Survey';
 
@@ -23,21 +22,32 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Review from './pages/Review';
-import { ReviewProvider } from './components/Review/ReviewContext';
-import Camera from './pages/Camera';
+import { SurveyProvider } from './assets/context/SurveyContext';
 import CameraContainer from './components/CameraContainer';
 
 setupIonicReact();
+
+const NotFound: React.FC = () => (
+  <div>
+    <h1>
+      404 Page Not Found
+    </h1>
+    <p>
+      Sorry, that page does not exist.
+    </p>
+    <Link to="/">Go back to the main page</Link>
+  </div>
+);
 
 const App: React.FC = () => (
   <Router>
     <Switch>
       <Route path="/" exact component={Home} />
-      <ReviewProvider>
-        <Route path="/survey/:surveyId" component={Survey} />
+      <SurveyProvider>
+        <Route path="/survey/:SurveyName" component={Survey} />
         <Route path="/camera/:questionIndex" component={CameraContainer} />
-      </ReviewProvider>
+      </SurveyProvider>
+      <Route component={NotFound} />
     </Switch>
   </Router>
 );

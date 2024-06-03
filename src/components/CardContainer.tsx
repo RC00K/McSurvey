@@ -1,53 +1,47 @@
-import { IonIcon, IonCardSubtitle } from "@ionic/react";
-import { timeOutline, listOutline, fastFood } from "ionicons/icons";
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { getSurveys } from "../services/surveyService";
 import "./CardContainer.css";
 
-const surveys = [
-  {
-    surveyCategory: "Drive Thru",
-    surveyTitle: "Drive Thru Survey",
-    surveyCompletionTime: "5 minutes",
-    surveyQuestions: "5 questions",
-  },
-];
-
 const CardContainer = ({ onCardClick }: { onCardClick: any }) => {
+  const history = useHistory();
+  const [surveys, setSurveys] = useState([]);
+
+  useEffect(() => {
+    const fetchSurveys = async () => {
+      const surveys = await getSurveys();
+      console.log(surveys);
+      setSurveys(surveys);
+    };
+
+    fetchSurveys();
+  }, []);
+
   return (
     <>
-      {surveys.map(
-        (
-          {
-            surveyCategory,
-            surveyTitle,
-            surveyCompletionTime,
-            surveyQuestions,
-          },
-          index
-        ) => (
-          <>
-            <div className="survey__cards">
-              <article className="survey__card" key={index} onClick={onCardClick}>
-                <div className="survey__card__content">
-                  <h2 className="survey__card__title">{surveyTitle}</h2>
-                  <p className="survey__card__category">{surveyCategory}</p>
-                </div>
-                <div className="survey__card__bottom">
-                  <div className="survey__card__props">
-                    <div className="survey__card__prop">
-                      <p>
-                        {surveyCompletionTime}
-                      </p>
-                      <p>
-                        {surveyQuestions}
-                      </p>
-                    </div>
+      {surveys.map((survey: any) => {
+        const surveyDetails = JSON.parse(survey.SurveyJson);
+        const surveyType = surveyDetails.surveyTypes[0];
+
+        return (
+          <div className="survey__cards" key={survey.ID}>
+            <article className="survey__card" onClick={() => history.push(`/survey/${survey.SurveyName}`, { surveyData: surveyDetails })}>
+              <div className="survey__card__content">
+                <h2 className="survey__card__title">{survey.SurveyName}</h2>
+                <p className="survey__card__category">{surveyType.projectType}</p>
+              </div>
+              <div className="survey__card__bottom">
+                <div className="survey__card__props">
+                  <div className="survey__card__prop">
+                    <p>{surveyType.projectTitle}</p>
+                    <p>{surveyType.questions.length} questions</p>
                   </div>
                 </div>
-              </article>
-            </div>
-          </>
-        )
-      )}
+              </div>
+            </article>
+          </div>
+        );
+      })}
     </>
   );
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 
 import { Camera, CameraType } from "./Camera";
-import { useReview } from "../components/Review/ReviewContext";
+import { useSurvey } from "../assets/context/SurveyContext";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
 import { add, checkmark, close, sync, flashOff, flash, imageOutline } from "ionicons/icons";
@@ -13,39 +13,12 @@ const CameraContainer = () => {
   const [flashMode, setFlashMode] = useState("off");
   const [focusArea, setFocusArea] = useState(null);
   const camera = useRef<CameraType>(null);
-  const { addImage, images, setImages } = useReview();
+  const { addImage, images, setImages } = useSurvey();
   const { questionIndex } = useParams<{ questionIndex: string }>();
   const questionIndexNumber = parseInt(questionIndex, 10);
   const [image, setImage] = useState<string | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
   const [closeCamera, setCloseCamera] = useState(false);
-
-  const cameraContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const enterFullscreen = async () => {
-      if (cameraContainerRef.current) {
-        try {
-          if (cameraContainerRef.current.requestFullscreen) {
-            await cameraContainerRef.current.requestFullscreen();
-          } else if ((cameraContainerRef.current as any).webkitEnterFullscreen) {
-            await (cameraContainerRef.current as any).webkitEnterFullscreen();
-          }
-        } catch (error) {
-          console.error("Failed to enter fullscreen: ", error);
-        }
-      }
-    };
-
-    const delay = 50;
-    setTimeout(enterFullscreen, delay);
-
-    return () => {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    };
-  }, []);
 
   const history = useHistory();
   
@@ -88,7 +61,8 @@ const CameraContainer = () => {
         recursive: true,
       });
     } catch (error: any) {
-      if (error.code !== "EEXIST") {
+      console.error("Error code: ", error.code);
+      if (error.code !== "EEXIST" && error.code !== "Current directory already exists") {
         console.error("Failed to create directory", error);
       }
     }
@@ -160,7 +134,7 @@ const CameraContainer = () => {
   };
 
   return (
-    <div className="camera__container" ref={cameraContainerRef}>
+    <div className="camera__container">
         <div className="camera__overlay">
           <div className="camera__controls camera__controls__top">
             <button onClick={handleCloseCamera} className="camera__button">

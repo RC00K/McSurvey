@@ -3,13 +3,11 @@ export interface UserPhoto {
   webviewPath?: string;
 }
 
-export interface ReviewContextType {
+export interface SurveyContextType {
   userInput: Record<string, string>;
   images: Record<string, string>;
-  driveThruSelection: string;
   storeNumber: string;
   setStoreNumber: (value: string) => void;
-  setDriveThruSelection: (selection: string) => void;
   addUserInput: (questionId: string, answer: string) => void;
   setImages: (images: Record<string, string>) => void
   addImage: (questionId: string, image: string) => void;

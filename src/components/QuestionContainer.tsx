@@ -5,28 +5,23 @@ import { AccordionContainer } from "./AccordionContainer";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
 import { add } from "ionicons/icons";
 import "./QuestionContainer.css";
-import { useReview } from "./Review/ReviewContext";
+import { useSurvey } from "../assets/context/SurveyContext";
 import "../theme/floating-button.css";
 
 interface QuestionContainerProps {
-  driveThruSelection: string;
+  surveyData: any
   readyToSubmit: (isReady: boolean) => void;
 }
 
 export const QuestionContainer = ({
-  driveThruSelection,
+  surveyData,
   readyToSubmit,
 }: QuestionContainerProps) => {
-  const { images, storeNumber, setStoreNumber } = useReview();
-  const selectedDriveThru = driveThruSelection === "1" ? oneDrive : twoDrive;
+  const { images, storeNumber, setStoreNumber } = useSurvey();
   const history = useHistory();
   const location = useLocation();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
-  useEffect(() => {
-    
-  });
 
   const openCameraPage = (questionIndex: number) => {
     setCurrentQuestionIndex(questionIndex);
@@ -60,9 +55,7 @@ export const QuestionContainer = ({
 
   const isReadyForSubmitting = () => {
     const isStoreNumberFilled = storeNumber.trim() !== "";
-    const areAllImagesUploaded = selectedDriveThru.every((item) =>
-      item.questions.every((question, qIndex) => images[`question_${qIndex}`])
-    );
+    const areAllImagesUploaded = Object.keys(images).every((key) => images[key] !== undefined);
     return isStoreNumberFilled && areAllImagesUploaded;
   };
 
@@ -82,58 +75,55 @@ export const QuestionContainer = ({
         placeholder="Store Number"
         onChange={(e) => setStoreNumber(e.target.value!)}
       />
-      {selectedDriveThru.map((item, index) => {
-        return item.questions.map((question, qIndex) => {
-          const questionId = `question_${qIndex}`;
-          const imageSrc = images[questionId];
-          return (
-            <div key={`question_${index}_${qIndex}`}>
-              <div className="question__header">
-                <h2>{question.questionTitle}</h2>
-                <p>{question.questionDesc}</p>
+      {surveyData.surveyTypes && surveyData.surveyTypes.length > 0 && surveyData.surveyTypes[0].questions.map((question: any, qIndex: number) => {
+        const questionId = `question_${qIndex}`;
+        const imageSrc = images[questionId];
+        return (
+          <div key={`question_${qIndex}`}>
+            <div className="question__header">
+              <h2>{question.questionTitle}</h2>
+              <p>{question.questionDesc}</p>
+            </div>
+            <div>
+              <div className="question__body" id={questionId}>
+                <p>{question.question}</p>
               </div>
-              <div>
-                <div key={`question_${index}`} className="question__body" id={questionId}>
-                  <p>{question.question}</p>
-                </div>
-                {question.questionHints &&
-                  question.questionHints.length > 0 && (
-                    <ol>
-                      {question.questionHints.map((hint, hintIndex) => (
-                        <li key={`hint_${hintIndex}`}>{hint.hint}</li>
-                      ))}
-                    </ol>
-                  )}
-                <AccordionContainer question={question} />
-                <div 
-                  key={`question_${index}_${qIndex}`} 
-                  className="file__upload"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openCameraPage(qIndex);
-                  }}
-                >
-                  {imageSrc ? (
-                    <img
-                      src={imageSrc}
-                      alt="Uploaded"
-                      className="image__preview"
-                    />
-                  ) : (
-                    <>
-                      <div className="file__upload__icon">
-                        <IonIcon icon={add} size="large" />
-                      </div>
-                      <p>
-                        Click to upload
-                      </p>
-                    </>
-                  )}
-                </div>
+              {question.questionHints &&
+                question.questionHints.length > 0 && (
+                  <ol>
+                    {question.questionHints.map((hint: any, hintIndex: number) => (
+                      <li key={`hint_${hintIndex}`}>{hint.hint}</li>
+                    ))}
+                  </ol>
+                )}
+              {/* <AccordionContainer question={question} /> */}
+              <div
+                className="file__upload"
+                onClick={(e) => {
+                  e.preventDefault();
+                  openCameraPage(qIndex);
+                }}
+              >
+                {imageSrc ? (
+                  <img
+                    src={imageSrc}
+                    alt="Uploaded"
+                    className="image__preview"
+                  />
+                ) : (
+                  <>
+                    <div className="file__upload__icon">
+                      <IonIcon icon={add} size="large" />
+                    </div>
+                    <p>
+                      Click to upload
+                    </p>
+                  </>
+                )}
               </div>
             </div>
-          );
-        });
+          </div>
+        );
       })}
     </div>
   );

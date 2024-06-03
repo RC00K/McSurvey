@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useHistory } from "react-router-dom";
 import { IonButton, IonButtons, IonContent, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonIcon, IonSearchbar, IonAvatar, IonSegment, IonSegmentButton, IonLabel, IonItem, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonCardSubtitle } from '@ionic/react';
 import './Home.css';
 import CardContainer from '../components/CardContainer';
@@ -8,11 +9,11 @@ import mcsurveylogo2 from '../assets/images/logos/mcsurvey-logo@2x.png';
 import mcsurveylogo3 from '../assets/images/logos/mcsurvey-logo@3x.png';
 
 const Home: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [driveThruSelection, setDriveThruSelection] = useState('1');
+  const history = useHistory();
 
-  const handleCardClick = () => {
-    setShowModal(true);
+  const handleCardClick = (SurveyName: string) => {
+    console.log(SurveyName);
+    history.push(`/survey/${encodeURIComponent(SurveyName)}`);
   };
 
   return (
@@ -26,18 +27,11 @@ const Home: React.FC = () => {
               </div>
               <div className="surveys">
                 <CardContainer onCardClick={handleCardClick} />
-                <CardContainer onCardClick={handleCardClick} />
-                <CardContainer onCardClick={handleCardClick} />
-                <CardContainer onCardClick={handleCardClick} />
-                <CardContainer onCardClick={handleCardClick} />
-                <CardContainer onCardClick={handleCardClick} />
-                <CardContainer onCardClick={handleCardClick} />
-                <CardContainer onCardClick={handleCardClick} />
               </div>
             </div>
           </div>
         </div>
-        <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} />
+        {/* <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} /> */}
       </IonContent>
     </IonPage>
   );

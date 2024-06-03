@@ -75,7 +75,8 @@ export const oneDrive = [
                         imageAlt: "Drive-Thru Entry Point 6",
                         image: dtep6
                     }
-                ]
+                ],
+                numberOfPictures: 5,
             },
             {
                 questionTitle: "Drive-Thru",

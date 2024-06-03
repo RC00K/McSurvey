@@ -1,34 +1,38 @@
-import { IonContent, IonPage, IonButton, IonIcon } from "@ionic/react";
-import { chevronBack } from "ionicons/icons";
+import { getSurveys } from "../services/surveyService";
+import { IonContent, IonPage } from "@ionic/react";
 import { QuestionContainer } from "../components/QuestionContainer";
 import { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import { useReview } from "../components/Review/ReviewContext";
+import { useSurvey } from "../assets/context/SurveyContext";
 import AgreeModal from "../components/modals/AgreeModal";
 import DangerModal from "../components/modals/DangerModal";
 import "./Survey.css";
-import NavToolbar from "../components/Navigation/NavToolbar";
 
 const Survey: React.FC = () => {
-  const { selected } = useParams<{ selected: string }>();
-  const driveThruSelection = selected === "0" ? "1" : "2";
-  const history = useHistory();
-  const { reset, setDriveThruSelection } = useReview();
+  const { reset } = useSurvey();
+  const [surveyData, setSurveyData] = useState<any>();
   const [isSurveyComplete, setIsSurveyComplete] = useState(false);
   const [readyForSubmitting, setReadyForSubmitting] = useState(false);
   const [showAgreeModal, setShowAgreeModal] = useState(false);
   const [showExitAlert, setShowExitAlert] = useState(false);
 
   useEffect(() => {
-    const surveyData = localStorage.getItem("surveyData");
-    if (surveyData) {
-      const data = JSON.parse(surveyData);
+    const fetchSurveys = async () => {
+      const surveys = await getSurveys();
+      const parsedSurveyData = JSON.parse(surveys[0].SurveyJson);
+      setSurveyData(parsedSurveyData);
+    };
+    fetchSurveys();
+  }, []);
+
+  useEffect(() => {
+    const surveyDataFromStorage = localStorage.getItem("surveyData");
+    if (surveyDataFromStorage) {
+      const data = JSON.parse(surveyDataFromStorage);
       setIsSurveyComplete(data.isSurveyComplete);
       setReadyForSubmitting(data.readyForSubmitting);
+      setSurveyData(data);
     }
-
-    setDriveThruSelection(driveThruSelection);
-  }, [selected, setDriveThruSelection, reset]);
+  }, [reset]);
 
   useEffect(() => {
     localStorage.setItem("surveyData", JSON.stringify({ 
@@ -71,6 +75,7 @@ const Survey: React.FC = () => {
           <AgreeModal
             showModal={showAgreeModal}
             setShowModal={setShowAgreeModal}
+            surveyData={surveyData}
           />
         )}
         {showExitAlert && (
@@ -84,10 +89,11 @@ const Survey: React.FC = () => {
         <div className="survey" id="survey">
           <div className="survey__container">
             <div className="survey__content">
-              <QuestionContainer
-                driveThruSelection={driveThruSelection}
-                readyToSubmit={handleReadyForSubmitting}
-              />
+              {surveyData && <QuestionContainer 
+                surveyData={surveyData} 
+                readyToSubmit={handleReadyForSubmitting} 
+                />
+              }
               <div className="survey__footer">
                 <button className="primary__btn" onClick={handlePresentAgreement} disabled={!readyForSubmitting}>
                   Continue

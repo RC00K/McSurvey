@@ -30,6 +30,7 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "@wixc3/react-board": "^2.5.0",
+    "axios": "^1.7.2",
     "base-64": "^1.0.0",
     "bootstrap": "^5.3.3",
     "expo-camera": "^14.1.1",

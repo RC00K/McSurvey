@@ -5,7 +5,7 @@ import {
   Photo,
 } from "@capacitor/camera";
 import { Filesystem, Directory } from "@capacitor/filesystem";
-import { useReview } from "../components/Review/ReviewContext";
+import { useReview } from "../assets/context/SurveyContext";
 import { base64FromPath } from "../utils/base64FromPath";
 import { UserPhoto } from "../interfaces";
 
