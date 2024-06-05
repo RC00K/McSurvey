@@ -22,10 +22,11 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [userInput, setUserInput] = useState<Record<string, string>>({});
-  const [images, setImages] = useState<Record<string, string>>({});
+  const [images, setImages] = useState<Record<string, string[]>>({});
   const [storeNumber, setStoreNumber] = useState("");
+  const [accountManager, setAccountManager] = useState<string | null>(null);
 
-  const saveImages = async (newImages: Record<string, string>) => {
+  const saveImages = async (newImages: Record<string, string[]>) => {
     try {
       await Preferences.set({
         key: "capturedImage",
@@ -43,9 +44,18 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   };
 
-  const addImage = useCallback((questionId: string, imageSrc: string) => {
+  const addImage = useCallback((questionId: string, imageSrc: string[]) => {
     setImages((prevImages) => {
-      const updatedImages = { ...prevImages, [questionId]: imageSrc };
+      const updatedImages = { ...prevImages };
+      if (!updatedImages[questionId]) {
+        updatedImages[questionId] = [];
+      }
+
+      // Avoid duplicate images
+      if (!updatedImages[questionId].includes(imageSrc[0])) {
+        updatedImages[questionId].push(imageSrc[0]);
+      }
+      saveImages(updatedImages);
       return updatedImages;
     });
   }, []);
@@ -68,10 +78,13 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
     loadStoreNumber();
   }, []);
 
-  const reset = useCallback(() => {
+  const reset = useCallback(async () => {
+    console.log("Resetting survey data");
     setUserInput({});
     setImages({});
     setStoreNumber("");
+    // Clear all stored preferences
+    await Preferences.clear();
   }, []);
 
   return (
@@ -80,7 +93,9 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
         userInput,
         images,
         storeNumber,
+        accountManager,
         setStoreNumber,
+        setAccountManager,
         addUserInput,
         setImages,
         addImage,

@@ -1,9 +1,4 @@
 import {
-    IonAccordion,
-    IonAccordionGroup,
-    IonItem,
-    IonLabel,
-    IonImg,
     IonIcon,
   } from "@ionic/react";
   import { addCircleOutline, removeCircleOutline } from "ionicons/icons";

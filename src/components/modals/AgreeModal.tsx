@@ -1,28 +1,54 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { useSurvey } from "../../assets/context/SurveyContext";
-import { oneDrive, twoDrive } from "../../assets/data/aotsfees";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import SendingLoader from "../loaders/SendingLoader";
 import "./custom-modals.css";
 
 const AgreeModal = ({
   showModal,
   setShowModal,
+  surveyData,
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
+  surveyData: any;
 }) => {
-    const { images, storeNumber } = useSurvey();
-    const storedImages = images || JSON.parse(localStorage.getItem("reviewImages") || "{}");
+  const { images, storeNumber, reset } = useSurvey();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isClosing, setIsClosing] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [emailSendStatus, setEmailSendStatus] = useState("notSent");
+  const [accountManager, setAccountManager] = useState<string | null>(null);
   const history = useHistory();
+
+  const fetchAccMgr = async (storeNumber: string) => {
+    const response = await fetch(`http://localhost:3001/api/accmgr`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ storeNumber }),
+    });
+    const accountMgr = await response.json();
+    return accountMgr;
+  };
+
+  // Convert string to title case
+  const toTitleCase = (str: string) => {
+    return str.replace(/\w\S*/g, (txt) => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+
+  const assignAccountManager = async (storeNumber: string): Promise<string> => {
+    const accountManagerArray = await fetchAccMgr(storeNumber);
+    const accMgr = toTitleCase(accountManagerArray[0].AccMgr);
+    setAccountManager(accMgr);
+    return accMgr;
+  };
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -38,7 +64,6 @@ const AgreeModal = ({
     }, 500); // Match this timeout to your CSS animation duration
   };
 
-  // Effect to listen for showModal changes and reset isClosing state if needed
   useEffect(() => {
     if (showModal && isClosing) {
       setIsClosing(false);
@@ -70,138 +95,39 @@ const AgreeModal = ({
       });
     };
 
-    const tableColumn = ["Question", "Image"];
-    const tableRows = await Promise.all(selectedDriveThru.flatMap(item => 
-      item.questions.map(async (question) => {
-        const questionId = `question_${item.questions.indexOf(question)}`;
-        const imageSrc = storedImages[questionId] || images[questionId];
-        let imageData = null;
-        if (imageSrc) {
-          imageData = await loadImage(imageSrc);
+    const gridImageLayout = (pdf: jsPDF, images: string[], xStart: number, yStart: number, imageWidth: number, imageHeight: number, imagesPerRow: number, margin: number) => {
+      let x = xStart;
+      let y = yStart;
+      images.forEach((src, index) => {
+        if (index % imagesPerRow === 0 && index !== 0) {
+          x = xStart;
+          y += imageHeight + margin;
         }
+        const img = new Image();
+        img.src = src;
+        pdf.addImage(img, 'JPEG', x, y, imageWidth, imageHeight);
+        x += imageWidth + margin;
+      });
+    };
 
-        return {
-          questionTitle: question.questionTitle,
-          questionDesc: question.questionDesc,
-          imageData: imageData,
-        };
-      })
-    ));
+    for (const [index, question] of surveyData.surveyTypes[0].questions.entries()) {
+      const questionId = `question_${index}`;
+      const imageSrcArray = images[questionId] || [];
+      pdf.addPage();
+      pdf.text(`Question ${index + 1}: ${question.questionTitle}`, 10, 20);
+      pdf.text(question.questionDesc, 10, 30);
 
-    autoTable(pdf, {
-      body: [
-        [
-          {
-            content: "SDI",
-            styles: {
-              halign: "left",
-              fontSize: 20,
-              textColor: "#ffffff",
-            },
-          },
-          {
-            content: "AOTS Fees Survey",
-            styles: {
-              halign: "right",
-              fontSize: 20,
-              textColor: "#ffffff",
-            },
-          },
-        ],
-      ],
-      theme: "plain",
-      styles: {
-        fillColor: "#2C2686",
-      },
-    });
-
-    autoTable(pdf, {
-      body: [
-        [
-          {
-            content: 
-              "Date:" + new Date().toLocaleDateString() + "\n" +
-              "Store Number:" + storeNumber,
-            styles: {
-              halign: "left",
-            },
-          },
-        ],
-      ],
-      theme: "plain",
-    });
-
-    autoTable(pdf, {
-      body: [
-        [
-          {
-            content:
-              "From:" +
-              "\nMid-America Point Of Sale" +
-              "\n15 N Adams St" +
-              "\nHutchinson, Kansas 67501" +
-              "\nUnited States",
-            styles: {
-              halign: "right",
-            },
-          },
-        ],
-      ],
-      theme: "plain",
-    });
-
-    autoTable(pdf, {
-      body: [
-        [
-          {
-            content: "Survey Information",
-            styles: {
-              halign: "left",
-              fontSize: 14,
-            },
-          },
-        ],
-      ],
-      theme: "plain",
-    });
-
-    autoTable(pdf, {
-      head: [tableColumn],
-      body: tableRows.map(row => [row.questionTitle + "\n" + row.questionDesc]),
-      startY: 100,
-      didDrawCell: (data) => {
-        if (data.section === "body" && data.column.index === 1) {
-          const row = tableRows[data.row.index];
-          if (row.imageData) {
-            const imageX = data.cell.x + data.cell.width / 2 - 1.5;
-            const imageY = data.cell.y + data.cell.height / 2 - 10.5;
-            const imageDim = 
-              Math.min(data.cell.width, data.cell.height) - 90 +
-              Math.max(data.cell.width, data.cell.height) - 20;
-            pdf.addImage(row.imageData as string, "JPEG", imageX, imageY, imageDim, imageDim);
-          }
-        }
-      },
-      headStyles: {
-        fillColor: "#343a40",
-        minCellHeight: 0,
-      },
-      columnStyles: {
-        0: {
-          cellWidth: 80,
-          cellPadding: 10,
-          minCellHeight: 20,
-        },
-        1: {
-          cellWidth: "auto",
-          cellPadding: 10,
-          minCellHeight: 20,
-        },
-      },
-      styles: {
-        minCellHeight: 20,
-      },
-    });
+      if (imageSrcArray.length === 1) {
+        const imageData = await loadImage(imageSrcArray[0]);
+        pdf.addImage(imageData as string, 'JPEG', 10, 50, 180, 180); // Full page image
+      } else {
+        const imagesPerRow = 2;
+        const margin = 10;
+        const imageWidth = 80;
+        const imageHeight = 80;
+        gridImageLayout(pdf, imageSrcArray, 10, 50, imageWidth, imageHeight, imagesPerRow, margin);
+      }
+    }
 
     setIsGeneratingPDF(false);
     return pdf.output("blob");
@@ -209,13 +135,14 @@ const AgreeModal = ({
 
   const handleSendEmail = async (event: any) => {
     event.preventDefault();
+    const accMgr = await assignAccountManager(storeNumber);
     setEmailSendStatus("sending");
     try {
       const pdfBlob = await generatePDF();
       const formData = new FormData();
       formData.append("file", pdfBlob, "aotsfees.pdf");
       formData.append("email", "ryder.cook@gomaps.com");
-      formData.append("subject", "AOTS Fees Review");
+      formData.append("subject", `AOTS Fees Review for ${accMgr}`);
       formData.append("text", "Attached is a PDF of your AOTS Fees review. Please review and provide feedback. Thank you!");
 
       const response = await fetch("http://localhost:3002/send", {
@@ -229,6 +156,7 @@ const AgreeModal = ({
         setEmailSendStatus("sent");
         setEmailSent(true);
         console.log("Email sent successfully");
+        reset();
       } else {
         setEmailSendStatus("notSent");
         throw new Error(responseData.error || "Failed to send email");
@@ -243,7 +171,7 @@ const AgreeModal = ({
   const handleGeneratePDF = (event: any) => {
     event.preventDefault();
     handleSendEmail(event);
-  }
+  };
 
   const navigateToHome = () => {
     history.push("/");
@@ -259,47 +187,47 @@ const AgreeModal = ({
 
   return (
     <>
-        <div
+      <div
         className={`modal__container ${
-            showModal ? (isClosing ? "modal-closing" : "") : "hidden"
+          showModal ? (isClosing ? "modal-closing" : "") : "hidden"
         } ${isMobile ? "mobile" : ""}`}
-        >
-            {emailSendStatus === "sending" ? (
-                <div className="modal__article">
-                    <SendingLoader 
-                        emailSendingStatus={emailSendStatus}
-                    />
-                </div>
-            ) : (
-                <>
-                    <div className="modal__header">
-                        <div className="modal__header-top">
-                            <h2>Photo submission agreement</h2>
-                            <button className="close__btn" onClick={closeModal}>
-                            X
-                            </button>
-                        </div>
-                    </div>
-                    <div className="modal__article">
-                        <article>
-                            <p>
-                            By submitting these photos, I grant MAPS permission to use them
-                            for any business purposes related to the equipment installation at
-                            McDonald's. I confirm that I have the right to share these photos
-                            and that they accurately depict the installed equipment.
-                            </p>
-                        </article>
-                    </div>
-                    <div className="modal__footer">
-                        <button className="primary__btn" onClick={handleGeneratePDF}>Agree</button>
-                    </div>
-                </>
-            )}
-        </div>
-        <div
-            className={`overlay ${showModal ? "" : "hidden"}`}
-            onClick={closeModal}
-        />
+      >
+        {emailSendStatus === "sending" ? (
+          <div className="modal__article">
+            <SendingLoader emailSendingStatus={emailSendStatus} />
+          </div>
+        ) : (
+          <>
+            <div className="modal__header">
+              <div className="modal__header-top">
+                <h2>Photo submission agreement</h2>
+                <button className="close__btn" onClick={closeModal}>
+                  X
+                </button>
+              </div>
+            </div>
+            <div className="modal__article">
+              <article>
+                <p>
+                  By submitting these photos, I grant MAPS permission to use them
+                  for any business purposes related to the equipment installation at
+                  McDonald's. I confirm that I have the right to share these photos
+                  and that they accurately depict the installed equipment.
+                </p>
+              </article>
+            </div>
+            <div className="modal__footer">
+              <button className="primary__btn" onClick={handleGeneratePDF}>
+                Agree
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+      <div
+        className={`overlay ${showModal ? "" : "hidden"}`}
+        onClick={closeModal}
+      />
     </>
   );
 };

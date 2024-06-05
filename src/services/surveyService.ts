@@ -12,3 +12,14 @@ export const getSurveys = async () => {
         throw error;
     }
 };
+
+// export const getAccManager = async (storeNumber: string) => {
+//     try {
+//         const response = await axios.get(`${BASE_URL}/api/accmgr/${storeNumber}`);
+//         console.log('Fetched account managers', response.data);
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error occurred while fetching account managers', error);
+//         throw error;
+//     }
+// };

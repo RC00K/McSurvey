@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 
 import { Camera, CameraType } from "./Camera";
 import { useSurvey } from "../assets/context/SurveyContext";
 import "./CameraContainer.css";
 import { IonIcon } from "@ionic/react";
-import { add, checkmark, close, sync, flashOff, flash, imageOutline } from "ionicons/icons";
+import { checkmark, close, sync, flashOff, flash, imageOutline } from "ionicons/icons";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const CameraContainer = () => {
@@ -26,7 +26,7 @@ const CameraContainer = () => {
     // Check if an image already exists for question index
     const existingImage = images[`question_${questionIndexNumber}`];
     if (existingImage) {
-      setImage(existingImage);
+      setImage(existingImage[existingImage.length - 1]);
     }
   }, [questionIndexNumber, images]);
 
@@ -53,43 +53,47 @@ const CameraContainer = () => {
     }
   };
 
-  const ensureDirectoryExists = async () => {
-    try {
-      await Filesystem.mkdir({
-        path: "surveyData/images",
-        directory: Directory.Data,
-        recursive: true,
-      });
-    } catch (error: any) {
-      console.error("Error code: ", error.code);
-      if (error.code !== "EEXIST" && error.code !== "Current directory already exists") {
-        console.error("Failed to create directory", error);
-      }
-    }
-  };
+  // const ensureDirectoryExists = async () => {
+  //   try {
+  //     await Filesystem.mkdir({
+  //       path: "surveyData/images",
+  //       directory: Directory.Data,
+  //       recursive: true,
+  //     });
+  //   } catch (error: any) {
+  //     console.error("Error code: ", error.code);
+  //     if (error.code !== "EEXIST" && error.code !== "Current directory already exists") {
+  //       console.error("Failed to create directory", error);
+  //     }
+  //   }
+  // };
 
-  const updateImageInState = async (questionIndex: number, imageSrc: string) => {
-    try {
-      await ensureDirectoryExists();
-      const path = `surveyData/images/question_${questionIndex}.jpg`;
-      await Filesystem.writeFile({
-        path,
-        data: imageSrc,
-        directory: Directory.Data,
-      });
-      console.log("File written successfully");
-
-      const updatedImages = { ...images, [`question_${questionIndex}`]: imageSrc };
-      setImages(updatedImages);
-    } catch (error) {
-      console.error("Failed to write file or update state", error);
-    }
-  };
+  // const updateImageInState = async (questionIndex: number, imageSrc: string) => {
+  //   try {
+  //     await ensureDirectoryExists();
+  //     const path = `surveyData/images/question_${questionIndex}_${Date.now()}.jpg`;
+  //     await Filesystem.writeFile({
+  //       path,
+  //       data: imageSrc,
+  //       directory: Directory.Data,
+  //     }).then(() => {
+  //       console.log("File written successfully");
+  //     }).catch((error) => {
+  //       console.error("Failed to write file", error);
+  //     });
+      
+  //     const updatedImages = { ...images, [`question_${questionIndex}`]: [...(images[`question_${questionIndex}`] || []), imageSrc] };
+  //     setImages(updatedImages);
+  //   } catch (error) {
+  //     console.error("Failed to write file or update state", error);
+  //   }
+  // };
 
   const handleCaptureClick = async () => {
     if (camera.current) {
       try {
         const imageData = camera.current.takePhoto();
+        console.log("Captured image: ", imageData);
         setImage(imageData);
         setReviewMode(true);
         camera.current.pauseCamera();
@@ -108,12 +112,20 @@ const CameraContainer = () => {
     }
   };
 
+  const handleSwitchCamera = () => {
+    if (camera.current) {
+      camera.current.switchCamera();
+    } else {
+      console.error("Camera not available");
+    }
+  };
+
   const handleSaveClick = () => {
     if (image && camera.current) {
       try {
         camera.current.stopCamera();
-        addImage(`question_${questionIndexNumber}`, image);
-        updateImageInState(questionIndexNumber, image);
+        addImage(`question_${questionIndexNumber}`, [image]);
+        // updateImageInState(questionIndexNumber, image);
         setReviewMode(false);
         setImage(null);
         setCloseCamera(true);
@@ -160,12 +172,7 @@ const CameraContainer = () => {
             </div>
             <button
               disabled={numberOfCameras <= 1} 
-              onClick={() => {
-                if (camera.current) {
-                  const result = camera.current.switchCamera();
-                  console.log(result);
-                }
-              }}
+              onClick={handleSwitchCamera}
               className="camera__button"
             >
               <IonIcon icon={sync} />

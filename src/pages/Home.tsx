@@ -1,12 +1,8 @@
-import { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import { IonButton, IonButtons, IonContent, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonIcon, IonSearchbar, IonAvatar, IonSegment, IonSegmentButton, IonLabel, IonItem, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonCardSubtitle } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import './Home.css';
 import CardContainer from '../components/CardContainer';
 import SurveyModal from '../components/modals/SurveyModal';
-import mcsurveylogo from '../assets/images/logos/mcsurvey-logo.png';
-import mcsurveylogo2 from '../assets/images/logos/mcsurvey-logo@2x.png';
-import mcsurveylogo3 from '../assets/images/logos/mcsurvey-logo@3x.png';
 
 const Home: React.FC = () => {
   const history = useHistory();

@@ -9,7 +9,7 @@ import { useSurvey } from "../assets/context/SurveyContext";
 import "../theme/floating-button.css";
 
 interface QuestionContainerProps {
-  surveyData: any
+  surveyData: any;
   readyToSubmit: (isReady: boolean) => void;
 }
 
@@ -17,11 +17,61 @@ export const QuestionContainer = ({
   surveyData,
   readyToSubmit,
 }: QuestionContainerProps) => {
-  const { images, storeNumber, setStoreNumber } = useSurvey();
+  const { images, storeNumber, setStoreNumber, accountManager, setAccountManager } = useSurvey();
   const history = useHistory();
   const location = useLocation();
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [checkStoreNumber, setCheckStoreNumber] = useState(false);
+
+  // Entered store number
+  // const checkStoreNumberValidity = async (storeNumber: string) => {
+  //   storeNumber = storeNumber.replace("", "");
+
+  //   let storeNumberLength = storeNumber.length;
+
+  //   if (storeNumberLength < 5) {
+  //     for (let i = 1; i <= (5 - storeNumberLength); i++) {
+  //       storeNumber = "0" + storeNumber;
+  //     }
+  //   }
+
+  //   setStoreNumber(storeNumber);
+  //   const accountManager = await getAccManager();
+  //   setAccountManager(accountManager);
+  // };
+
+  const getAccManager = async (storeNumber: string) => {
+    const response = await fetch(`http://localhost:3001/api/accmgr`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ storeNumber }),
+    });
+
+    if (!response.ok) {
+      console.log("Error occurred while fetching account managers", response);
+      return;
+    }    
+    const accountMgr = await response.json();
+    return accountMgr;
+  };
+
+  // Assign account manager
+  const assignAccountManager = async (storeNumber: string) => {
+    setStoreNumber(storeNumber);
+    const accManager = await getAccManager(storeNumber);
+    setAccountManager(accManager);
+  };
+
+  useEffect(() => {
+    const loadAccountManager = async () => {
+      const fetchedAccManager = await getAccManager(storeNumber);
+      setAccountManager(fetchedAccManager);
+    };
+
+    loadAccountManager();
+  }, [storeNumber]);
 
   const openCameraPage = (questionIndex: number) => {
     setCurrentQuestionIndex(questionIndex);
@@ -69,15 +119,16 @@ export const QuestionContainer = ({
         <h2>Store Number</h2>
       </label>
       <input
-        id="storeNumber"
+        type="number"
         className="text__input"
         value={storeNumber}
+        onChange={(e) => setStoreNumber(e.target.value)}
+        onBlur={(e) => assignAccountManager(e.target.value)}
         placeholder="Store Number"
-        onChange={(e) => setStoreNumber(e.target.value!)}
       />
       {surveyData.surveyTypes && surveyData.surveyTypes.length > 0 && surveyData.surveyTypes[0].questions.map((question: any, qIndex: number) => {
         const questionId = `question_${qIndex}`;
-        const imageSrc = images[questionId];
+        const imageSrc = images[questionId] || [];
         return (
           <div key={`question_${qIndex}`}>
             <div className="question__header">
@@ -97,19 +148,49 @@ export const QuestionContainer = ({
                   </ol>
                 )}
               {/* <AccordionContainer question={question} /> */}
-              <div
+              <div className="file__upload">
+                <div className="file__upload__content">
+                  <div className="file__upload-top">
+                    {imageSrc.length > 0 && (
+                      imageSrc.map((src, index) => (
+                        <img 
+                          key={`${questionId}_image_${index}`}
+                          src={src}
+                          alt="Uploaded"
+                          className="image__preview"
+                        />
+                      ))
+                    )}
+                  </div>
+                  <div className="file__upload-bottom">
+                    <button
+                      className="file__upload-button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        openCameraPage(qIndex);
+                      }}
+                    >
+                      Click to upload
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {/* <div
                 className="file__upload"
                 onClick={(e) => {
                   e.preventDefault();
                   openCameraPage(qIndex);
                 }}
               >
-                {imageSrc ? (
-                  <img
-                    src={imageSrc}
-                    alt="Uploaded"
-                    className="image__preview"
-                  />
+                {imageSrc.length >  0 ? (
+                  imageSrc.map((src, index) => (
+                    <img
+                      key={`${questionId}_image_${index}`}
+                      src={src}
+                      alt="Uploaded"
+                      className="image__preview"
+                    />
+                  ))
                 ) : (
                   <>
                     <div className="file__upload__icon">
@@ -120,7 +201,7 @@ export const QuestionContainer = ({
                     </p>
                   </>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         );
