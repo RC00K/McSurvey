@@ -23,6 +23,7 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [userInput, setUserInput] = useState<Record<string, string>>({});
   const [images, setImages] = useState<Record<string, string[]>>({});
+  const [surveyName, setSurveyName] = useState("");
   const [storeNumber, setStoreNumber] = useState("");
   const [accountManager, setAccountManager] = useState<string | null>(null);
 
@@ -92,8 +93,10 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         userInput,
         images,
+        surveyName,
         storeNumber,
         accountManager,
+        setSurveyName,
         setStoreNumber,
         setAccountManager,
         addUserInput,

@@ -6,6 +6,8 @@ export interface UserPhoto {
 export interface SurveyContextType {
   userInput: Record<string, string>;
   images: Record<string, string[]>;
+  surveyName: string;
+  setSurveyName: (value: string) => void;
   storeNumber: string;
   setStoreNumber: (value: string) => void;
   accountManager: string | null;

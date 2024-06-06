@@ -13,6 +13,17 @@ export const getSurveys = async () => {
     }
 };
 
+export const getStoreNumbers = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/api/storenumbs`);
+        console.log('Fetched store numbers', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error occurred while fetching store numbers', error);
+        throw error;
+    }
+};
+
 // export const getAccManager = async (storeNumber: string) => {
 //     try {
 //         const response = await axios.get(`${BASE_URL}/api/accmgr/${storeNumber}`);

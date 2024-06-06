@@ -14,7 +14,7 @@ const AgreeModal = ({
   setShowModal: (value: boolean) => void;
   surveyData: any;
 }) => {
-  const { images, storeNumber, reset } = useSurvey();
+  const { images, surveyName, storeNumber, reset } = useSurvey();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isClosing, setIsClosing] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
@@ -110,10 +110,18 @@ const AgreeModal = ({
       });
     };
 
+    let isFirstPage = true;
+    
     for (const [index, question] of surveyData.surveyTypes[0].questions.entries()) {
+      if (!isFirstPage) {
+        pdf.addPage();
+      } else {
+        isFirstPage = false;
+      }
+
       const questionId = `question_${index}`;
       const imageSrcArray = images[questionId] || [];
-      pdf.addPage();
+
       pdf.text(`Question ${index + 1}: ${question.questionTitle}`, 10, 20);
       pdf.text(question.questionDesc, 10, 30);
 
@@ -130,7 +138,9 @@ const AgreeModal = ({
     }
 
     setIsGeneratingPDF(false);
-    return pdf.output("blob");
+    const pdfBlob = pdf.output("blob");
+    const pdfName = `${surveyName}_${storeNumber}_${new Date().toISOString().split("T")[0]}.pdf`;
+    return { pdfBlob, pdfName }
   };
 
   const handleSendEmail = async (event: any) => {
@@ -138,12 +148,19 @@ const AgreeModal = ({
     const accMgr = await assignAccountManager(storeNumber);
     setEmailSendStatus("sending");
     try {
-      const pdfBlob = await generatePDF();
+      const { pdfBlob, pdfName } = await generatePDF();
       const formData = new FormData();
-      formData.append("file", pdfBlob, "aotsfees.pdf");
-      formData.append("email", "ryder.cook@gomaps.com");
-      formData.append("subject", `AOTS Fees Review for ${accMgr}`);
-      formData.append("text", "Attached is a PDF of your AOTS Fees review. Please review and provide feedback. Thank you!");
+      
+      formData.append("file", pdfBlob, pdfName);
+      
+      // Emails to send report
+      const emailAddresses = [
+        "ryder.cook@gomaps.com",
+      ];
+
+      formData.append("email", emailAddresses.join(","));
+      formData.append("subject", `${surveyName} Survey: ${storeNumber} ${accMgr}`);
+      formData.append("text", `Hello ${accMgr},\n\nPlease find the attached survey report for ${surveyName} at store number ${storeNumber}.\n\nThank you,\nMAPS Team`);
 
       const response = await fetch("http://localhost:3002/send", {
         method: "POST",
