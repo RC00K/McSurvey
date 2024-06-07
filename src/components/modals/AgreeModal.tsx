@@ -25,7 +25,7 @@ const AgreeModal = ({
   const history = useHistory();
 
   const fetchAccMgr = async (storeNumber: string) => {
-    const response = await fetch(`http://localhost:3001/api/accmgr`, {
+    const response = await fetch(`https://mcsurveyfetcherapi.gomaps.com:443/api/accmgr`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -156,13 +156,14 @@ const AgreeModal = ({
       // Emails to send report
       const emailAddresses = [
         "ryder.cook@gomaps.com",
+        "AccountManagersOnly@gomaps.com"
       ];
 
       formData.append("email", emailAddresses.join(","));
       formData.append("subject", `${surveyName} Survey: ${storeNumber} ${accMgr}`);
       formData.append("text", `Hello ${accMgr},\n\nPlease find the attached survey report for ${surveyName} at store number ${storeNumber}.\n\nThank you,\nMAPS Team`);
 
-      const response = await fetch("http://localhost:3002/send", {
+      const response = await fetch("https://mcsurveymailerapi.gomaps.com:443/send", {
         method: "POST",
         body: formData,
       });

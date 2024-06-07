@@ -48,7 +48,7 @@ export const QuestionContainer = ({
   };
 
   const getAccManager = async (storeNumber: string) => {
-    const response = await fetch(`http://localhost:3001/api/accmgr`, {
+    const response = await fetch(`https://mcsurveyfetcherapi.gomaps.com/api/accmgr`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

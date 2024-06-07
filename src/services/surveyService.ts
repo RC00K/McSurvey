@@ -1,10 +1,16 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3001';
+// Base URL for the API
+const api = axios.create({
+    baseURL: 'https://mcsurveyfetcherapi.gomaps.com',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+});
 
 export const getSurveys = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/api/surveys`);
+        const response = await api.get('/api/surveys');
         console.log('Fetched surveys', response.data);
         return response.data;
     } catch (error) {
@@ -15,7 +21,7 @@ export const getSurveys = async () => {
 
 export const getStoreNumbers = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/api/storenumbs`);
+        const response = await api.get('/api/storenumbs');
         console.log('Fetched store numbers', response.data);
         return response.data;
     } catch (error) {
