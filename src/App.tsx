@@ -4,6 +4,7 @@ import { setupIonicReact } from '@ionic/react';
 import Home from './pages/Home';
 import Survey from './pages/Survey';
 import NotFound from './pages/NotFound';
+import Completed from './pages/Completed';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -89,6 +90,7 @@ const App: React.FC = () => {
           <Route key={index} path={route.path} component={route.component} exact />
         ))}
         <Route path="/camera/:questionIndex" component={CameraContainer} />
+        <Route path="/completed" component={Completed} />
         <Route path="/404" component={NotFound} />
       </Switch>
     </Router>

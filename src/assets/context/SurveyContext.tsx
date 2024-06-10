@@ -110,6 +110,10 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
     setUserInput({});
     setImages({});
     setStoreNumber("");
+    localStorage.removeItem("lastQuestionIndex");
+    localStorage.removeItem("surveyData");
+    localStorage.removeItem("accountManager");
+    localStorage.removeItem("capturedImage");
     // Clear all stored preferences
     await Preferences.clear();
   }, []);

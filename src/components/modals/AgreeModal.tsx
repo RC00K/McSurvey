@@ -199,7 +199,12 @@ const AgreeModal = ({
     event.preventDefault();
     handleSendEmail(event);
     setShowModal(false);
+    handleSurveyComplete();
   };
+
+  const handleSurveyComplete = () => {
+    history.push("/completed");
+  }
 
   const navigateToHome = () => {
     history.push("/");
