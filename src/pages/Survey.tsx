@@ -14,6 +14,7 @@ const Survey: React.FC = () => {
   const [readyForSubmitting, setReadyForSubmitting] = useState(false);
   const [showAgreeModal, setShowAgreeModal] = useState(false);
   const [showExitAlert, setShowExitAlert] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
 
   useEffect(() => {
     const fetchSurveys = async () => {
@@ -61,6 +62,17 @@ const Survey: React.FC = () => {
     };
   }, []);
 
+  const removeAgreeModal = () => {
+    setShowAgreeModal(false);
+  };
+
+  useEffect(() => {
+    if (isEmailSent) {
+      setIsEmailSent(false);
+      removeAgreeModal();
+    }
+  }, [isEmailSent]);
+
   const handleEndSurvey = () => {
     reset();
     localStorage.removeItem("surveyData");
@@ -95,7 +107,7 @@ const Survey: React.FC = () => {
                 />
               }
               <div className="survey__footer">
-                <button className="primary__btn" onClick={handlePresentAgreement} disabled={!readyForSubmitting}>
+                <button className="primary__btn" onClick={handlePresentAgreement}>
                   Continue
                 </button>
               </div>

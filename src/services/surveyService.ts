@@ -10,7 +10,7 @@ const api = axios.create({
 
 export const getSurveys = async () => {
     try {
-        const response = await api.get('/api/surveys');
+        const response = await api.get('/surveys');
         console.log('Fetched surveys', response.data);
         return response.data;
     } catch (error) {
@@ -21,7 +21,7 @@ export const getSurveys = async () => {
 
 export const getStoreNumbers = async () => {
     try {
-        const response = await api.get('/api/storenumbs');
+        const response = await api.get('/storenumbs');
         console.log('Fetched store numbers', response.data);
         return response.data;
     } catch (error) {

@@ -61,6 +61,32 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, []);
 
+  const deleteImage = useCallback((questionId: string, imageSrc: string) => {
+    setImages((prevImages) => {
+      const updatedImages = { ...prevImages };
+      if (updatedImages[questionId]) {
+        updatedImages[questionId] = updatedImages[questionId].filter(
+          (src) => src !== imageSrc
+        );
+      }
+      saveImages(updatedImages);
+      return updatedImages;
+    });
+  }, []);
+
+  const replaceImage = useCallback((questionId: string, imageSrc: string) => {
+    setImages((prevImages) => {
+      const updatedImages = { ...prevImages };
+      if (updatedImages[questionId]) {
+        updatedImages[questionId] = updatedImages[questionId].map((src) =>
+          src === imageSrc ? imageSrc : src
+        );
+      }
+      saveImages(updatedImages);
+      return updatedImages;
+    });
+  }, []);
+
   useEffect(() => {
     const loadImageReferences = async () => {
       // await saveImages
@@ -102,6 +128,8 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
         addUserInput,
         setImages,
         addImage,
+        deleteImage,
+        replaceImage,
         reset,
       }}
     >

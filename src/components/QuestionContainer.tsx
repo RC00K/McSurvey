@@ -3,7 +3,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { IonIcon, IonLabel } from "@ionic/react";
 import { AccordionContainer } from "./AccordionContainer";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
-import { add } from "ionicons/icons";
+import { add, trash } from "ionicons/icons";
 import "./QuestionContainer.css";
 import { useSurvey } from "../assets/context/SurveyContext";
 import "../theme/floating-button.css";
@@ -17,13 +17,15 @@ export const QuestionContainer = ({
   surveyData,
   readyToSubmit,
 }: QuestionContainerProps) => {
-  const { images, storeNumber, setStoreNumber, accountManager, setAccountManager } = useSurvey();
+  const { images, storeNumber, setStoreNumber, accountManager, setAccountManager, deleteImage, replaceImage } = useSurvey();
   const history = useHistory();
   const location = useLocation();
   const [error, setError] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const { storeNumber: storeNumberFromUrl } = useParams<{ storeNumber: string | undefined }>();
+  // store store number in local storage
+  localStorage.setItem("storeNumber", storeNumberFromUrl || storeNumber);
 
   const handleStoreNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
@@ -48,12 +50,12 @@ export const QuestionContainer = ({
   };
 
   const getAccManager = async (storeNumber: string) => {
-    const response = await fetch(`https://mcsurveyfetcherapi.gomaps.com/api/accmgr`, {
+    const response = await fetch(`https://mcsurveyfetcherapi.gomaps.com/accmgr`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ storeNumber }),
+      body: JSON.stringify({ storeNumber })
     });
 
     if (!response.ok) {
@@ -61,6 +63,11 @@ export const QuestionContainer = ({
       return;
     }    
     const accountMgr = await response.json();
+
+    const accMgr = accountMgr[0].AccMgr;
+    setAccountManager(accMgr);
+    localStorage.setItem("accountManager", accMgr);
+
     return accountMgr;
   };
 
@@ -85,6 +92,14 @@ export const QuestionContainer = ({
     localStorage.setItem("lastQuestionIndex", questionIndex.toString());
     const questionId = `question_${questionIndex}`;
     history.push(`/camera/${questionIndex}#${questionId}`);
+  };
+
+  const handleDeleteImage = (questionId: string, index: string) => {
+    deleteImage(questionId, index);
+  };
+
+  const handleReplaceImage = (questionId: string, index: string) => {
+    replaceImage(questionId, index);
   };
 
   useEffect(() => {
@@ -171,12 +186,19 @@ export const QuestionContainer = ({
                   <div className="file__upload-top">
                     {imageSrc.length > 0 && (
                       imageSrc.map((src, index) => (
-                        <img 
-                          key={`${questionId}_image_${index}`}
-                          src={src}
-                          alt="Uploaded"
-                          className="image__preview"
-                        />
+                        <div key={`${questionId}_image_${index}`} className="image__preview__container">
+                          <div className="image__preview-controls">
+                            <IonIcon
+                              icon={trash}
+                              onClick={() => handleDeleteImage(questionId, src)}
+                            />
+                          </div>
+                          <img
+                            src={src}
+                            alt="Uploaded"
+                            className="image__preview"
+                          />
+                        </div>
                       ))
                     )}
                   </div>

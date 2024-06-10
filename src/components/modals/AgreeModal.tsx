@@ -24,31 +24,31 @@ const AgreeModal = ({
   const [accountManager, setAccountManager] = useState<string | null>(null);
   const history = useHistory();
 
-  const fetchAccMgr = async (storeNumber: string) => {
-    const response = await fetch(`https://mcsurveyfetcherapi.gomaps.com:443/api/accmgr`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ storeNumber }),
-    });
-    const accountMgr = await response.json();
-    return accountMgr;
-  };
+  // const fetchAccMgr = async (storeNumber: string) => {
+  //   const response = await fetch(`https://mcsurveyfetcherapi.gomaps.com/accmgr`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ storeNumber }),
+  //   });
+  //   const accountMgr = await response.json();
+  //   return accountMgr;
+  // };
 
   // Convert string to title case
-  const toTitleCase = (str: string) => {
-    return str.replace(/\w\S*/g, (txt) => {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-  };
+  // const toTitleCase = (str: string) => {
+  //   return str.replace(/\w\S*/g, (txt) => {
+  //     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  //   });
+  // };
 
-  const assignAccountManager = async (storeNumber: string): Promise<string> => {
-    const accountManagerArray = await fetchAccMgr(storeNumber);
-    const accMgr = toTitleCase(accountManagerArray[0].AccMgr);
-    setAccountManager(accMgr);
-    return accMgr;
-  };
+  // const assignAccountManager = async (storeNumber: string): Promise<string> => {
+  //   const accountManagerArray = await fetchAccMgr(storeNumber);
+  //   // const accMgr = accountManagerArray[0].AccountManager;
+  //   setAccountManager(accountManagerArray[0].AccountManager);
+  //   return accountManagerArray[0].AccountManager;
+  // };
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -145,7 +145,10 @@ const AgreeModal = ({
 
   const handleSendEmail = async (event: any) => {
     event.preventDefault();
-    const accMgr = await assignAccountManager(storeNumber);
+    // const accMgr = await assignAccountManager(storeNumber);
+    // get account manager and store number from local storage
+    const storeNumber = localStorage.getItem("storeNumber");
+    const accMgr = localStorage.getItem("accountManager");
     setEmailSendStatus("sending");
     try {
       const { pdfBlob, pdfName } = await generatePDF();
@@ -163,12 +166,18 @@ const AgreeModal = ({
       formData.append("subject", `${surveyName} Survey: ${storeNumber} ${accMgr}`);
       formData.append("text", `Hello ${accMgr},\n\nPlease find the attached survey report for ${surveyName} at store number ${storeNumber}.\n\nThank you,\nMAPS Team`);
 
-      const response = await fetch("https://mcsurveymailerapi.gomaps.com:443/send", {
+      const response = await fetch("https://mcsurveymailerapi.gomaps.com/send", {
         method: "POST",
         body: formData,
+        headers: {
+          "Accept": "application/json",
+        }
       });
 
       const responseData = await response.json();
+
+      // close modal after response is received
+      setShowModal(false);
 
       if (response.ok) {
         setEmailSendStatus("sent");
@@ -189,6 +198,7 @@ const AgreeModal = ({
   const handleGeneratePDF = (event: any) => {
     event.preventDefault();
     handleSendEmail(event);
+    setShowModal(false);
   };
 
   const navigateToHome = () => {

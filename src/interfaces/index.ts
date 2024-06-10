@@ -15,5 +15,7 @@ export interface SurveyContextType {
   addUserInput: (questionId: string, answer: string) => void;
   setImages: (images: Record<string, string[]>) => void
   addImage: (questionId: string, image: string[]) => void;
+  deleteImage: (questionId: string, image: string) => void;
+  replaceImage: (questionId: string, image: string) => void;
   reset: () => void;
 }
