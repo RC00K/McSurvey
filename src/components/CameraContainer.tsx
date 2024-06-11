@@ -136,16 +136,21 @@ const CameraContainer = () => {
   return (
     <div className="camera__container">
       {loading && (
-        <div className="loading__overlay">Initializing camera...</div>
+        <div className="loader">
+          <div className="loader__text">
+            Camera loading
+          </div>
+          <div className="loader__bar"></div>
+        </div>
       )}
       <div className="camera__overlay">
         <div className="camera__controls camera__controls__top">
           <button onClick={handleCloseCamera} className="camera__button">
             <IonIcon icon={close} />
           </button>
-          <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()} className={flashMode === "off" ? "camera__button" : "camera__flash"}>
+          {/* <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()} className={flashMode === "off" ? "camera__button" : "camera__flash"}>
             <IonIcon icon={flashMode === "off" ? flashOff : flash} />
-          </button>
+          </button> */}
         </div>
         <Camera
           ref={camera}

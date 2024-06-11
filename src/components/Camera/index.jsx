@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
 import styled from "styled-components";
+import "../loaders/SendingLoader.css";
 import Cookies from "js-cookie";
 
 const Wrapper = styled.div`
@@ -53,11 +54,11 @@ const LoadingOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: #222428;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #f4f5f8;
   z-index: 2;
 `;
 
@@ -336,16 +337,6 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
     const storedCameraPermission = Cookies.get("cameraPermission");
     if (storedCameraPermission === "granted") {
       acquireStream();
-    } else {
-      navigator.permissions.query({ name: "camera" }).then((permissionStatus) => {
-        if (permissionStatus.state === "granted") {
-          Cookies.set("cameraPermission", "granted", { expires: 365 });
-          acquireStream();
-        } else {
-          Cookies.set("cameraPermission", "denied", { expires: 365 });
-          setLoading(false);
-        }
-      });
     }
 
     const storedDeviceInfo = localStorage.getItem("deviceInfo");
@@ -368,7 +359,12 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
   return (
     <Wrapper>
       {loading && (
-        <LoadingOverlay>Loading camera...</LoadingOverlay>
+        <div className="loader">
+          <div className="loader__text">
+            Camera loading
+          </div>
+          <div className="loader__bar"></div>
+        </div>
       )}
       <Cam
         ref={player}

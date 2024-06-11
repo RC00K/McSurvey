@@ -9,7 +9,7 @@
 
 .loader__text {
     font-size: 1.5rem;
-    color: var(--ion-color-dark);
+    color: #f4f5f8;
     margin-bottom: 20px;
     align-self: center;
 }
@@ -17,7 +17,7 @@
 .loader__bar {
     width: 30%;
     height: 10px;
-    background: var(--ion-color-dark-rgba);
+    background: rgb(244, 245, 248);
     animation: loader-bar-animation 2s ease-in-out infinite;
 }
 
