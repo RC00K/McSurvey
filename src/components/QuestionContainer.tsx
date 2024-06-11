@@ -187,17 +187,16 @@ export const QuestionContainer = ({
                     {imageSrc.length > 0 && (
                       imageSrc.map((src, index) => (
                         <div key={`${questionId}_image_${index}`} className="image__preview__container">
-                          <div className="image__preview-controls">
-                            <IonIcon
-                              icon={trash}
-                              onClick={() => handleDeleteImage(questionId, src)}
-                            />
-                          </div>
                           <img
                             src={src}
                             alt="Uploaded"
                             className="image__preview"
                           />
+                          <div key={`${questionId}_image_${index}`} className="image__preview-controls">
+                            <button onClick={() => handleDeleteImage(questionId, src)}>
+                              <IonIcon icon={trash} />
+                            </button>
+                          </div>
                         </div>
                       ))
                     )}

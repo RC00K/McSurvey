@@ -19,15 +19,36 @@ const CameraContainer = () => {
   const [image, setImage] = useState<string | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
   const [closeCamera, setCloseCamera] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const history = useHistory();
   
   useEffect(() => {
+    // Lock the screen orientation to portrait
+    const lockOrientation = async () => {
+      try {
+        if (screen.orientation && (screen.orientation as any).lock) {
+          await (screen.orientation as any).lock("portrait");
+        }
+      } catch (error) {
+        console.error("Failed to lock screen orientation: ", error);
+      }
+    };
+
+    lockOrientation();
+
     // Check if an image already exists for question index
     const existingImage = images[`question_${questionIndexNumber}`];
     if (existingImage) {
       setImage(existingImage[existingImage.length - 1]);
     }
+
+    // Unlock the screen orientation when the component unmounts
+    return () => {
+      if (screen.orientation && screen.orientation.unlock) {
+        screen.orientation.unlock();
+      }
+    };
   }, [questionIndexNumber, images]);
 
   // Loading camera settings
@@ -53,42 +74,6 @@ const CameraContainer = () => {
     }
   };
 
-  // const ensureDirectoryExists = async () => {
-  //   try {
-  //     await Filesystem.mkdir({
-  //       path: "surveyData/images",
-  //       directory: Directory.Data,
-  //       recursive: true,
-  //     });
-  //   } catch (error: any) {
-  //     console.error("Error code: ", error.code);
-  //     if (error.code !== "EEXIST" && error.code !== "Current directory already exists") {
-  //       console.error("Failed to create directory", error);
-  //     }
-  //   }
-  // };
-
-  // const updateImageInState = async (questionIndex: number, imageSrc: string) => {
-  //   try {
-  //     await ensureDirectoryExists();
-  //     const path = `surveyData/images/question_${questionIndex}_${Date.now()}.jpg`;
-  //     await Filesystem.writeFile({
-  //       path,
-  //       data: imageSrc,
-  //       directory: Directory.Data,
-  //     }).then(() => {
-  //       console.log("File written successfully");
-  //     }).catch((error) => {
-  //       console.error("Failed to write file", error);
-  //     });
-      
-  //     const updatedImages = { ...images, [`question_${questionIndex}`]: [...(images[`question_${questionIndex}`] || []), imageSrc] };
-  //     setImages(updatedImages);
-  //   } catch (error) {
-  //     console.error("Failed to write file or update state", error);
-  //   }
-  // };
-
   const handleCaptureClick = async () => {
     if (camera.current) {
       try {
@@ -98,7 +83,7 @@ const CameraContainer = () => {
         setReviewMode(true);
         camera.current.pauseCamera();
       } catch (error) {
-        console.error("Failed to takes photo: ", error);
+        console.error("Failed to take photo: ", error);
       }
     }
   };
@@ -114,6 +99,7 @@ const CameraContainer = () => {
 
   const handleSwitchCamera = () => {
     if (camera.current) {
+      setLoading(true);
       camera.current.switchCamera();
     } else {
       console.error("Camera not available");
@@ -125,14 +111,16 @@ const CameraContainer = () => {
       try {
         camera.current.stopCamera();
         addImage(`question_${questionIndexNumber}`, [image]);
-        // updateImageInState(questionIndexNumber, image);
         setReviewMode(false);
         setImage(null);
         setCloseCamera(true);
-        camera.current.stopCamera();
         history.goBack();
       } catch (error) {
         console.error("Failed to add image: ", error);
+      } finally {
+        if (camera.current) {
+          camera.current.stopCamera();
+        }
       }
     }
   };
@@ -147,59 +135,60 @@ const CameraContainer = () => {
 
   return (
     <div className="camera__container">
-        <div className="camera__overlay">
-          <div className="camera__controls camera__controls__top">
-            <button onClick={handleCloseCamera} className="camera__button">
-              <IonIcon icon={close} />
+      {loading && (
+        <div className="loading__overlay">Initializing camera...</div>
+      )}
+      <div className="camera__overlay">
+        <div className="camera__controls camera__controls__top">
+          <button onClick={handleCloseCamera} className="camera__button">
+            <IonIcon icon={close} />
+          </button>
+          <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()} className={flashMode === "off" ? "camera__button" : "camera__flash"}>
+            <IonIcon icon={flashMode === "off" ? flashOff : flash} />
+          </button>
+        </div>
+        <Camera
+          ref={camera}
+          aspectRatio="cover"
+          numberOfCamerasCallback={setNumberOfCameras}
+        />
+        <div className="camera__controls camera__controls__bottom">
+          {/* <button className="camera__button">
+            <IonIcon icon={imageOutline} />
+          </button> */}
+          <div className="capture__button" onClick={handleCaptureClick}>
+            <div className="capture__button__inner" />
+          </div>
+          {/* <button
+            disabled={numberOfCameras <= 1} 
+            onClick={handleSwitchCamera}
+            className="camera__button"
+          >
+            <IonIcon icon={sync} />
+          </button> */}
+        </div>
+      </div>
+      {reviewMode && image && (
+        <div className="image__review">
+          <img src={image} alt="Captured image" />
+          <div className="camera__controls camera__controls__bottom">
+            <button className="camera__button retake" onClick={handleRetakeClick}>
+              <IonIcon icon={close} className="retake__button__icon" />
             </button>
-            <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()} className={flashMode === "off" ? "camera__button" : "camera__flash" }>
-              <IonIcon 
-                icon={flashMode === "off" ? flashOff : flash} 
-              />
+            <button className="camera__button save" onClick={handleSaveClick}>
+              <IonIcon icon={checkmark} className="save__button__icon" />
             </button>
           </div>
-          <Camera
-              ref={camera}
-              aspectRatio="cover"
-              numberOfCamerasCallback={setNumberOfCameras}
-          />
-          <div className="camera__controls camera__controls__bottom">
-            <button className="camera__button">
-              <IonIcon icon={imageOutline} />
+          <div className="review__buttons">
+            <button className="retake__button" onClick={handleRetakeClick}>
+              <IonIcon icon={close} className="retake__button__icon" />
             </button>
-            <div className="capture__button" onClick={handleCaptureClick}>
-              <div className="capture__button__inner" />
-            </div>
-            <button
-              disabled={numberOfCameras <= 1} 
-              onClick={handleSwitchCamera}
-              className="camera__button"
-            >
-              <IonIcon icon={sync} />
+            <button className="save__button" onClick={handleSaveClick}>
+              <IonIcon icon={checkmark} className="save__button__icon" />
             </button>
           </div>
         </div>
-        {reviewMode && image && (
-          <div className="image__review">
-            <img src={image} alt="Captured image" />
-            <div className="camera__controls camera__controls__bottom">
-              <button className="camera__button retake" onClick={handleRetakeClick}>
-                <IonIcon icon={close} className="retake__button__icon" />
-              </button>
-              <button className="camera__button save" onClick={handleSaveClick}>
-                <IonIcon icon={checkmark} className="save__button__icon" />
-              </button>
-            </div>
-            <div className="review__buttons">
-              <button className="retake__button" onClick={handleRetakeClick}>
-                <IonIcon icon={close} className="retake__button__icon" />
-              </button>
-              <button className="save__button" onClick={handleSaveClick}>
-                <IonIcon icon={checkmark} className="save__button__icon" />
-              </button>
-            </div>
-          </div>
-        )}
+      )}
     </div>
   );
 };

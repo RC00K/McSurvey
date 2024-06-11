@@ -18,7 +18,6 @@ const Completed: React.FC = () => {
       <div className="survey-container">
         <h1>Survey Completed</h1>
         <p>Thank you for completing the survey!</p>
-        <button onClick={reset}>Start Over</button>
       </div>
     </>
   );

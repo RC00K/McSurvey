@@ -1,6 +1,6 @@
-/* eslint-disable */
 import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
 import styled from "styled-components";
+import Cookies from "js-cookie";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -47,7 +47,21 @@ const FocusLockMessage = styled.div`
   z-index: 1;
 `;
 
-const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
+const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 2;
+`;
+
+const Camera = React.forwardRef(function ({ facingMode = "environment", numberOfCamerasCallback }, ref) {
   const player = useRef(null);
   const canvas = useRef(null);
   const [stream, setStream] = useState(null);
@@ -61,13 +75,14 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   const [focusPoint, setFocusPoint] = useState({ x: 0, y: 0 });
   const [showFocusIndicator, setShowFocusIndicator] = useState(false);
   const debounceTimeoutRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
   const acquireStream = () => {
     const constraints = {
       video: {
         facingMode: currentFacingMode,
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
+        width: { ideal: 1024 },
+        height: { ideal: 768 },
         focusMode: "continuous",
       },
     };
@@ -77,10 +92,21 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
         setStream(newStream);
         if (player.current) {
           player.current.srcObject = newStream;
+          player.current.onloadedmetadata = () => {
+            setLoading(false);
+          };
         }
+
+        // Count the number of video input devices
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+          const videoDevices = devices.filter(device => device.kind === "videoinput");
+          console.log('Number of video devices:', videoDevices.length);
+          numberOfCamerasCallback(videoDevices.length);
+        });
       })
       .catch((error) => {
         console.error("Failed to initialize camera stream:", error);
+        setLoading(false);
       });
   };
 
@@ -136,10 +162,10 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
       const [videoTrack] = stream.getVideoTracks();
       videoTrack.applyConstraints({ advanced: [{ zoom }] })
         .then(() => {
-          console.log('zoom set');
+          console.log('Zoom set');
         })
         .catch((error) => {
-          console.error('zoom set error', error);
+          console.error('Zoom set error', error);
         });
     }
   }, [stream, zoom]);
@@ -241,6 +267,9 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
 
   useImperativeHandle(ref, () => ({
     takePhoto: () => {
+      if (loading) {
+        throw new Error("Camera is still initializing");
+      }
       if (canvas.current && player.current) {
         const context = canvas.current.getContext("2d");
         const { videoWidth, videoHeight } = player.current;
@@ -277,8 +306,10 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
       throw new Error("No video or canvas available");
     },
     switchCamera: () => {
+      setLoading(true);
       const newFacingMode = currentFacingMode === "environment" ? "user" : "environment";
       setFacingMode(newFacingMode);
+      acquireStream();
     },
     hasFlashSupport,
     toggleFlash,
@@ -302,16 +333,29 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
   }));
 
   useEffect(() => {
-    if (navigator.permissions) {
+    const storedCameraPermission = Cookies.get("cameraPermission");
+    if (storedCameraPermission === "granted") {
+      acquireStream();
+    } else {
       navigator.permissions.query({ name: "camera" }).then((permissionStatus) => {
         if (permissionStatus.state === "granted") {
+          Cookies.set("cameraPermission", "granted", { expires: 365 });
           acquireStream();
+        } else {
+          Cookies.set("cameraPermission", "denied", { expires: 365 });
+          setLoading(false);
         }
       });
     }
 
-    if (!stream) {
-      acquireStream();
+    const storedDeviceInfo = localStorage.getItem("deviceInfo");
+    if (!storedDeviceInfo) {
+      const deviceInfo = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        languages: navigator.languages,
+      };
+      localStorage.setItem("deviceInfo", JSON.stringify(deviceInfo));
     }
 
     return () => {
@@ -323,6 +367,9 @@ const Camera = React.forwardRef(function ({ facingMode = "environment" }, ref) {
 
   return (
     <Wrapper>
+      {loading && (
+        <LoadingOverlay>Loading camera...</LoadingOverlay>
+      )}
       <Cam
         ref={player}
         muted

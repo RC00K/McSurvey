@@ -24,32 +24,6 @@ const AgreeModal = ({
   const [accountManager, setAccountManager] = useState<string | null>(null);
   const history = useHistory();
 
-  // const fetchAccMgr = async (storeNumber: string) => {
-  //   const response = await fetch(`https://mcsurveyfetcherapi.gomaps.com/accmgr`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ storeNumber }),
-  //   });
-  //   const accountMgr = await response.json();
-  //   return accountMgr;
-  // };
-
-  // Convert string to title case
-  // const toTitleCase = (str: string) => {
-  //   return str.replace(/\w\S*/g, (txt) => {
-  //     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  //   });
-  // };
-
-  // const assignAccountManager = async (storeNumber: string): Promise<string> => {
-  //   const accountManagerArray = await fetchAccMgr(storeNumber);
-  //   // const accMgr = accountManagerArray[0].AccountManager;
-  //   setAccountManager(accountManagerArray[0].AccountManager);
-  //   return accountManagerArray[0].AccountManager;
-  // };
-
   useEffect(() => {
     window.addEventListener("resize", () => {
       setIsMobile(window.innerWidth < 768);
@@ -80,11 +54,25 @@ const AgreeModal = ({
         img.crossOrigin = "Anonymous";
         img.src = src;
         img.onload = () => {
+          const aspectRatio = 4 / 3;
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Calculate target dimensions while maintaining aspect ratio
+          let targetWidth = img.width;
+          let targetHeight = img.height;
+          if (img.width / img.height > aspectRatio) {
+            targetWidth = img.height * aspectRatio;
+          } else {
+            targetHeight = img.width / aspectRatio;
+          }
+
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+
+          // Draw image onto the canvas
+          ctx?.drawImage(img, 0, 0, targetWidth, targetHeight);
+
           canvas.toBlob((blob) => {
             const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result);
@@ -111,7 +99,7 @@ const AgreeModal = ({
     };
 
     let isFirstPage = true;
-    
+
     for (const [index, question] of surveyData.surveyTypes[0].questions.entries()) {
       if (!isFirstPage) {
         pdf.addPage();
@@ -127,12 +115,12 @@ const AgreeModal = ({
 
       if (imageSrcArray.length === 1) {
         const imageData = await loadImage(imageSrcArray[0]);
-        pdf.addImage(imageData as string, 'JPEG', 10, 50, 180, 180); // Full page image
+        pdf.addImage(imageData as string, 'JPEG', 10, 50, 160, 120); // 4:3 aspect ratio
       } else {
         const imagesPerRow = 2;
         const margin = 10;
         const imageWidth = 80;
-        const imageHeight = 80;
+        const imageHeight = 60; // 4:3 aspect ratio
         gridImageLayout(pdf, imageSrcArray, 10, 50, imageWidth, imageHeight, imagesPerRow, margin);
       }
     }
@@ -145,18 +133,15 @@ const AgreeModal = ({
 
   const handleSendEmail = async (event: any) => {
     event.preventDefault();
-    // const accMgr = await assignAccountManager(storeNumber);
-    // get account manager and store number from local storage
     const storeNumber = localStorage.getItem("storeNumber");
     const accMgr = localStorage.getItem("accountManager");
     setEmailSendStatus("sending");
     try {
       const { pdfBlob, pdfName } = await generatePDF();
       const formData = new FormData();
-      
+
       formData.append("file", pdfBlob, pdfName);
-      
-      // Emails to send report
+
       const emailAddresses = [
         "ryder.cook@gomaps.com",
         "AccountManagersOnly@gomaps.com"
@@ -176,7 +161,6 @@ const AgreeModal = ({
 
       const responseData = await response.json();
 
-      // close modal after response is received
       setShowModal(false);
 
       if (response.ok) {
