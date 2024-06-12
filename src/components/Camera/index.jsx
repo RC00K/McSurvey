@@ -23,31 +23,6 @@ const Canvas = styled.canvas`
   display: none;
 `;
 
-const FocusIndicator = styled.div`
-  position: absolute;
-  border: 2px solid yellow;
-  width: 50px;
-  height: 50px;
-  display: ${({ visible }) => (visible ? 'block' : 'none')};
-  left: ${({ x }) => x - 25}px;
-  top: ${({ y }) => y - 25}px;
-  pointer-events: none;
-  z-index: 1;
-`;
-
-const FocusLockMessage = styled.div`
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  display: ${({ visible }) => (visible ? 'block' : 'none')};
-  z-index: 1;
-`;
-
 const LoadingOverlay = styled.div`
   position: absolute;
   top: 0;
@@ -62,21 +37,13 @@ const LoadingOverlay = styled.div`
   z-index: 2;
 `;
 
-const Camera = React.forwardRef(function ({ facingMode = "environment", numberOfCamerasCallback }, ref) {
+const Camera = React.forwardRef(function (
+  { facingMode = "environment", numberOfCamerasCallback, onInitialized }, ref) {
   const player = useRef(null);
   const canvas = useRef(null);
   const [stream, setStream] = useState(null);
-  const [currentFacingMode, setFacingMode] = useState(facingMode);
-  const [currentFlashMode, setFlashMode] = useState("auto");
-  const [zoom, setZoom] = useState(1);
-  const [isZooming, setIsZooming] = useState(false);
-  const [targetZoom, setTargetZoom] = useState(1);
-  const [initialDistance, setInitialDistance] = useState(null);
-  const [isFocusLocked, setIsFocusLocked] = useState(false);
-  const [focusPoint, setFocusPoint] = useState({ x: 0, y: 0 });
-  const [showFocusIndicator, setShowFocusIndicator] = useState(false);
-  const debounceTimeoutRef = useRef(null);
   const [loading, setLoading] = useState(true);
+  const [currentFacingMode, setFacingMode] = useState(facingMode);
 
   const acquireStream = () => {
     const constraints = {
@@ -95,6 +62,9 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
           player.current.srcObject = newStream;
           player.current.onloadedmetadata = () => {
             setLoading(false);
+            if (onInitialized) {
+              onInitialized();
+            }
           };
         }
 
@@ -111,161 +81,6 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
       });
   };
 
-  const hasFlashSupport = () => {
-    if (stream) {
-      const track = stream.getVideoTracks()[0];
-      const capabilities = track.getCapabilities();
-      return capabilities.torch;
-    }
-    return false;
-  };
-
-  const toggleFlash = () => {
-    const newFlashMode = currentFlashMode === "off" ? "on" : (currentFlashMode === "on" ? "auto" : "off");
-    setFlashMode(newFlashMode);
-  };
-
-  const applyFlash = (enable) => {
-    if (stream) {
-      const track = stream.getVideoTracks()[0];
-      track.applyConstraints({ advanced: [{ torch: enable }] });
-    }
-  };
-
-  const debounceZoom = (value) => {
-    clearTimeout(debounceTimeoutRef.current);
-    debounceTimeoutRef.current = setTimeout(() => setZoomValue(value), 200);
-  };
-
-  const updateZoom = () => {
-    if (isZooming) return;
-    setIsZooming(true);
-
-    setZoom((oldZoom) => {
-      const difference = targetZoom - oldZoom;
-      const newZoom = oldZoom + difference * 0.1;
-      return newZoom;
-    });
-    setIsZooming(false);
-  };
-
-  useEffect(() => {
-    const interval = setInterval(updateZoom, 100);
-    return () => clearInterval(interval);
-  }, []);
-
-  const setZoomValue = (value) => {
-    setTargetZoom(value);
-  };
-
-  useEffect(() => {
-    if (stream && 'zoom' in stream.getTracks()[0].getCapabilities()) {
-      const [videoTrack] = stream.getVideoTracks();
-      videoTrack.applyConstraints({ advanced: [{ zoom }] })
-        .then(() => {
-          console.log('Zoom set');
-        })
-        .catch((error) => {
-          console.error('Zoom set error', error);
-        });
-    }
-  }, [stream, zoom]);
-
-  const handlePinchStart = (event) => {
-    if (event.touches.length === 2) {
-      const dx = event.touches[0].clientX - event.touches[1].clientX;
-      const dy = event.touches[0].clientY - event.touches[1].clientY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      setInitialDistance(distance);
-    }
-  };
-
-  const handleTouchMove = (event) => {
-    if (event.touches.length === 2 && initialDistance) {
-      const dx = event.touches[0].clientX - event.touches[1].clientX;
-      const dy = event.touches[0].clientY - event.touches[1].clientY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const zoomValue = distance / initialDistance;
-      debounceZoom(zoomValue);
-    }
-  };
-
-  const handleTapFocus = (event) => {
-    if (stream) {
-      const track = stream.getVideoTracks()[0];
-      const capabilities = track.getCapabilities();
-
-      if (isFocusLocked) {
-        setIsFocusLocked(false);
-        track.applyConstraints({
-          advanced: [{ focusMode: "continuous" }],
-        });
-        setShowFocusIndicator(false);
-        return;
-      }
-
-      if (capabilities.focusMode && capabilities.focusMode.includes("manual")) {
-        const settings = track.getSettings();
-        const { width, height } = settings;
-        const focusX = event.clientX / width;
-        const focusY = event.clientY / height;
-
-        setFocusPoint({ x: event.clientX, y: event.clientY });
-        setShowFocusIndicator(true);
-
-        track.applyConstraints({
-          advanced: [
-            { focusMode: "manual", focusDistance: capabilities.focusDistance.min + (capabilities.focusDistance.max - capabilities.focusDistance.min) * 0.5 },
-            { pointsOfInterest: [{ x: focusX, y: focusY }] },
-          ],
-        });
-
-        setTimeout(() => {
-          if (!isFocusLocked) {
-            setShowFocusIndicator(false);
-          }
-        }, 2000);
-      }
-    }
-  };
-
-  const lockFocus = () => {
-    if (stream) {
-      const track = stream.getVideoTracks()[0];
-      const capabilities = track.getCapabilities();
-
-      if (capabilities.focusMode && capabilities.focusMode.includes("manual")) {
-        setIsFocusLocked((prev) => !prev);
-        track.applyConstraints({
-          advanced: [{ focusMode: isFocusLocked ? "continuous" : "manual" }],
-        });
-      }
-    }
-  };
-
-  const detectBrightness = () => {
-    const context = canvas.current.getContext("2d");
-    canvas.current.width = player.current.videoWidth;
-    canvas.current.height = player.current.videoHeight;
-    context.drawImage(player.current, 0, 0, canvas.current.width, canvas.current.height);
-    const imageData = context.getImageData(0, 0, canvas.current.width, canvas.current.height);
-    const data = imageData.data;
-
-    let r, g, b, avg;
-    let colorSum = 0;
-
-    for (let x = 0, len = data.length; x < len; x += 4) {
-      r = data[x];
-      g = data[x + 1];
-      b = data[x + 2];
-
-      avg = Math.floor((r + g + b) / 3);
-      colorSum += avg;
-    }
-
-    return Math.floor(colorSum / (canvas.current.width * canvas.current.height));
-  };
-
   useImperativeHandle(ref, () => ({
     takePhoto: () => {
       if (loading) {
@@ -274,35 +89,19 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
       if (canvas.current && player.current) {
         const context = canvas.current.getContext("2d");
         const { videoWidth, videoHeight } = player.current;
-
+      
         canvas.current.width = videoWidth;
         canvas.current.height = videoHeight;
-
-        if (currentFacingMode === "user") {
+      
+        if (currentFacingMode === "user" && context) {
           context.translate(videoWidth, 0);
           context.scale(-1, 1);
         }
-
-        if (currentFlashMode === "on") {
-          applyFlash(true);
-        } else if (currentFlashMode === "auto") {
-          const brightness = detectBrightness();
-          if (brightness < 50) {
-            applyFlash(true);
-          }
+      
+        if (context) {
+          context.drawImage(player.current, 0, 0, videoWidth, videoHeight);
+          return canvas.current.toDataURL("image/jpeg");
         }
-
-        context.drawImage(player.current, 0, 0, videoWidth, videoHeight);
-
-        if (currentFlashMode !== "off") {
-          applyFlash(false);
-        }
-
-        if (isFocusLocked) {
-          lockFocus();
-        }
-
-        return canvas.current.toDataURL("image/jpeg");
       }
       throw new Error("No video or canvas available");
     },
@@ -312,8 +111,6 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
       setFacingMode(newFacingMode);
       acquireStream();
     },
-    hasFlashSupport,
-    toggleFlash,
     stopCamera: () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
@@ -330,14 +127,29 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
         player.current.play();
       }
     },
-    lockFocus,
   }));
 
   useEffect(() => {
     const storedCameraPermission = Cookies.get("cameraPermission");
+    
+    // Check the stored camera permission
+    if (storedCameraPermission === "denied") {
+      promptCameraPermission();
+      setLoading(false);
+      return;
+    }
+
     if (storedCameraPermission === "granted") {
       acquireStream();
-    }
+    } else {
+      navigator.mediaDevices.getUserMedia({ video: true}).then((stream) => {
+        Cookies.set("cameraPermission", "granted", { expires: 365 });
+        acquireStream();
+      }).catch((error) => {
+        Cookies.set("cameraPermission", "denied", { expires: 365 });
+        setLoading(false);
+      });
+    };
 
     const storedDeviceInfo = localStorage.getItem("deviceInfo");
     if (!storedDeviceInfo) {
@@ -354,7 +166,22 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [currentFacingMode, currentFlashMode]);
+  }, [currentFacingMode]);
+
+  const promptCameraPermission = () => {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        // User has granted camera permission
+        Cookies.set("cameraPermission", "granted", { expires: 365 });
+        acquireStream();
+      })
+      .catch(error => {
+        // User has denied camera permission
+        Cookies.set("cameraPermission", "denied", { expires: 365 });
+        setLoading(false);
+        alert("Please enable camera access to use this feature.");
+      });
+  };
 
   return (
     <Wrapper>
@@ -372,12 +199,7 @@ const Camera = React.forwardRef(function ({ facingMode = "environment", numberOf
         autoPlay
         playsInline
         mirrored={currentFacingMode === "user"}
-        onTouchStart={handlePinchStart}
-        onTouchMove={handleTouchMove}
-        onClick={handleTapFocus}
       />
-      <FocusIndicator visible={showFocusIndicator || isFocusLocked} x={focusPoint.x} y={focusPoint.y} />
-      <FocusLockMessage visible={isFocusLocked}>Focus Locked</FocusLockMessage>
       <Canvas ref={canvas} />
     </Wrapper>
   );

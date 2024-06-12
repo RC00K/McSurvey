@@ -131,10 +131,18 @@ const AgreeModal = ({
     return { pdfBlob, pdfName }
   };
 
+  // Make sure the account manager name is title case
+  const titleCase = (str: string) => {
+    return str.toLowerCase().split(' ').map(function(word) {
+      return word.replace(word[0], word[0].toUpperCase());
+    }).join(' ');
+  };
+
   const handleSendEmail = async (event: any) => {
     event.preventDefault();
     const storeNumber = localStorage.getItem("storeNumber");
-    const accMgr = localStorage.getItem("accountManager");
+    const installerName = localStorage.getItem("installerName");
+    const accMgr = titleCase(localStorage.getItem("accountManager") || "");
     setEmailSendStatus("sending");
     try {
       const { pdfBlob, pdfName } = await generatePDF();
@@ -149,7 +157,7 @@ const AgreeModal = ({
 
       formData.append("email", emailAddresses.join(","));
       formData.append("subject", `${surveyName} Survey: ${storeNumber} ${accMgr}`);
-      formData.append("text", `Hello ${accMgr},\n\nPlease find the attached survey report for ${surveyName} at store number ${storeNumber}.\n\nThank you,\nMAPS Team`);
+      formData.append("text", `New survey submission from ${installerName}\nStore Number: ${storeNumber}\n\nAttached is the survey submission for ${surveyName}.\n\n${accMgr} please review the submission and follow up with the installer if necessary.`);
 
       const response = await fetch("https://mcsurveymailerapi.gomaps.com/send", {
         method: "POST",

@@ -3,7 +3,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { IonIcon, IonLabel } from "@ionic/react";
 import { AccordionContainer } from "./AccordionContainer";
 import { oneDrive, twoDrive } from "../assets/data/aotsfees";
-import { add, trash } from "ionicons/icons";
+import { cameraOutline, trash } from "ionicons/icons";
 import "./QuestionContainer.css";
 import { useSurvey } from "../assets/context/SurveyContext";
 import "../theme/floating-button.css";
@@ -22,6 +22,7 @@ export const QuestionContainer = ({
   const location = useLocation();
   const [error, setError] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [installerName, setInstallerName] = useState("");
 
   const { storeNumber: storeNumberFromUrl } = useParams<{ storeNumber: string | undefined }>();
   // store store number in local storage
@@ -47,6 +48,11 @@ export const QuestionContainer = ({
     } else if (value === '' && error) {
       setError(false);
     }
+  };
+
+  const handleInstallerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInstallerName(e.target.value);
+    localStorage.setItem("installerName", e.target.value);
   };
 
   const getAccManager = async (storeNumber: string) => {
@@ -104,36 +110,31 @@ export const QuestionContainer = ({
 
   useEffect(() => {
     const lastQuestionIndex = localStorage.getItem("lastQuestionIndex");
-    if (lastQuestionIndex) {
-      setCurrentQuestionIndex(parseInt(lastQuestionIndex, 10));
-    }
-
-    if (location.hash) {
-      setTimeout(() => {
-        const element = document.querySelector(location.hash);
-        if (element) {
-          element.scrollIntoView();
-        }
-      }, 0);
-    } else if (lastQuestionIndex) {
-      setTimeout(() => {
-        const element = document.querySelector(`#question_${lastQuestionIndex}`);
-        if (element) {
-          element.scrollIntoView();
-        }
-      }, 0);
-    }
-  }, [location.hash]);
+    
+    if (!lastQuestionIndex) return;
+  
+    setTimeout(() => {
+      const element = document.getElementById(`question_${lastQuestionIndex}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100); // delay in milliseconds
+  }, [location.pathname]);
 
   const isReadyForSubmitting = () => {
-    const isStoreNumberFilled = storeNumber.trim() !== '';
+    const isInstallerNameFilled = installerName.trim() !== '';
     const areAllImagesUploaded = Object.keys(images).every((key) => images[key] !== undefined);
-    return isStoreNumberFilled && areAllImagesUploaded;
+    if (storeNumberFromUrl) {
+      return isInstallerNameFilled && areAllImagesUploaded;
+    } else {
+      const isStoreNumberFilled = storeNumber.trim() !== '';
+      return isStoreNumberFilled && isInstallerNameFilled && areAllImagesUploaded;
+    }
   };
 
   useEffect(() => {
     readyToSubmit(isReadyForSubmitting());
-  }, [storeNumber, images, readyToSubmit]);
+  }, [storeNumber, installerName, images, readyToSubmit]);
 
   return (
     <div className="question__container">
@@ -159,6 +160,19 @@ export const QuestionContainer = ({
             placeholder="Store Number"
           />
       }
+      <label className="text__input__label">
+        <h2>Installer Name</h2>
+      </label>
+      <input 
+        type="text"
+        className="text__input"
+        pattern="[a-zA-Z ]*"
+        inputMode="text"
+        value={installerName}
+        onChange={handleInstallerNameChange}
+        placeholder="Installer Name"
+        required={true}
+      />
       {surveyData.surveyTypes && surveyData.surveyTypes.length > 0 && surveyData.surveyTypes[0].questions.map((question: any, qIndex: number) => {
         const questionId = `question_${qIndex}`;
         const imageSrc = images[questionId] || [];
@@ -184,7 +198,7 @@ export const QuestionContainer = ({
               <div className="file__upload">
                 <div className="file__upload__content">
                   <div className="file__upload-top">
-                    {imageSrc.length > 0 && (
+                    {imageSrc.length > 0 ? (
                       imageSrc.map((src, index) => (
                         <div key={`${questionId}_image_${index}`} className="image__preview__container">
                           <img
@@ -199,19 +213,27 @@ export const QuestionContainer = ({
                           </div>
                         </div>
                       ))
+                    ) : (
+                      <div className="add__photo-button">
+                        <button onClick={() => openCameraPage(qIndex)}>
+                          <IonIcon icon={cameraOutline} className="add__photo-icon" />
+                          <div className="add__photo__text">Capture photo</div>
+                        </button>
+                      </div>
                     )}
                   </div>
-                  <div className="file__upload-bottom">
-                    <button
-                      className="file__upload-button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        openCameraPage(qIndex);
-                      }}
-                    >
-                      Click to upload
-                    </button>
-                  </div>
+                  {imageSrc.length > 0 && (
+                    <div className="file__upload-bottom file__upload-button">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openCameraPage(qIndex);
+                        }}
+                      >
+                        Capture Photo
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

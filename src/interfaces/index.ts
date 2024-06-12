@@ -10,7 +10,9 @@ export interface SurveyContextType {
   setSurveyName: (value: string) => void;
   storeNumber: string;
   setStoreNumber: (value: string) => void;
+  installerName: string;
   accountManager: string | null;
+  setInstallerName: (value: string) => void;
   setAccountManager: (value: string | null) => void;
   addUserInput: (questionId: string, answer: string) => void;
   setImages: (images: Record<string, string[]>) => void

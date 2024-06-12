@@ -25,6 +25,7 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
   const [images, setImages] = useState<Record<string, string[]>>({});
   const [surveyName, setSurveyName] = useState("");
   const [storeNumber, setStoreNumber] = useState("");
+  const [installerName, setInstallerName] = useState("");
   const [accountManager, setAccountManager] = useState<string | null>(null);
 
   const saveImages = async (newImages: Record<string, string[]>) => {
@@ -125,9 +126,11 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
         images,
         surveyName,
         storeNumber,
+        installerName,
         accountManager,
         setSurveyName,
         setStoreNumber,
+        setInstallerName,
         setAccountManager,
         addUserInput,
         setImages,

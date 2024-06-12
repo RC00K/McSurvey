@@ -65,23 +65,7 @@ const App: React.FC = () => {
 
     buildRoutes();
   }, []);
-
-  // const ValidateSurveyRoute: React.FC<{ path: string; component: React.FC<RouteComponentProps> }> = ({ path, component: Component }) => {
-  //   return (
-  //     <Route
-  //       path={path}
-  //       render={props => {
-  //         const storeNumber = props.match.params.storeNumber;
-  //         if (storeNumber && !/^\d{5}$/.test(storeNumber)) {
-  //           return <Redirect to="/404" />;
-  //         }
-  //         return <Component {...props} />;
-  //       }}
-  //       exact
-  //     />
-  //   );
-  // };
-
+  
   return (
     <Router>
       <Switch>

@@ -8,6 +8,7 @@ export interface CameraProps {
   facingMode?: FacingMode;
   aspectRatio?: AspectRatio;
   numberOfCamerasCallback?(numberOfCameras: number): void;
+  onInitialized?(): void;
 }
 
 export declare type CameraType = React.ForwardRefExoticComponent<CameraProps & React.RefAttributes<unknown>> & {

@@ -10,8 +10,6 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const CameraContainer = () => {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
-  const [flashMode, setFlashMode] = useState("off");
-  const [focusArea, setFocusArea] = useState(null);
   const camera = useRef<CameraType>(null);
   const { addImage, images, setImages } = useSurvey();
   const { questionIndex } = useParams<{ questionIndex: string }>();
@@ -51,19 +49,6 @@ const CameraContainer = () => {
     };
   }, [questionIndexNumber, images]);
 
-  // Loading camera settings
-  useEffect(() => {
-    const storedCameraSettings = localStorage.getItem("cameraSettings");
-    if (storedCameraSettings) {
-      setFlashMode(storedCameraSettings);
-    }
-  }, []);
-
-  // Saving camera settings 
-  useEffect(() => {
-    localStorage.setItem("cameraSettings", flashMode);
-  }, [flashMode]);
-
   const handleCloseCamera = () => {
     if (camera.current) {
       camera.current.stopCamera();
@@ -85,24 +70,6 @@ const CameraContainer = () => {
       } catch (error) {
         console.error("Failed to take photo: ", error);
       }
-    }
-  };
-
-  const toggleFlash = () => {
-    if (camera.current && camera.current.hasFlashSupport()) {
-      camera.current.toggleFlash();
-      setFlashMode(flashMode === "off" ? "on" : (flashMode === "on" ? "auto" : "off"))
-    } else {
-      console.error("Flash is not supported on this device");
-    }
-  };
-
-  const handleSwitchCamera = () => {
-    if (camera.current) {
-      setLoading(true);
-      camera.current.switchCamera();
-    } else {
-      console.error("Camera not available");
     }
   };
 
@@ -134,7 +101,7 @@ const CameraContainer = () => {
   };
 
   return (
-    <div className="camera__container">
+    <>
       {loading && (
         <div className="loader">
           <div className="loader__text">
@@ -143,58 +110,50 @@ const CameraContainer = () => {
           <div className="loader__bar"></div>
         </div>
       )}
-      <div className="camera__overlay">
-        <div className="camera__controls camera__controls__top">
-          <button onClick={handleCloseCamera} className="camera__button">
-            <IonIcon icon={close} />
-          </button>
-          {/* <button onClick={toggleFlash} disabled={!camera.current?.hasFlashSupport()} className={flashMode === "off" ? "camera__button" : "camera__flash"}>
-            <IonIcon icon={flashMode === "off" ? flashOff : flash} />
-          </button> */}
-        </div>
-        <Camera
-          ref={camera}
-          aspectRatio="cover"
-          numberOfCamerasCallback={setNumberOfCameras}
-        />
-        <div className="camera__controls camera__controls__bottom">
-          {/* <button className="camera__button">
-            <IonIcon icon={imageOutline} />
-          </button> */}
-          <div className="capture__button" onClick={handleCaptureClick}>
-            <div className="capture__button__inner" />
+      <div className="camera__container">
+        <div className="camera__overlay">
+          <div className="camera__controls camera__controls__top">
+            <button onClick={handleCloseCamera} className="camera__button">
+              <IonIcon icon={close} />
+            </button>
           </div>
-          {/* <button
-            disabled={numberOfCameras <= 1} 
-            onClick={handleSwitchCamera}
-            className="camera__button"
-          >
-            <IonIcon icon={sync} />
-          </button> */}
+          <Camera
+            ref={camera}
+            aspectRatio="cover"
+            numberOfCamerasCallback={setNumberOfCameras}
+            onInitialized={() => setLoading(false)}
+          />
+          {!loading && !reviewMode && (
+            <div className="camera__controls camera__controls__bottom">
+              <div className="capture__button" onClick={handleCaptureClick}>
+                <div className="capture__button__inner" />
+              </div>
+            </div>
+          )}
         </div>
+        {reviewMode && image && (
+          <div className="image__review">
+            <img src={image} alt="Captured image" />
+            <div className="camera__controls camera__controls__bottom">
+              <button className="camera__button retake" onClick={handleRetakeClick}>
+                <IonIcon icon={close} className="retake__button__icon" />
+              </button>
+              <button className="camera__button save" onClick={handleSaveClick}>
+                <IonIcon icon={checkmark} className="save__button__icon" />
+              </button>
+            </div>
+            <div className="review__buttons">
+              <button className="retake__button" onClick={handleRetakeClick}>
+                <IonIcon icon={close} className="retake__button__icon" />
+              </button>
+              <button className="save__button" onClick={handleSaveClick}>
+                <IonIcon icon={checkmark} className="save__button__icon" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-      {reviewMode && image && (
-        <div className="image__review">
-          <img src={image} alt="Captured image" />
-          <div className="camera__controls camera__controls__bottom">
-            <button className="camera__button retake" onClick={handleRetakeClick}>
-              <IonIcon icon={close} className="retake__button__icon" />
-            </button>
-            <button className="camera__button save" onClick={handleSaveClick}>
-              <IonIcon icon={checkmark} className="save__button__icon" />
-            </button>
-          </div>
-          <div className="review__buttons">
-            <button className="retake__button" onClick={handleRetakeClick}>
-              <IonIcon icon={close} className="retake__button__icon" />
-            </button>
-            <button className="save__button" onClick={handleSaveClick}>
-              <IonIcon icon={checkmark} className="save__button__icon" />
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 

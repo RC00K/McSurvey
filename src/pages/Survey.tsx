@@ -107,7 +107,7 @@ const Survey: React.FC = () => {
                 />
               }
               <div className="survey__footer">
-                <button className="primary__btn" onClick={handlePresentAgreement}>
+                <button className="primary__btn" onClick={handlePresentAgreement} disabled={!readyForSubmitting}>
                   Continue
                 </button>
               </div>
