@@ -54,18 +54,11 @@ const AgreeModal = ({
         img.crossOrigin = "Anonymous";
         img.src = src;
         img.onload = () => {
-          const aspectRatio = 4 / 3;
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
 
-          // Calculate target dimensions while maintaining aspect ratio
-          let targetWidth = img.width;
-          let targetHeight = img.height;
-          if (img.width / img.height > aspectRatio) {
-            targetWidth = img.height * aspectRatio;
-          } else {
-            targetHeight = img.width / aspectRatio;
-          }
+          const targetWidth = img.width;
+          const targetHeight = img.height;
 
           canvas.width = targetWidth;
           canvas.height = targetHeight;
@@ -195,6 +188,7 @@ const AgreeModal = ({
   };
 
   const handleSurveyComplete = () => {
+    reset();
     history.push("/completed");
   }
 
