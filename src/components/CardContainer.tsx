@@ -1,46 +1,49 @@
-import { IonHeader, IonItem, IonChip, IonCard, IonImg, IonIcon, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonText, IonTitle, IonToolbar, IonBadge, IonLabel } from '@ionic/react';
-import { timeOutline, listOutline, fastFood } from 'ionicons/icons';
-import mcdrive from '../assets/images/mcdrive.jpg'
-import './CardContainer.css';
-
-const surveys = [
-    {
-        img: mcdrive,
-        surveyCategory: 'Drive Thru',
-        surveyTitle: 'Drive Thru Survey',
-        surveyCompletionTime: '5 minutes',
-        surveyQuestions: '5 questions'
-    }
-];
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { getSurveys } from "../services/surveyService";
+import "./CardContainer.css";
 
 const CardContainer = ({ onCardClick }: { onCardClick: any }) => {
-    return (
-        <>
-            {surveys.map(({ img, surveyCategory, surveyTitle, surveyCompletionTime, surveyQuestions }, index) => (
-                <div className="survey__card" key={index} onClick={onCardClick}>
-                    <div className="survey__card__title">
-                        <IonIcon icon={fastFood} />
-                        <IonCardSubtitle>{surveyCategory}</IonCardSubtitle>
-                    </div>
-                    <div className="survey__title">
-                        <h3>{surveyTitle}</h3>
-                    </div>
+  const history = useHistory();
+  const [surveys, setSurveys] = useState([]);
 
-                    <div className="survey__completion">
-                        <div className="survey__details">
-                            <IonIcon icon={timeOutline} />
-                            <span>{surveyCompletionTime}</span>
-                        </div>
+  useEffect(() => {
+    const fetchSurveys = async () => {
+      const surveys = await getSurveys();
+      console.log(surveys);
+      setSurveys(surveys);
+    };
 
-                        <div className="survey__details">
-                            <IonIcon icon={listOutline} />
-                            <span>{surveyQuestions}</span>
-                        </div>
-                    </div>
+    fetchSurveys();
+  }, []);
+
+  return (
+    <>
+      {surveys.map((survey: any) => {
+        const surveyDetails = JSON.parse(survey.SurveyJson);
+        const surveyType = surveyDetails.surveyTypes[0];
+
+        return (
+          <div className="survey__cards" key={survey.ID}>
+            <article className="survey__card" onClick={() => history.push(`/survey/${survey.SurveyName}`, { surveyData: surveyDetails })}>
+              <div className="survey__card__content">
+                <h2 className="survey__card__title">{survey.SurveyName}</h2>
+                <p className="survey__card__category">{surveyType.projectType}</p>
+              </div>
+              <div className="survey__card__bottom">
+                <div className="survey__card__props">
+                  <div className="survey__card__prop">
+                    <p>{surveyType.projectTitle}</p>
+                    <p>{surveyType.questions.length} questions</p>
+                  </div>
                 </div>
-            ))}
-        </>
-    );
-}
+              </div>
+            </article>
+          </div>
+        );
+      })}
+    </>
+  );
+};
 
 export default CardContainer;

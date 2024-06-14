@@ -2,57 +2,266 @@
 
 .question__container {
     max-width: 800px;
-    margin: 0 auto;
+    width: 100%;
+}
+
+.question__content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.text__input {
+    background: var(--ion-color-light);
+    border: 1px solid var(--ion-color-light-tint);
+    border-radius: 50px;
+    padding: 13px 20px;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 16px;
+    transition: border 0.3s ease;
+}
+
+/* Supports autofill */
+.text__input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px var(--ion-color-light) inset;
+    -webkit-text-fill-color: var(--ion-color-dark);
+}
+
+.text__input:hover {
+    border: 1px solid var(--ion-color-dark);
+}
+
+.text__input:focus {
+    border: 1px solid var(--ion-color-dark-tint);
+    outline: none;
+}
+
+.text__input__label h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+}
+
+.question__header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+}
+
+.text__input__label {
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.question__header {
+    margin-bottom: 10px;
+}
+
+.question__header p,
+.question__body p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
 }
 
 .file__upload {
+    display: flex;
+    flex-direction: column;
     position: relative;
-    border: 2px dashed var(--ion-color-medium);
-    border-radius: 4px;
-    margin-bottom: 20px;
-    padding: 10px;
-    text-align: center;
+    margin-top: 1rem;
+    max-width: 50rem;
+    width: 100%;
+    min-height: 16rem;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid var(--ion-color-light-tint);
+    border-radius: 1rem;
+    color: var(--ion-color-medium);
     cursor: pointer;
 }
 
-.file__upload:hover {
-    background-color: var(--ion-color-light-tint);
+.file__upload__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
 }
 
-.missing__image {
-    position: relative;
-    border: 2px dashed var(--ion-color-danger);
-    border-radius: 4px;
-    margin-bottom: 20px;
-    padding: 10px;
-    text-align: center;
+.file__upload-top {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    width: calc(100% - 2rem);
+    flex-direction: row;
+    overflow-x: auto;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    white-space: nowrap;
+}
+
+.file__upload-top::-webkit-scrollbar {
+    height: 0.6rem;
     background: var(--ion-color-light);
+    border-radius: 9.99rem;
+}
+
+.file__upload-top::-webkit-scrollbar-track {
+    height: 0.6rem;
+    background: var(--ion-color-light);
+    border-radius: 9.99rem;
+}
+
+.file__upload-top::-webkit-scrollbar-thumb {
+    background: var(--ion-color-dark);
+    border-radius: 9.99rem;
+}
+
+/* safari */
+.file__upload-top::-webkit-scrollbar-thumb:horizontal {
+    background-color: var(--ion-color-dark);
+    border-radius: 9.99rem;
+}
+
+.image__preview__container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 800px;
+    flex: 0 0 auto;
+}
+
+.image__preview-controls {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
+.image__preview-controls:hover {
+    opacity: 1;
+}
+
+.image__preview-controls button {
+    background-color: var(--ion-color-danger);
+    border: none;
+    border-radius: 50%;
+    padding: 0.45rem;
+    color: var(--ion-color-dark);
     cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.image__preview-controls button:hover {
+    background-color: var(--ion-color-danger-tint);
+    color: var(--ion-color-dark-tint);
+}
+
+.image__preview-controls button:active {
+    transform: scale(0.95);
 }
 
 .image__preview {
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 0.85rem;
+    display: block;
 }
 
-.add__photo {
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.file__upload-bottom {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    width: 100%;
+    justify-content: center;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.file__upload-button button {
+    display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--ion-color-tertiary);
-    background-color: transparent;
+    padding: 1rem;
+    width: 100%;
+    background-color: var(--ion-color-light);
+    border-radius: 1rem;
+    color: var(--ion-color-dark);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-@media screen and (max-width: 768px) {
-    .file__upload {
-        padding: 5px;
-        margin-bottom: 10px;
-    }
+.file__upload-button:hover button {
+    background-color: var(--ion-color-light-tint);
+}
 
-    .image__preview {
-        max-width: 100%;
-        height: auto;
-        object-fit: contain;
+.missing__image button {
+    border-color: var(--ion-color-danger);
+}
+
+.add__photo-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.add__photo-button button {
+    background-color: transparent;
+    border: none;
+    color: var(--ion-color-medium);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.add__photo-icon {
+    font-size: 2.5rem;
+}
+
+.add__photo__text {
+    font-size: 1.125rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.add__photo-button button:hover {
+    color: var(--ion-color-dark);
+}
+
+@media (max-width: 768px) {
+
+    .text__input__label,
+    .question__header h2,
+    .text__input,
+    .question__header p,
+    .question__body p {
+        font-size: 16px;
     }
+    
+    /* .file__upload {
+        padding: 10px;
+    } */
 }

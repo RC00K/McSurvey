@@ -1,10 +1,10 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect, RouteComponentProps } from 'react-router-dom';
+import { setupIonicReact } from '@ionic/react';
 import Home from './pages/Home';
 import Survey from './pages/Survey';
-import CameraComponent from './components/Camera/CameraContainer';
+import NotFound from './pages/NotFound';
+import Completed from './pages/Completed';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -24,35 +24,61 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Review from './pages/Review';
-import { ReviewProvider } from './components/Review/ReviewContext';
-import { CameraProvider } from './components/Camera/CameraContext';
+import { useSurvey } from './assets/context/SurveyContext';
+import CameraContainer from './components/CameraContainer';
+
+import { getSurveys, getStoreNumbers } from './services/surveyService';
 
 setupIonicReact();
 
-const App: React.FC = () => (  
-  <IonApp>
-    <IonReactRouter>
-      <ReviewProvider>
-        <IonRouterOutlet>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-          <CameraProvider>
-            <Route exact path="/survey/:selected">
-              <Survey />
-            </Route>
-          </CameraProvider>
-          <Route exact path="/review">
-            <Review />
-          </Route>
-        </IonRouterOutlet>
-      </ReviewProvider>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const [routes, setRoutes] = useState<{ path: string, component: React.FC<RouteComponentProps> }[]>([]);
+  const { setSurveyName } = useSurvey();
+
+  useEffect(() => {
+    const buildRoutes = async () => {
+      const surveys = await getSurveys();
+      const storeNumbs = await getStoreNumbers();
+      const urls: { path: string; component: React.FC<RouteComponentProps> }[] = [];
+
+      surveys.forEach((survey: any) => {
+        const surveyName = survey.SurveyName;
+        setSurveyName(surveyName);
+
+        storeNumbs.forEach((store: any) => {
+          const storeNumb = store.StoreNumber.trim();
+          urls.push({
+            path: `/survey/${surveyName}:storeNumber`,
+            component: Survey,
+          });
+        });
+
+        // Survey without storeNumber
+        urls.push({
+          path: `/survey/${surveyName}`,
+          component: Survey,
+        });
+      });
+
+      setRoutes(urls);
+    };
+
+    buildRoutes();
+  }, []);
+  
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" exact component={Home} />
+        {routes.map((route, index) => (
+          <Route key={index} path={route.path} component={route.component} exact />
+        ))}
+        <Route path="/camera/:questionIndex" component={CameraContainer} />
+        <Route path="/completed" component={Completed} />
+        <Route path="/404" component={NotFound} />
+      </Switch>
+    </Router>
+  );
+};
 
 export default App;
