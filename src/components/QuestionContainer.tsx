@@ -161,7 +161,7 @@ export const QuestionContainer = ({
           />
       }
       <label className="text__input__label">
-        <h2>Installer Name</h2>
+        <h2>Name</h2>
       </label>
       <input 
         type="text"
@@ -170,7 +170,7 @@ export const QuestionContainer = ({
         inputMode="text"
         value={installerName}
         onChange={handleInstallerNameChange}
-        placeholder="Installer Name"
+        placeholder="First and Last"
         required={true}
       />
       {surveyData.surveyTypes && surveyData.surveyTypes.length > 0 && surveyData.surveyTypes[0].questions.map((question: any, qIndex: number) => {

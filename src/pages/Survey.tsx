@@ -90,13 +90,13 @@ const Survey: React.FC = () => {
             surveyData={surveyData}
           />
         )}
-        {showExitAlert && (
+        {/* {showExitAlert && (
           <DangerModal
             showModal={showExitAlert}
             setShowModal={setShowExitAlert}
             handleEnd={handleEndSurvey}
           />
-        )}
+        )} */}
         <IonContent>
         <div className="survey" id="survey">
           <div className="survey__container">

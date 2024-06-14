@@ -150,7 +150,7 @@ const AgreeModal = ({
 
       formData.append("email", emailAddresses.join(","));
       formData.append("subject", `${surveyName} Survey: ${storeNumber} ${accMgr}`);
-      formData.append("text", `New survey submission from ${installerName}\nStore Number: ${storeNumber}\n\nAttached is the survey submission for ${surveyName}.\n\n${accMgr} please review the submission and follow up with the installer if necessary.`);
+      formData.append("text", `New survey submission from ${installerName}\nStore Number: ${storeNumber}\n\nAttached is the survey submission for ${surveyName}.\n\n${accMgr} please review the submission and follow up with the ${installerName} if necessary.`);
 
       const response = await fetch("https://mcsurveymailerapi.gomaps.com/send", {
         method: "POST",
