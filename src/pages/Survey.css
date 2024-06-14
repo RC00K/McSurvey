@@ -1,23 +1,119 @@
-.extra-padding {
-  padding-right: 1.3rem !important;
-  padding-left: 1.3rem !important;
+.survey__header__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 50px;
 }
 
-.title {
-  font-weight: 600;
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+.back__btn {
+  position: relative;
+  bottom: 40px;
+  margin-left: 20px;
+  z-index: 3;
 }
 
-/* Slope Wave SVG */
-.slopewave__spacer {
-  aspect-ratio: 1160/171;
+button.back__btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #AAA8CE;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.continue__btn {
+  position: relative;
+  top: 0;
+  z-index: 3;
+}
+
+button.continue__btn {
   width: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+  max-width: 1200px;
+  padding: 15px 20px;
+  border-radius: 50px;
+  background-color: var(--ion-color-dark);
+  color: var(--ion-color-light);
 }
 
-.slope__wave {
-  background-image: url('../assets/images/SlopeWave.svg');
+button.continue__btn:disabled {
+  background-color: var(--ion-color-dark-shade);
+  color: var(--ion-color-dark-tint);
+}
+
+.survey__header__upper {
+  max-width: 600px;
+  width: 100%;
+  top: 140px;
+  margin-left: 20px;
+  text-wrap: wrap;
+  z-index: 4;
+}
+
+h1.survey__header__title {
+  font-size: 4.25rem;
+  font-weight: var(--font-bold);
+  text-transform: capitalize;
+  line-height: 1.25em;
+  color: var(--ion-color-dark);
+}
+
+.survey__header__title span {
+  font-size: 5rem;
+  color: #56519E;
+}
+
+p.survey__header__description {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ion-color-dark-tint);
+  margin-top: var(--mb-0-5);
+}
+
+svg.survey__header__svg {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: scale(-1, -1) rotate(180deg);
+  z-index: 1;
+}
+
+.survey {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+.survey__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.survey__footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  h1.survey__header__title {
+    font-size: 2.5rem;
+  }
+
+  .survey__header__title span {
+    font-size: 3rem;
+  }
+
+  p.survey__header__description {
+    font-size: 1rem;
+  }
 }

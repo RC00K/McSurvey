@@ -1,110 +1,123 @@
-import { IonContent, IonPage, IonAlert, IonButtons, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonBackButton, IonGrid, IonRow, IonCol } from '@ionic/react';
-import { arrowBack } from 'ionicons/icons';
-import { QuestionContainer } from '../components/QuestionContainer';
-import { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router';
-import { ReviewProvider } from '../components/Review/ReviewContext';
-import { useReview } from '../components/Review/ReviewContext';
-import './Survey.css';
+import { getSurveys } from "../services/surveyService";
+import { IonContent, IonPage } from "@ionic/react";
+import { QuestionContainer } from "../components/QuestionContainer";
+import { useEffect, useState } from "react";
+import { useSurvey } from "../assets/context/SurveyContext";
+import AgreeModal from "../components/modals/AgreeModal";
+import DangerModal from "../components/modals/DangerModal";
+import "./Survey.css";
 
 const Survey: React.FC = () => {
-    const { selected } = useParams<{ selected: string }>();
-    const driveThruSelection = selected === '0' ? '1' : '2';
-    const [showExitAlert, setShowExitAlert] = useState(false);
-    const history = useHistory();
-    const { reset } = useReview();
-    const { setDriveThruSelection } = useReview();
-    const [isSurveyComplete, setIsSurveyComplete] = useState(false);
-    const [readyForReview, setReadyForReview] = useState(false);
+  const { reset } = useSurvey();
+  const [surveyData, setSurveyData] = useState<any>();
+  const [isSurveyComplete, setIsSurveyComplete] = useState(false);
+  const [readyForSubmitting, setReadyForSubmitting] = useState(false);
+  const [showAgreeModal, setShowAgreeModal] = useState(false);
+  const [showExitAlert, setShowExitAlert] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
 
-    useEffect(() => {
-        setDriveThruSelection(driveThruSelection);
-    }, [selected, setDriveThruSelection]);
-
-    const handleExitSurvey = () => {
-        setShowExitAlert(true);
+  useEffect(() => {
+    const fetchSurveys = async () => {
+      const surveys = await getSurveys();
+      const parsedSurveyData = JSON.parse(surveys[0].SurveyJson);
+      setSurveyData(parsedSurveyData);
     };
+    fetchSurveys();
+  }, []);
 
-    useEffect(() => {
-        // Set flag when the survey is started
-        sessionStorage.setItem('inSurvey', 'true');
-    }, []);
+  useEffect(() => {
+    const surveyDataFromStorage = localStorage.getItem("surveyData");
+    if (surveyDataFromStorage) {
+      const data = JSON.parse(surveyDataFromStorage);
+      setIsSurveyComplete(data.isSurveyComplete);
+      setReadyForSubmitting(data.readyForSubmitting);
+      setSurveyData(data);
+    }
+  }, [reset]);
 
-    useEffect(() => {
-        reset();
-    }, [reset]);
+  useEffect(() => {
+    localStorage.setItem("surveyData", JSON.stringify({ 
+      isComplete: isSurveyComplete, 
+      isReadyToSubmit: readyForSubmitting }));
+  }, [isSurveyComplete, readyForSubmitting]);
 
-    const confirmExit = () => {
-        // Set flag when the survey is ended
-        sessionStorage.setItem('inSurvey', 'false');
-        // Reset the review context
-        reset();
-        // Navigate back to home
-        history.push('/');
+  const handleReadyForSubmitting = (isReady: boolean) => {
+    setReadyForSubmitting(isReady);
+  };
+
+  const handlePresentAgreement = () => {
+    setShowAgreeModal(true);
+  };
+
+  useEffect(() => {
+    const handleBackButtonEvent = (e: any) => {
+      e.preventDefault();
+      setShowExitAlert(true);
     };
-
-    // Popstate
-    const handlePopstate = (event: PopStateEvent) => {
-        console.log('Popstate event', event);
-        // If the survey is in progress, show the alert
-        if (sessionStorage.getItem('inSurvey') === 'true') {
-            event.preventDefault();
-            setShowExitAlert(true);
-        };
+    window.history.pushState(null, "null", window.location.pathname);
+    window.addEventListener("popstate", handleBackButtonEvent);
+    
+    return () => {
+      window.removeEventListener("popstate", handleBackButtonEvent);
     };
+  }, []);
 
-    useEffect(() => {
-        window.addEventListener('popstate', handlePopstate);
-        return () => {
-            window.removeEventListener('popstate', handlePopstate);
-        };
-    }, [handlePopstate]);
+  const removeAgreeModal = () => {
+    setShowAgreeModal(false);
+  };
 
-    const handleReadyForReviewChange = (isReady: boolean) => {
-        setReadyForReview(isReady);
-    };
+  useEffect(() => {
+    if (isEmailSent) {
+      setIsEmailSent(false);
+      removeAgreeModal();
+    }
+  }, [isEmailSent]);
 
-    const handleGoToReview = () => {
-        history.push('/review');
-    };
+  const handleEndSurvey = () => {
+    reset();
+    localStorage.removeItem("surveyData");
+    setShowExitAlert(false);
+    window.history.back();
+  };
 
-    return (
-        <IonPage>
-            {showExitAlert && (
-                <IonAlert
-                    isOpen={showExitAlert}
-                    onDidDismiss={() => setShowExitAlert(false)}
-                    header={'Confirm Exit'}
-                    message={'Are you sure you want to exit the survey? All progress will be lost.'}
-                    buttons={[
-                        {
-                            text: 'Cancel',
-                            role: 'cancel',
-                            handler: () => {
-                                setShowExitAlert(false);
-                            }
-                        },
-                        {
-                            text: 'Exit',
-                            cssClass: 'secondary',
-                            handler: () => {
-                                confirmExit();
-                            }
-                        }
-                    ]}
+  return (
+    <>
+      <IonPage>
+        {showAgreeModal && (
+          <AgreeModal
+            showModal={showAgreeModal}
+            setShowModal={setShowAgreeModal}
+            surveyData={surveyData}
+          />
+        )}
+        {showExitAlert && (
+          <DangerModal
+            showModal={showExitAlert}
+            setShowModal={setShowExitAlert}
+            handleEnd={handleEndSurvey}
+          />
+        )}
+        <IonContent>
+        <div className="survey" id="survey">
+          <div className="survey__container">
+            <div className="survey__content">
+              {surveyData && <QuestionContainer 
+                surveyData={surveyData} 
+                readyToSubmit={handleReadyForSubmitting} 
                 />
-            )}
-            <IonContent fullscreen className="ion-padding-start ion-padding-end extra-padding ion-padding-bottom ion-margin-bottom">
-                <QuestionContainer 
-                    driveThruSelection={driveThruSelection}
-                    onReadyForReviewChange={handleReadyForReviewChange}
-                />
-            </IonContent>
-            <button className="floating__button" onClick={handleGoToReview} disabled={!readyForReview}>
-                Continue to Review
-            </button>
-        </IonPage>
-    );
-}
+              }
+              <div className="survey__footer">
+                <button className="primary__btn" onClick={handlePresentAgreement} disabled={!readyForSubmitting}>
+                  Continue
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </IonContent>
+      </IonPage>
+    </>
+  );
+};
 
 export default Survey;
