@@ -1,23 +1,33 @@
-import { useState } from 'react';
-import { IonButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon, IonSearchbar, IonAvatar, IonSegment, IonSegmentButton, IonLabel, IonItem, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonCardSubtitle } from '@ionic/react';
+import { useHistory } from "react-router-dom";
+import { IonContent, IonPage } from '@ionic/react';
 import './Home.css';
 import CardContainer from '../components/CardContainer';
 import SurveyModal from '../components/modals/SurveyModal';
 
 const Home: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [driveThruSelection, setDriveThruSelection] = useState('1');
+  const history = useHistory();
 
-  const handleCardClick = () => {
-    setShowModal(true);
+  const handleCardClick = (SurveyName: string) => {
+    console.log(SurveyName);
+    history.push(`/survey/${encodeURIComponent(SurveyName)}`);
   };
 
   return (
     <IonPage>
-      <IonContent fullscreen={true} className="ion-padding">
-        <h1>Available Surveys</h1>
-        <CardContainer onCardClick={handleCardClick} />
-        <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} />
+      <IonContent>
+        <div className="home">
+          <div className="home__content">
+            <div className="home__body">
+              <div className="home__body__title">
+                <h3>Available Surveys</h3>
+              </div>
+              <div className="surveys">
+                <CardContainer onCardClick={handleCardClick} />
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <SurveyModal showModal={showModal} setShowModal={setShowModal} setDriveThruSelection={setDriveThruSelection} /> */}
       </IonContent>
     </IonPage>
   );

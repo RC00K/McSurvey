@@ -1,0 +1,362 @@
+@import url(https://fonts.googleapis.com/css?family=Poppins:400,500,600,700);
+
+:root {
+    --light: #f6f6f6;
+    --primary: #2C2686;
+    --light-primary: #423e95;
+    --grey: #eee;
+    --dark-grey: #aaaaaa;
+    --dark: #363949;
+    --danger: #d32f2f;
+    --light-danger: #fecdd3;
+    --warning: #fbc02d;
+    --light-warning: #fff2c6;
+    --success: #338e3c;
+    --light-success: #bbf7d0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+.side__menu__icon {
+    margin: 0.5rem;
+    font-size: 1.7rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+body.dark {
+    --light: #181a1e;
+    --grey: #25252c;
+    --dark: #fbfbfb;
+}
+
+body {
+    background-color: var(--grey);
+    overflow-x: hidden;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--light);
+    width: 260px;
+    height: 100%;
+    z-index: 2;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    box-shadow: 0 2px 10px var(--grey);
+    transition: all 0.3s ease-in;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar.close {
+    width: 60px;
+}
+
+.sidebar .logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.7rem;
+    height: 56px;
+    color: var(--dark);
+    z-index: 1;
+    font-weight: 600;
+    margin: 1rem 0.5rem;
+}
+
+.sidebar .logo img {
+    width: 25%;
+    margin: 1rem 0;
+}
+
+.sidebar .logo span {
+    margin-left: 0.5rem;
+    color: var(--success);
+}
+
+.sidebar .side__menu {
+    width: 100%;
+    margin-top: 3rem;
+}
+
+.sidebar .side__menu li {
+    margin: 0.5rem 0;
+    height: 3rem;
+    background-color: transparent;
+}
+
+.sidebar .side__menu li.active {
+    border-left: var(--light-primary) 6px solid;
+    background: var(--grey);
+    transition: all 0.3s ease-in;
+}
+
+.sidebar .side__menu li a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+    color: var(--dark);
+}
+
+.sidebar .side__menu li.active a {
+    color: var(--primary);
+}
+
+.sidebar.close .side__menu li a {
+    width: calc(80px - 12px);
+    transition: all 0.3s ease-in;
+}
+
+.sidebar .side__menu li a .side__menu__icon {
+    min-width: calc(80px - 12px);
+    display: flex;
+    justify-content: center;
+    font-size: 1.7rem;
+}
+
+.sidebar.close .logo img {
+    width: 100%;
+}
+
+.side__menu li a.logout {
+    color: var(--danger);
+}
+
+.content {
+    position: relative;
+    width: calc(100% - 260px);
+    left: 260px;
+    transition: all 0.3s ease;
+}
+
+.sidebar.close ~ .content {
+    width: calc(100% - 60px);
+    left: 60px;
+}
+
+.content nav {
+    height: 56px;
+    background-color: var(--light);
+    padding: 2.5rem 1rem;
+    display: flex;
+    align-items: center;
+    grid-gap: 24px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 5;
+}
+
+.content nav a {
+    color: var(--dark);
+}
+
+.content nav .side__menu__icon.menu__icon {
+    cursor: pointer;
+    color: var(--dark);
+    font-size: 2rem;
+}
+
+.content nav form {
+    max-width: 600px;
+    width: 100%;
+    margin-right: auto;
+}
+
+.content nav form .form__input {
+    display: flex;
+    align-items: center;
+    height: 46px;
+}
+
+.content nav form .form__input input {
+    flex-grow: 1;
+    padding: 0 16px;
+    height: 100%;
+    border: none;
+    background-color: var(--grey);
+    border-radius: 36px 0 0 36px;
+    outline: none;
+    color: var(--dark);
+    width: 100%;
+    font-family: inherit;
+}
+
+.content nav form .form__input button {
+    width: 80px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--light-primary);
+    color: var(--light);
+    font-size: 18px;
+    outline: none;
+    border: none;
+    border-radius: 0 36px 36px 0;
+    cursor: pointer;
+}
+
+.content nav form .form__input button .search__icon {
+    color: #fff;
+}
+
+main {
+    width: 100%;
+    padding: 2.2rem 1.5rem;
+    max-height: calc(100vh - 65px);
+}
+
+main .header h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--dark);
+}
+
+main .breadcrumb {
+    display: flex;
+    align-items: center;
+    grid-gap: 1.2rem;
+}
+
+main .breadcrumb li {
+    color: var(--dark);
+}
+
+main .breadcrumb li a {
+    color: var(--dark);
+    pointer-events: none;
+}
+
+main .breadcrumb li a.active {
+    color: var(--primary);
+}
+
+main .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+main .cards li {
+    background-color: var(--light);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    grid-gap: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in;
+}
+
+main .cards li:hover {
+    transform: translateY(-10px);
+}
+
+.card {
+    width: 100%;
+}
+
+.card__header {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    border-bottom: 1px solid var(--dark-grey);
+    border-radius: none;
+    padding: 0.5rem 1rem;
+}
+
+.card__header img {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    margin-right: 0.5rem;
+}
+
+.card__header span {
+    color: var(--dark);
+    font-weight: 400;
+    margin-left: 0.5rem;
+}
+
+.card__title h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0.5rem 0;
+    padding: 0.5rem 1rem;
+}
+
+.card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--dark-grey);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .content {
+        width: calc(100% - 60px);
+        left: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .content nav form .form__input input {
+        display: none;
+    }
+
+    .content nav form .form__input button {
+        background-color: var(--dark-grey);
+    }
+
+    .content nav form .form__input input {
+        width: 100%;
+        display: block;
+    }
+
+    .content nav form.show .form__input button {
+        width: 36px;
+        height: 100%;
+        color: var(--light);
+        background-color: var(--dark);
+        border-radius: 0 36px 36px 0;
+    }
+
+    main .cards {
+        grid-template-columns: 1fr;
+    }
+
+    main .bottom__data .header {
+        min-width: 340px;
+    }
+}

@@ -5,6 +5,33 @@ import dtep3 from '../images/DTEP3.jpg';
 import dtep4 from '../images/DTEP4.jpg';
 import dtep5 from '../images/DTEP5.jpg';
 import dtep6 from '../images/DTEP6.jpg';
+import sp1 from '../images/SP1.jpg';
+import sp2 from '../images/SP2.jpg';
+import sp3 from '../images/SP3.jpg';
+import sp4 from '../images/SP4.jpg';
+import sp5 from '../images/SP5.jpg';
+import ns1 from '../images/NS1.jpg';
+import ns2 from '../images/NS2.jpg';
+import ns3 from '../images/NS3.jpg';
+import ns4 from '../images/NS4.jpg';
+import ns5 from '../images/NS5.jpg';
+import ns6 from '../images/NS6.jpg';
+import mc1 from '../images/MC1.jpg';
+import mc2 from '../images/MC2.jpg';
+import mc3 from '../images/MC3.jpg';
+import mc4 from '../images/MC4.jpg';
+import mc5 from '../images/MC5.jpg';
+import mc6 from '../images/MC6.jpg';
+import bps1 from '../images/BPS1.jpg';
+import bps2 from '../images/BPS2.jpg';
+import bps3 from '../images/BPS3.jpg';
+import bps4 from '../images/BPS4.jpg';
+import bps5 from '../images/BPS5.jpg';
+import bps6 from '../images/BPS6.jpg';
+import wa1 from '../images/WA1.jpg';
+import wa2 from '../images/WA2.jpg';
+import wa3 from '../images/WA3.jpg';
+
 
 import sp1 from '../images/SP1.jpg';
 import sp2 from '../images/SP2.jpg';
@@ -80,7 +107,8 @@ export const oneDrive = [
                         imageAlt: "Drive-Thru Entry Point 6",
                         image: dtep6
                     }
-                ]
+                ],
+                numberOfPictures: 5,
             },
             {
                 questionTitle: "Drive-Thru",
@@ -196,11 +224,6 @@ export const oneDrive = [
                         imageTitle: "Modem Connectivity Example 6",
                         imageAlt: "Modem Connectivity 6",
                         image: mc6
-                    },
-                    {
-                        imageTitle: "Modem Connectivity Example 7",
-                        imageAlt: "Modem Connectivity 7",
-                        image: mc7
                     }
                 ]
             },
@@ -456,11 +479,6 @@ export const twoDrive = [
                         imageTitle: "Modem Connectivity Example 6",
                         imageAlt: "Modem Connectivity 6",
                         image: mc6
-                    },
-                    {
-                        imageTitle: "Modem Connectivity Example 7",
-                        imageAlt: "Modem Connectivity 7",
-                        image: mc7
                     }
                 ]
             },
