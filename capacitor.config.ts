@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'mcsurvey',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    iosScheme: 'https',
   }
 };
 

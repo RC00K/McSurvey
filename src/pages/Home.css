@@ -1,0 +1,103 @@
+@import url('../theme/variables.css');
+
+.home {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.home__header {
+    text-align: center;
+    padding: 20px;
+}
+
+.home__header__content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.home__header__logo {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.home__header h1 {
+    font-size: 2em;
+    font-weight: bolder;
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 0;
+}
+
+.home__title {
+    text-align: left;
+    padding: 20px 0;
+}
+
+.home__title h3 {
+    font-size: 1.2em;
+    color: #333;
+}
+
+.home__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.home__body__title {
+    width: 100%;
+    font-size: 1.5em;
+    font-weight: bolder;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0.625rem;
+    line-height: 0;
+}
+
+.home__body__title h3 {
+    font-size: 1.2em;
+    color: var(--ion-color-dark);
+}
+
+.surveys {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
+/*  320px - 480px Mobile Devices */
+@media (min-width: 320px) and (max-width: 480px) {
+
+}
+
+/*  481px - 768px Tablet Devices */
+@media (min-width: 481px) and (max-width: 768px) {
+
+}
+
+/*  769px - 1024px Small Screens, Laptops */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+}
+
+/*  1201px - 1920px Extra Large Screens, TV */
+@media (min-width: 1201px) and (max-width: 1920px) {
+    
+}
+
+/*  1921px - 2560px 4K Ultra HD Screens */
+@media (min-width: 1921px) and (max-width: 2560px) {
+
+}
