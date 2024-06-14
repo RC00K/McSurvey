@@ -1,0 +1,74 @@
+@import url('../theme/variables.css');
+
+.survey__cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.survey__card {
+    background: var(--ion-color-light);
+    border-radius: 0.5rem;
+    border: 1px solid var(--ion-color-light-tint);
+    display: flex;
+    width: 30rem;
+    padding: 1.25rem;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.survey__card:hover {
+    border: 1px solid var(--ion-color-light);
+}
+
+.survey__card__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    color: var(--ion-color-dark);
+}
+
+.survey__card__category {
+    margin-top: 0.5rem;
+}
+
+.survey__card__bottom {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.survey__card__props {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.survey__card__prop {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* after each p in survey card prop add | unless last child */
+.survey__card__prop:not(:last-child) {
+    margin-right: 0.5rem;
+}
+
+.survey__card__prop p {
+    font-size: 0.875rem;
+    color: var(--ion-color-dark-tint);
+}
+
+.survey__card__prop p::after {
+    content: '|';
+    margin-left: 0.5rem;
+}
+
+.survey__card__prop p:last-child::after {
+    content: '';
+}
