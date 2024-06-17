@@ -3,7 +3,7 @@
 .accordion__container {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 
 details {
@@ -81,16 +81,21 @@ summary:hover .accordion__expand {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .accordion__card {
     position: relative;
     width: 100%;
     height: 130px;
-    background-color: var(--ion-color-light-tint);
-    border: 1px solid var(--ion-color-dark-tint);
+    background-color: var(--ion-color-light);
+    border: 1px solid var(--ion-color-light-tint);
     border-radius: 10px;
     overflow: hidden;
+}
+
+.accordion__card:hover {
+    border: 1px solid var(--ion-color-light);
 }
 
 .accordion__card img {
@@ -100,4 +105,93 @@ summary:hover .accordion__expand {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.accordion__card.expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    max-width: 650px;
+    width: 90%;
+    max-height: 500px;
+    height: 90%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 100;
+    border-radius: 10px;
+    cursor: zoom-out;
+}
+
+.accordion__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 99;
+    display: none;
+}
+
+.accordion__overlay.active {
+    display: block;
+}
+
+.accordion__tooltip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(34, 36, 40, 0.6);
+    color: var(--ion-color-dark);
+    text-align: center;
+    text-transform: capitalize;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    visibility: hidden;
+    z-index: 100;
+    cursor: pointer;
+}
+
+.accordion__tooltip.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.accordion__nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--ion-color-light);
+    color: var(--ion-color-dark);
+    border: none;
+    cursor: pointer;
+    z-index: 101;
+    font-size: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.accordion__nav ion-icon {
+    font-size: 3rem;
+}
+
+.accordion__nav:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.accordion__nav.left {
+    left: 1rem;
+}
+
+.accordion__nav.right {
+    right: 1rem;
 }

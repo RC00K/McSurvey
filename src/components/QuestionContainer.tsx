@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { IonIcon, IonLabel } from "@ionic/react";
 import { AccordionContainer } from "./AccordionContainer";
-import { oneDrive, twoDrive } from "../assets/data/aotsfees";
 import { cameraOutline, trash } from "ionicons/icons";
 import "./QuestionContainer.css";
 import { useSurvey } from "../assets/context/SurveyContext";
@@ -22,17 +21,26 @@ export const QuestionContainer = ({
   const location = useLocation();
   const [error, setError] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [installerName, setInstallerName] = useState("");
+  const [installerName, setInstallerName] = useState(() => localStorage.getItem("installerName") || ""); // Retrieve installer name from localStorage
 
   const { storeNumber: storeNumberFromUrl } = useParams<{ storeNumber: string | undefined }>();
-  // store store number in local storage
-  localStorage.setItem("storeNumber", storeNumberFromUrl || storeNumber);
+
+  useEffect(() => {
+    const storedStoreNumber = localStorage.getItem("storeNumber");
+    if (storedStoreNumber) {
+      setStoreNumber(storedStoreNumber);
+    } else if (storeNumberFromUrl) {
+      setStoreNumber(storeNumberFromUrl);
+      localStorage.setItem("storeNumber", storeNumberFromUrl);
+    }
+  }, [storeNumberFromUrl, setStoreNumber]);
 
   const handleStoreNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     if (/^\d*$/.test(value)) {
       setStoreNumber(value);
       setError(false);
+      localStorage.setItem("storeNumber", value);
     } else {
       e.preventDefault();
       setError(true);
@@ -44,6 +52,7 @@ export const QuestionContainer = ({
     if (value !== '' && !error) {
       value = value.padStart(5, '0');
       setStoreNumber(value);
+      localStorage.setItem("storeNumber", value);
       assignAccountManager(value);
     } else if (value === '' && error) {
       setError(false);
@@ -121,6 +130,11 @@ export const QuestionContainer = ({
     }, 100); // delay in milliseconds
   }, [location.pathname]);
 
+  // Remove number and . from string on the question 
+  const removeNumberAndDot = (question: string) => {
+    return question.replace(/^\d+\.\s/, '');
+  };
+
   const isReadyForSubmitting = () => {
     const isInstallerNameFilled = installerName.trim() !== '';
     const areAllImagesUploaded = Object.keys(images).every((key) => images[key] !== undefined);
@@ -153,7 +167,7 @@ export const QuestionContainer = ({
             pattern="[0-9]*"
             inputMode="numeric"
             className="text__input"
-            defaultValue={storeNumber}
+            value={storeNumber} // Use value instead of defaultValue
             maxLength={5}
             onChange={handleStoreNumberChange}
             onBlur={handleStoreNumberFocus}
@@ -173,6 +187,7 @@ export const QuestionContainer = ({
         placeholder="First and Last"
         required={true}
       />
+      <AccordionContainer />
       {surveyData.surveyTypes && surveyData.surveyTypes.length > 0 && surveyData.surveyTypes[0].questions.map((question: any, qIndex: number) => {
         const questionId = `question_${qIndex}`;
         const imageSrc = images[questionId] || [];
@@ -184,7 +199,7 @@ export const QuestionContainer = ({
             </div>
             <div>
               <div className="question__body" id={questionId}>
-                <p>{question.question}</p>
+                <p>{removeNumberAndDot(question.question)}</p>
               </div>
               {question.questionHints &&
                 question.questionHints.length > 0 && (
@@ -194,7 +209,6 @@ export const QuestionContainer = ({
                     ))}
                   </ol>
                 )}
-              {/* <AccordionContainer question={question} /> */}
               <div className="file__upload">
                 <div className="file__upload__content">
                   <div className="file__upload-top">

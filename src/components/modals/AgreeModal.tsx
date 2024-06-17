@@ -124,7 +124,6 @@ const AgreeModal = ({
     return { pdfBlob, pdfName }
   };
 
-  // Make sure the account manager name is title case
   const titleCase = (str: string) => {
     return str.toLowerCase().split(' ').map(function(word) {
       return word.replace(word[0], word[0].toUpperCase());
@@ -144,7 +143,7 @@ const AgreeModal = ({
       formData.append("file", pdfBlob, pdfName);
 
       const emailAddresses = [
-        "ryder.cook@gomaps.com",
+        // "ryder.cook@gomaps.com",
         "AccountManagersOnly@gomaps.com"
       ];
 

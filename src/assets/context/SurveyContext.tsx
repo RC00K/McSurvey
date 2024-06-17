@@ -90,7 +90,6 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const loadImageReferences = async () => {
-      // await saveImages
       const { value } = await Preferences.get({ key: "capturedImage" });
       const imageReferences = value ? JSON.parse(value) : {};
       setImages(imageReferences);
@@ -111,10 +110,14 @@ export const SurveyProvider: React.FC<{ children: React.ReactNode }> = ({
     setUserInput({});
     setImages({});
     setStoreNumber("");
+    setInstallerName("");
+    setAccountManager(null);
     localStorage.removeItem("lastQuestionIndex");
     localStorage.removeItem("surveyData");
     localStorage.removeItem("accountManager");
     localStorage.removeItem("capturedImage");
+    localStorage.removeItem("storeNumber");
+    localStorage.removeItem("installerName");
     // Clear all stored preferences
     await Preferences.clear();
   }, []);

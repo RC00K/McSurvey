@@ -1,0 +1,122 @@
+.notfound {
+    display: flex;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    align-items: center;
+}
+
+.notfound__content {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 2rem;
+}
+
+.error__background {
+    width: 6.25rem;
+    height: 6.25rem;
+    border: 6px solid var(--ion-color-danger);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: shakeError 2s ease-in-out infinite; /* Added shake animation */
+}
+
+.error__icon ion-icon {
+    font-size: 4.5rem;
+    color: var(--ion-color-danger-tint);
+}
+
+.error__icon::before {
+    content: '4';
+    position: absolute;
+    top: 50%;
+    left: -80%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    color: var(--ion-color-danger);
+}
+
+.error__icon::after {
+    content: '4';
+    position: absolute;
+    top: 50%;
+    right: -80%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    color: var(--ion-color-danger);
+}
+
+@keyframes shakeError {
+    0% {
+        transform: rotate(0deg);
+    }
+    10% {
+        transform: rotate(10deg);
+    }
+    20% {
+        transform: rotate(-10deg);
+    }
+    30% {
+        transform: rotate(10deg);
+    }
+    40% {
+        transform: rotate(-10deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.error__title {
+    font-size: 1.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ion-color-dark);
+    animation: flickerError 1s infinite; /* Added flicker animation */
+}
+
+@keyframes flickerError {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.error__button {
+    background-color: var(--ion-color-dark);
+    color: var(--ion-color-light);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.error__button:hover {
+    background-color: var(--ion-color-dark-tint);
+}
+
+.error__button:active {
+    background-color: var(--ion-color-dark-shade);
+}
+
+.error__button:focus {
+    outline: none;
+}
