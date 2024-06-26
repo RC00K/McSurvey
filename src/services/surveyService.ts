@@ -11,10 +11,10 @@ const api = axios.create({
 export const getSurveys = async () => {
     try {
         const response = await api.get('/surveys');
-        console.log('Fetched surveys', response.data);
+        // console.log('Fetched surveys', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error occurred while fetching surveys', error);
+        // console.error('Error occurred while fetching surveys', error);
         throw error;
     }
 };
@@ -22,10 +22,10 @@ export const getSurveys = async () => {
 export const getStoreNumbers = async () => {
     try {
         const response = await api.get('/storenumbs');
-        console.log('Fetched store numbers', response.data);
+        // console.log('Fetched store numbers', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error occurred while fetching store numbers', error);
+        // console.error('Error occurred while fetching store numbers', error);
         throw error;
     }
 };

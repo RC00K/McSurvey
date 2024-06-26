@@ -124,7 +124,6 @@ const AgreeModal = ({
     return { pdfBlob, pdfName }
   };
 
-  // Make sure the account manager name is title case
   const titleCase = (str: string) => {
     return str.toLowerCase().split(' ').map(function(word) {
       return word.replace(word[0], word[0].toUpperCase());
@@ -144,13 +143,13 @@ const AgreeModal = ({
       formData.append("file", pdfBlob, pdfName);
 
       const emailAddresses = [
-        "ryder.cook@gomaps.com",
+        // "ryder.cook@gomaps.com",
         "AccountManagersOnly@gomaps.com"
       ];
 
       formData.append("email", emailAddresses.join(","));
       formData.append("subject", `${surveyName} Survey: ${storeNumber} ${accMgr}`);
-      formData.append("text", `New survey submission from ${installerName}\nStore Number: ${storeNumber}\n\nAttached is the survey submission for ${surveyName}.\n\n${accMgr} please review the submission and follow up with the installer if necessary.`);
+      formData.append("text", `New survey submission from ${installerName}\nStore Number: ${storeNumber}\n\nAttached is the survey submission for ${surveyName}.\n\n${accMgr} please review the submission and follow up with the ${installerName} if necessary.`);
 
       const response = await fetch("https://mcsurveymailerapi.gomaps.com/send", {
         method: "POST",

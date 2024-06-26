@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSurvey } from "../assets/context/SurveyContext";
 import AgreeModal from "../components/modals/AgreeModal";
 import DangerModal from "../components/modals/DangerModal";
+import { AccordionContainer } from "../components/AccordionContainer";
 import "./Survey.css";
 
 const Survey: React.FC = () => {
@@ -88,13 +89,6 @@ const Survey: React.FC = () => {
             showModal={showAgreeModal}
             setShowModal={setShowAgreeModal}
             surveyData={surveyData}
-          />
-        )}
-        {showExitAlert && (
-          <DangerModal
-            showModal={showExitAlert}
-            setShowModal={setShowExitAlert}
-            handleEnd={handleEndSurvey}
           />
         )}
         <IonContent>
